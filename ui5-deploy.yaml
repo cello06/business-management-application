@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "4.0"
+metadata:
+  name: hrproject
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: My-onprem
+          url: http://10.10.96.3:8000
+          client: '080'
+        app:
+          name: ZUI5_HR_PROJECT
+          description: Department Management Fiori app (BAS deployment)
+          package: ZCA_FIORI_V2
+          transport: TSTK900416
+        exclude:
+          - /test/

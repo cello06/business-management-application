@@ -1,0 +1,48 @@
+<mvc:View
+  controllerName="hrproject.controller.Sectors"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.f">
+
+  <Page title="Sectors" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+
+      <f:GridContainer
+        id="sectorGrid"
+        items="{ path: '/Sectors', sorter: { path: 'SectorId', descending: false } }"
+        containerQuery="true">
+
+        <f:layout>
+          <f:GridContainerSettings rowSize="9rem" columnSize="14rem" gap="1rem" />
+        </f:layout>
+
+        <f:items>
+          <GenericTile
+            class="sectorTile"
+            header="{SectorName}"
+            subheader="Sector"
+            headerImage="sap-icon://building"
+            press=".onSectorPress"
+            frameType="OneByOne">
+
+            <tileContent>
+              <TileContent>
+                <content>
+                  <NumericContent value="{SectorId}" withMargin="false" />
+                </content>
+              </TileContent>
+            </tileContent>
+
+            <layoutData>
+              <f:GridContainerItemLayoutData rows="1" columns="1" />
+            </layoutData>
+
+          </GenericTile>
+        </f:items>
+
+      </f:GridContainer>
+
+    </content>
+  </Page>
+
+</mvc:View>

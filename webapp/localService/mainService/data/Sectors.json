@@ -1,0 +1,11 @@
+{
+  "d": {
+    "results": [
+      { "SectorId": 1, "SectorName": "Management / Executive" },
+      { "SectorId": 2, "SectorName": "Training / Learning & Development" },
+      { "SectorId": 3, "SectorName": "Compliance / Audit" },
+      { "SectorId": 4, "SectorName": "Information Security" },
+      { "SectorId": 5, "SectorName": "Public Relations (PR)" }
+    ]
+  }
+}

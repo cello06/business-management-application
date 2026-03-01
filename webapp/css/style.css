@@ -1,0 +1,17 @@
+.sectorTile {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.sectorTile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.14);
+}
+
+/* Header yazı biraz büyüsün */
+.sectorTile .sapMGTHeader {
+  font-size: 1rem;
+  line-height: 1.2rem;
+}

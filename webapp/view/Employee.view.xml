@@ -1,0 +1,25 @@
+<mvc:View
+  controllerName="hrproject.controller.Employee"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m">
+
+  <Page id="page" title="Employees" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+
+      <List
+        id="employeeList"
+        growing="true"
+        growingScrollToLoad="true"
+        items="{/Employees}">
+        
+        <StandardListItem
+          title="{FirstName} {LastName}"
+          description="{Position}"
+          info="{EmployeeId}" />
+      
+      </List>
+
+    </content>
+  </Page>
+
+</mvc:View>
