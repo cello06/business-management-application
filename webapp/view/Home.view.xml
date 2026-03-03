@@ -1,134 +1,192 @@
 <mvc:View
-  controllerName="hrproject.controller.Home"
-  xmlns:mvc="sap.ui.core.mvc"
-  xmlns="sap.m"
-  xmlns:f="sap.f">
+    controllerName="hrproject.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+>
+    <Page title="Company Business Management Site">
+        <content>
+            <!-- HERO CARD -->
+            <VBox class="sapUiMediumMargin">
+                <f:Card class="homeHeroCard">
+                    <f:content>
+                        <VBox
+                            class="sapUiSmallMargin"
+                            width="100%"
+                        >
+                            <Title
+                                text="Company Business Management Site"
+                                level="H1"
+                                class="homeHeroTitle"
+                            />
+                            <Text
+                                text="Manage departments, employees and courses from a single place."
+                                class="homeHeroSubtitle sapUiSmallMarginBottom"
+                            />
 
-  <Page title="Company Business Management Site">
-    <content>
+                            <Carousel
+                                id="heroCarousel"
+                                height="600px"
+                                loop="true"
+                                showPageIndicator="true"
+                                pageIndicatorPlacement="Bottom"
+                                class="homeHeroCarousel"
+                            >
+                                <Image
+                                    src="/img/hero.jpg" 
+                                    width="100%"
+                                    height="100%"
+                                    decorative="true"
+                                    class="homeHeroSlideImg"
+                                />
+                                <Image
+                                    src="/img/hero2.jpg"
+                                    width="100%"
+                                    height="100%"
+                                    decorative="true"
+                                    class="homeHeroSlideImg"
+                                />
+                                <Image
+                                    src="/img/hero3.jpg"
+                                    width="100%"
+                                    height="100%"
+                                    decorative="true"
+                                    class="homeHeroSlideImg"
+                                />
+                                 <Image
+                                    src="/img/hero4.jpg"
+                                    width="100%"
+                                    height="100%"
+                                    decorative="true"
+                                    class="homeHeroSlideImg"
+                                />
+                            </Carousel>
+                        </VBox>
+                    </f:content>
+                </f:Card>
+            </VBox>
 
-      <!-- HERO CARD -->
-      <VBox class="sapUiMediumMargin">
-        <f:Card class="homeHeroCard">
-          <f:content>
-            <HBox justifyContent="SpaceBetween" alignItems="Center" wrap="Wrap">
+            <!-- QUICK ACTIONS -->
+            <VBox class="sapUiMediumMargin">
+                <Title
+                    text="Quick Actions"
+                    level="H2"
+                    class="sapUiSmallMarginBottom"
+                />
 
-              <VBox class="sapUiMediumMargin" width="55%">
-                <Title text="Company Business Management Site" level="H1" class="homeHeroTitle"/>
-                <Text text="Manage departments, employees and courses from a single place."
-                      class="homeHeroSubtitle"/>
-              </VBox>
+                <f:GridContainer
+                    containerQuery="true"
+                    class="homeActionsGrid"
+                >
+                    <f:layout>
+                        <f:GridContainerSettings
+                            rowSize="10rem"
+                            columnSize="12rem"
+                            gap="1rem"
+                        />
+                    </f:layout>
 
-              <VBox class="sapUiMediumMargin" width="40%">
-                <Image
-                  src="img/hero.webp"
-                  width="100%"
-                  height="220px"
-                  decorative="true"
-                  class="homeHeroImg"/>
-              </VBox>
+                    <f:items>
+                        <GenericTile
+                            class="sectorTile homeActionTile"
+                            header="Sectors"
+                            subheader="Browse departments"
+                            headerImage="sap-icon://organization-chart"
+                            frameType="TwoByOne"
+                            press=".onOpenSectors"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
 
-            </HBox>
-          </f:content>
-        </f:Card>
-      </VBox>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <NumericContent
+                                            value="{home>/sectorCount}"
+                                            indicator="None"
+                                            withMargin="false"
+                                        />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
 
-      <!-- QUICK ACTIONS -->
-      <VBox class="sapUiMediumMargin">
-        <Title text="Quick Actions" level="H2" class="sapUiSmallMarginBottom"/>
+                        <GenericTile
+                            class="sectorTile homeActionTile"
+                            header="Create Department"
+                            subheader="Add a new sector"
+                            headerImage="sap-icon://add"
+                            frameType="TwoByOne"
+                            press=".onCreateDepartment"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
 
-        <f:GridContainer containerQuery="true" class="homeActionsGrid">
-          <f:layout>
-            <f:GridContainerSettings rowSize="10rem" columnSize="12rem" gap="1rem"/>
-          </f:layout>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="Create" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
 
-          <f:items>
+                        <GenericTile
+                            class="sectorTile homeActionTile"
+                            header="Employee Registration"
+                            subheader="Register a new employee"
+                            headerImage="sap-icon://add-employee"
+                            frameType="TwoByOne"
+                            press=".onEmployeeRegistration"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="Register" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
 
-            <GenericTile
-              class="sectorTile homeActionTile"
-              header="Sectors"
-              subheader="Browse departments"
-              headerImage="sap-icon://organization-chart"
-              frameType="TwoByOne"
-              press=".onOpenSectors">
-               <layoutData>
-                   <f:GridContainerItemLayoutData columns="2" rows="1"/>
-                </layoutData>
-
-              <tileContent>
-                <TileContent>
-                  <content>
-                    <NumericContent value="{home>/sectorCount}" indicator="None" withMargin="false"/>
-                  </content>
-                </TileContent>
-              </tileContent>
-            </GenericTile>
-
-            <GenericTile
-              class="sectorTile homeActionTile"
-              header="Create Department"
-              subheader="Add a new sector"
-              headerImage="sap-icon://add"
-              frameType="TwoByOne"
-              press=".onCreateDepartment">
-                 <layoutData>
-                   <f:GridContainerItemLayoutData columns="2" rows="1"/>
-                </layoutData>
-
-              <tileContent>
-                <TileContent>
-                  <content>
-                    <Text text="Create" />
-                  </content>
-                </TileContent>
-              </tileContent>
-            </GenericTile>
-
-            <GenericTile
-              class="sectorTile homeActionTile"
-              header="Employee Registration"
-              subheader="Register a new employee"
-              headerImage="sap-icon://add-employee"
-              frameType="TwoByOne"
-              press=".onEmployeeRegistration">
-
-                 <layoutData>
-                   <f:GridContainerItemLayoutData columns="2" rows="1"/>
-                </layoutData>
-              <tileContent>
-                <TileContent>
-                  <content>
-                    <Text text="Register" />
-                  </content>
-                </TileContent>
-              </tileContent>
-            </GenericTile>
-
-            <GenericTile
-              class="sectorTile homeActionTile"
-              header="Course Registration"
-              subheader="Assign courses"
-              headerImage="sap-icon://course-book"
-              frameType="TwoByOne"
-              press=".onCourseRegistration">
-
-                 <layoutData>
-                   <f:GridContainerItemLayoutData columns="2" rows="1"/>
-                </layoutData>
-              <tileContent>
-                <TileContent>
-                  <content>
-                    <Text text="Assign" />
-                  </content>
-                </TileContent>
-              </tileContent>
-            </GenericTile>
-
-          </f:items>
-        </f:GridContainer>
-
-      </VBox>
-
-    </content>
-  </Page>
+                        <GenericTile
+                            class="sectorTile homeActionTile"
+                            header="Course Registration"
+                            subheader="Assign courses"
+                            headerImage="sap-icon://course-book"
+                            frameType="TwoByOne"
+                            press=".onCourseRegistration"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="Assign" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
+                    </f:items>
+                </f:GridContainer>
+            </VBox>
+        </content>
+    </Page>
 </mvc:View>

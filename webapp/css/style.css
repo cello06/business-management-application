@@ -10,8 +10,20 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
 }
 
-/* Header yazı biraz büyüsün */
 .sectorTile .sapMGTHeader {
   font-size: 1rem;
   line-height: 1.2rem;
+}
+
+.homeHeroCarousel {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.homeHeroSlideImg img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;   
+  object-position: center;
+  display: block;
 }
