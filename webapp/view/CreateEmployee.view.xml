@@ -1,0 +1,40 @@
+<mvc:View
+  controllerName="hrproject.controller.CreateEmployee"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.ui.layout.form">
+
+  <Page title="Create Employee" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <VBox class="sapUiSmallMargin">
+
+        <f:SimpleForm
+          editable="true"
+          layout="ResponsiveGridLayout"
+          title="New Employee">
+          
+        <Label text="TC ID" />
+        <Input id="inpPersId" maxLength="11" type="Number" liveChange=".onPersIdLiveChange"/>
+
+          <Label text="First Name" />
+          <Input id="inpFirstName" />
+
+          <Label text="Last Name" />
+          <Input id="inpLastName" />
+
+          <Label text="Title" />
+          <Input id="inpTitle" />
+
+          <Label text="Sector ID" />
+          <Input id="inpSectorId" editable="false" />
+
+        </f:SimpleForm>
+
+        <HBox class="sapUiSmallMarginTop" justifyContent="End">
+          <Button text="Save" type="Emphasized" press=".onSave" />
+        </HBox>
+      </VBox>
+    </content>
+  </Page>
+
+</mvc:View>

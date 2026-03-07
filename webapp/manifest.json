@@ -131,6 +131,16 @@
           "target": [
             "TargetEmployee"
           ]
+        },
+        {
+          "name": "RouteEmployeeDetail",
+          "pattern": "employee/{sectorId}/{persId}",
+          "target": "TargetEmployeeDetail"
+        },
+        {
+          "name": "RouteCreateEmployee",
+          "pattern": "employeeCreate/{sectorId}",
+          "target": "TargetCreateEmployee"
         }
       ],
       "targets": {
@@ -151,6 +161,16 @@
           "transition": "slide",
           "viewId": "Employee",
           "viewName": "Employee"
+        },
+        "TargetEmployeeDetail": {
+          "viewType": "XML",
+          "viewId": "EmployeeDetail",
+          "viewName": "EmployeeDetail"
+        },
+        "TargetCreateEmployee": {
+          "viewType": "XML",
+          "viewId": "CreateEmployee",
+          "viewName": "CreateEmployee"
         }
       }
     },

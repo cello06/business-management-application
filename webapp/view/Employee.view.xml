@@ -5,20 +5,31 @@
 
   <Page id="page" title="Employees" showNavButton="true" navButtonPress=".onNavBack">
     <content>
+      <VBox class="sapUiSmallMargin">
 
-      <List
-        id="employeeList"
-        growing="true"
-        growingScrollToLoad="true"
-        items="{/Employees}">
-        
-        <StandardListItem
-          title="{FirstName} {LastName}"
-          description="{Position}"
-          info="{EmployeeId}" />
-      
-      </List>
+        <Toolbar>
+          <Title text="Employees" level="H2" />
+          <ToolbarSpacer />
+          <Button text="Create" type="Emphasized" press=".onCreateEmployee" />
+          <Button text="Delete" type="Reject" press=".onDeleteEmployee" />
+        </Toolbar>
 
+        <List
+          id="employeeList"
+          mode="MultiSelect"
+          growing="true"
+          growingScrollToLoad="true"
+          items="{/Employees}"
+          itemPress=".onEmployeePress">
+
+          <StandardListItem
+            type="Active"
+            title="{FirstName} {LastName}"
+            description="{Title}"
+            info="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
+        </List>
+
+      </VBox>
     </content>
   </Page>
 

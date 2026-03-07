@@ -1,0 +1,58 @@
+<mvc:View
+  controllerName="hrproject.controller.EmployeeDetail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core">
+
+  <Page title="Employee Detail" showNavButton="true" navButtonPress=".onNavBack">
+   <headerContent>
+    <Button text="Assign" type="Emphasized" press=".onAssignPress" />
+  </headerContent>
+    <content>
+      <VBox class="sapUiSmallMargin">
+        <f:SimpleForm
+          editable="false"
+          layout="ResponsiveGridLayout"
+          title="Personal Information">
+          <Label text="Person ID" />
+          <Text text="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
+
+          <Label text="First Name" />
+          <Text text="{FirstName}" />
+
+          <Label text="Last Name" />
+          <Text text="{LastName}" />
+
+          <Label text="Title" />
+          <Text text="{Title}" />
+
+          <Label text="Sector ID" />
+          <Text text="{SectorId}" />
+        </f:SimpleForm>
+
+        <Panel headerText="Ongoing Courses" class="sapUiSmallMarginTop">
+          <List items="{courses>/ongoing}" noDataText="No ongoing courses">
+            <ObjectListItem
+              title="{courses>CourseName}"
+              number="{courses>CourseId}"
+              numberUnit="ID">
+            </ObjectListItem>
+          </List>
+        </Panel>
+
+        <Panel headerText="Completed Courses" class="sapUiSmallMarginTop">
+          <List items="{courses>/completed}" noDataText="No completed courses">
+            <ObjectListItem
+              title="{courses>CourseName}"
+              number="{courses>CourseId}"
+              numberUnit="ID">
+            </ObjectListItem>
+          </List>
+        </Panel>
+
+      </VBox>
+    </content>
+  </Page>
+
+</mvc:View>

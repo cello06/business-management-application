@@ -14,12 +14,7 @@ sap.ui.define([
     },
 
     onNavBack: function () {
-      const sPrevHash = History.getInstance().getPreviousHash();
-      if (sPrevHash !== undefined) {
-        window.history.go(-1);
-      } else {
-        this.getOwnerComponent().getRouter().navTo("RouteHome", {}, true);
-      }
+      sap.ui.core.UIComponent.getRouterFor(this).navTo("RouteHome");
     }
 
   });
