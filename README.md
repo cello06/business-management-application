@@ -10,7 +10,6 @@ Manage departments via OData.
 - **Template**: Basic V2
 - **UI5**: sap_horizon (1.114.x)
 - **Service Type**: SAP System (ABAP On-Premise)
-- **Service URL**: http://10.10.96.3:8000/sap/opu/odata/sap/ZUI_HR_V2_BIND
 
 ## Run
 ### Start (normal)
