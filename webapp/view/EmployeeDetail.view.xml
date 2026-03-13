@@ -1,58 +1,105 @@
 <mvc:View
-  controllerName="hrproject.controller.EmployeeDetail"
-  xmlns:mvc="sap.ui.core.mvc"
-  xmlns="sap.m"
-  xmlns:f="sap.ui.layout.form"
-  xmlns:core="sap.ui.core">
+    controllerName="hrproject.controller.EmployeeDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+>
+    <Page
+        title="Employee Detail"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <headerContent>
+            <Button
+                text="Assign"
+                type="Emphasized"
+                press=".onAssignPress"
+            />
+        </headerContent>
 
-  <Page title="Employee Detail" showNavButton="true" navButtonPress=".onNavBack">
-   <headerContent>
-    <Button text="Assign" type="Emphasized" press=".onAssignPress" />
-  </headerContent>
-    <content>
-      <VBox class="sapUiSmallMargin">
-        <f:SimpleForm
-          editable="false"
-          layout="ResponsiveGridLayout"
-          title="Personal Information">
-          <Label text="Person ID" />
-          <Text text="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
+        <content>
+            <VBox class="sapUiSmallMargin" width="100%">
+                <f:SimpleForm
+                    editable="false"
+                    layout="ResponsiveGridLayout"
+                    title="Personal Information"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <Label text="Person ID" />
+                    <Text text="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
 
-          <Label text="First Name" />
-          <Text text="{FirstName}" />
+                    <Label text="First Name" />
+                    <Text text="{FirstName}" />
 
-          <Label text="Last Name" />
-          <Text text="{LastName}" />
+                    <Label text="Last Name" />
+                    <Text text="{LastName}" />
 
-          <Label text="Title" />
-          <Text text="{Title}" />
+                    <Label text="Title" />
+                    <Text text="{Title}" />
 
-          <Label text="Sector ID" />
-          <Text text="{SectorId}" />
-        </f:SimpleForm>
+                    <Label text="Sector ID" />
+                    <Text text="{SectorId}" />
+                </f:SimpleForm>
 
-        <Panel headerText="Ongoing Courses" class="sapUiSmallMarginTop">
-          <List items="{courses>/ongoing}" noDataText="No ongoing courses">
-            <ObjectListItem
-              title="{courses>CourseName}"
-              number="{courses>CourseId}"
-              numberUnit="ID">
-            </ObjectListItem>
-          </List>
-        </Panel>
+                <layout:Splitter
+                    id="employeeDetailSplitter"
+                    height="600px"
+                    class="sapUiSmallMarginTop"
+                >
+                    <layout:contentAreas>
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="25%"
+                                    resizable="true"
+                                    minSize="220"
+                                />
+                            </layoutData>
 
-        <Panel headerText="Completed Courses" class="sapUiSmallMarginTop">
-          <List items="{courses>/completed}" noDataText="No completed courses">
-            <ObjectListItem
-              title="{courses>CourseName}"
-              number="{courses>CourseId}"
-              numberUnit="ID">
-            </ObjectListItem>
-          </List>
-        </Panel>
+                            <Panel headerText="Employee Navigation" height="100%">
+                                <Tree
+                                    id="employeeTree"
+                                    items="{nav>/nodes}"
+                                    mode="SingleSelectMaster"
+                                    selectionChange=".onTreeSelectionChange"
+                                >
+                                    <StandardTreeItem
+                                        title="{nav>title}"
+                                        icon="{nav>icon}"
+                                    />
+                                </Tree>
+                            </Panel>
+                        </VBox>
 
-      </VBox>
-    </content>
-  </Page>
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="75%"
+                                    resizable="true"
+                                    minSize="450"
+                                />
+                            </layoutData>
 
+                            <Panel headerText="Details" height="100%">
+                                <VBox
+                                    id="detailHost"
+                                    width="100%"
+                                    fitContainer="true"
+                                    class="sapUiSmallMargin"
+                                >
+                                    <MessageStrip
+                                        text="Select a category from the left side."
+                                        type="Information"
+                                        showIcon="true"
+                                    />
+                                </VBox>
+                            </Panel>
+                        </VBox>
+                    </layout:contentAreas>
+                </layout:Splitter>
+            </VBox>
+        </content>
+    </Page>
 </mvc:View>

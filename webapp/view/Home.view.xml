@@ -10,68 +10,52 @@
                 <f:Card class="homeHeroCard">
                     <f:content>
                         <VBox class="sapUiSmallMargin" width="100%">
-                            <VBox
-                                class="homeHeroContentBox"
-                                width="100%"
-                                alignItems="Center"
-                                justifyContent="Center"
-                            >
-                                <VBox class="homeHeroTextBox" width="100%">
-                                    <Title
-                                        text="Company Business Management Site"
-                                        level="H1"
-                                        class="homeHeroTitle"
-                                    />
-                                    <Text
-                                        text="Manage departments, employees and courses from a single place."
-                                        class="homeHeroSubtitle sapUiSmallMarginBottom"
-                                    />
-                                </VBox>
+                            <VBox class="homeHeroTextBox" width="100%">
+                                <Title
+                                    text="Company Business Management Site"
+                                    level="H1"
+                                    class="homeHeroTitle"
+                                />
+                                <Text
+                                    text="Manage departments, employees and courses from a single place."
+                                    class="homeHeroSubtitle sapUiSmallMarginBottom"
+                                />
+                            </VBox>
 
-                                <VBox
-                                    width="100%"
-                                    alignItems="Center"
-                                    justifyContent="Center"
-                                    class="homeHeroCarouselBox sapUiSmallMarginTop"
+                            <VBox class="homeHeroCarouselBox" width="100%">
+                                <Carousel
+                                    id="heroCarousel"
+                                    height="420px"
+                                    loop="true"
+                                    showPageIndicator="true"
+                                    pageIndicatorPlacement="Bottom"
+                                    class="homeHeroCarousel"
                                 >
-                                    <Carousel
-                                        id="heroCarousel"
-                                        height="340px"
-                                        loop="true"
-                                        showPageIndicator="true"
-                                        pageIndicatorPlacement="Bottom"
-                                        class="homeHeroCarousel"
-                                    >
-                                        <Image
-                                            src="img/hero.jpg"
-                                            width="100%"
-                                            height="100%"
-                                            decorative="true"
-                                            class="homeHeroSlideImg"
-                                        />
-                                        <Image
-                                            src="img/hero2.jpg"
-                                            width="100%"
-                                            height="100%"
-                                            decorative="true"
-                                            class="homeHeroSlideImg"
-                                        />
-                                        <Image
-                                            src="img/hero3.jpg"
-                                            width="100%"
-                                            height="100%"
-                                            decorative="true"
-                                            class="homeHeroSlideImg"
-                                        />
-                                        <Image
-                                            src="img/hero4.jpg"
-                                            width="100%"
-                                            height="100%"
-                                            decorative="true"
-                                            class="homeHeroSlideImg"
-                                        />
-                                    </Carousel>
-                                </VBox>
+                                    <Image
+                                        src="./img/hero.jpg"
+                                        decorative="true"
+                                        densityAware="false"
+                                        class="homeHeroSlideImg"
+                                    />
+                                    <Image
+                                        src="./img/hero2.jpg"
+                                        decorative="true"
+                                        densityAware="false"
+                                        class="homeHeroSlideImg"
+                                    />
+                                    <Image
+                                        src="./img/hero3.jpg"
+                                        decorative="true"
+                                        densityAware="false"
+                                        class="homeHeroSlideImg"
+                                    />
+                                    <Image
+                                        src="./img/hero4.jpg"
+                                        decorative="true"
+                                        densityAware="false"
+                                        class="homeHeroSlideImg"
+                                    />
+                                </Carousel>
                             </VBox>
                         </VBox>
                     </f:content>

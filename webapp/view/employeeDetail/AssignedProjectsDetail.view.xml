@@ -1,0 +1,31 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.AssignedProjectsDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    
+    <VBox width="100%" fitContainer="true" renderType="Bare">
+        <Toolbar width="100%">
+            <Title text="Assigned Projects" level="H3" />
+            <ToolbarSpacer />
+            <Button text="Assign Project" type="Emphasized" press=".onAssignProjectPress" />
+            <Button text="View Timeline" press=".onViewTimelinePress" />
+        </Toolbar>
+
+        <List
+            width="100%"
+            items="{projects>/items}"
+            noDataText="No assigned projects found"
+            mode="SingleSelectMaster"
+            selectionChange=".onProjectSelect">
+            <ObjectListItem
+                title="{projects>ProjectName}"
+                intro="{projects>Status}"
+                number="{projects>ProjectId}"
+                numberUnit="ID">
+                <firstStatus>
+                    <ObjectStatus text="{projects>Owner}" />
+                </firstStatus>
+            </ObjectListItem>
+        </List>
+    </VBox>
+</mvc:View>

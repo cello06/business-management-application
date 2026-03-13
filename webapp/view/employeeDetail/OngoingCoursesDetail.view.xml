@@ -1,0 +1,27 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.OngoingCoursesDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    
+    <VBox width="100%" fitContainer="true" renderType="Bare">
+        <Toolbar width="100%">
+            <Title text="Ongoing Courses" level="H3" />
+            <ToolbarSpacer />
+            <Button text="Add Course" type="Emphasized" press=".onAddCoursePress" />
+            <Button text="Refresh" press=".onRefreshPress" />
+        </Toolbar>
+
+        <List
+            width="100%"
+            items="{courses>/ongoing}"
+            noDataText="No ongoing courses found"
+            mode="SingleSelectMaster"
+            selectionChange=".onCourseSelect">
+            <ObjectListItem
+                title="{courses>CourseName}"
+                intro="Active Course"
+                number="{courses>CourseId}"
+                numberUnit="ID" />
+        </List>
+    </VBox>
+</mvc:View>

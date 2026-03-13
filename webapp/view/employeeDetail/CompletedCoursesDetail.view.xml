@@ -1,0 +1,26 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.CompletedCoursesDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    
+    <VBox width="100%" fitContainer="true" renderType="Bare">
+        <Toolbar width="100%">
+            <Title text="Completed Courses" level="H3" />
+            <ToolbarSpacer />
+            <Button text="Export" press=".onExportPress" />
+        </Toolbar>
+
+        <List
+            width="100%"
+            items="{courses>/completed}"
+            noDataText="No completed courses found"
+            mode="SingleSelectMaster"
+            selectionChange=".onCourseSelect">
+            <ObjectListItem
+                title="{courses>CourseName}"
+                intro="Completed"
+                number="{courses>CourseId}"
+                numberUnit="ID" />
+        </List>
+    </VBox>
+</mvc:View>

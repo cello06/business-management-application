@@ -1,10 +1,22 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/core/UIComponent",
-  "sap/ui/core/routing/History",
-  "sap/m/MessageToast",
-  "hrproject/model/formatter"
-], function (Controller, UIComponent, History, MessageToast, formatter) {
+  "sap/ui/model/json/JSONModel",
+  "sap/ui/model/Filter",
+  "sap/ui/model/FilterOperator",
+  "sap/ui/core/mvc/XMLView",
+  "hrproject/model/formatter",
+  "sap/m/MessageToast"
+], function (
+  Controller,
+  UIComponent,
+  JSONModel,
+  Filter,
+  FilterOperator,
+  XMLView,
+  formatter,
+  MessageToast
+) {
   "use strict";
 
   return Controller.extend("hrproject.controller.Employee", {
@@ -30,31 +42,40 @@ sap.ui.define([
       UIComponent.getRouterFor(this).navTo("RouteSectors");
     },
     onEmployeePress: function (oEvent) {
+      console.log("1. onEmployeePress triggered");
+
       var oList = this.byId("employeeList");
       var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+      console.log("2. listItem:", oItem);
+
       var oCtx = oItem.getBindingContext();
+      console.log("3. bindingContext:", oCtx);
 
       if (!oCtx) {
+        console.log("4. No binding context, return");
         return;
       }
 
       var sPath = oCtx.getPath();
+      console.log("5. context path:", sPath);
+
       var oSelectedItem = oList.getSelectedItem();
+      console.log("6. selected item:", oSelectedItem);
 
-      if (oSelectedItem && oSelectedItem.getBindingContext() &&
-        oSelectedItem.getBindingContext().getPath() === sPath) {
-        oList.removeSelections(true);
-        return;
-      }
+      var oData = oCtx.getObject();
+      console.log("7. selected object:", oData);
 
-      oList.setSelectedItem(oItem, true);
+      console.log("8. this._sSectorId:", this._sSectorId);
+      console.log("9. persId:", oData.PersId);
 
-      var sPersId = oCtx.getProperty("PersId");
+      console.log("10. BEFORE navTo");
 
       UIComponent.getRouterFor(this).navTo("RouteEmployeeDetail", {
         sectorId: this._sSectorId,
-        persId: sPersId
+        persId: oData.PersId
       });
+
+      console.log("11. AFTER navTo");
     },
 
     onCreateEmployee: function () {
