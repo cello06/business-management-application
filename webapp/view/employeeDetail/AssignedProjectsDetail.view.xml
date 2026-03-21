@@ -2,29 +2,40 @@
     controllerName="hrproject.controller.employeeDetail.AssignedProjectsDetail"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    
+
     <VBox width="100%" fitContainer="true" renderType="Bare">
         <Toolbar width="100%">
             <Title text="Assigned Projects" level="H3" />
             <ToolbarSpacer />
-            <Button text="Assign Project" type="Emphasized" press=".onAssignProjectPress" />
-            <Button text="View Timeline" press=".onViewTimelinePress" />
+            <Button text="Refresh" press=".onRefreshPress" />
         </Toolbar>
 
         <List
+            id="assignedProjectsList"
             width="100%"
             items="{projects>/items}"
             noDataText="No assigned projects found"
-            mode="SingleSelectMaster"
-            selectionChange=".onProjectSelect">
+            mode="None"
+            itemPress=".onProjectPress">
+
             <ObjectListItem
+                type="Navigation"
                 title="{projects>ProjectName}"
-                intro="{projects>Status}"
-                number="{projects>ProjectId}"
+                intro="{projects>ProjectCategory}"
+                number="{= 'PRJ-' + ${projects>ProjectId} }"
                 numberUnit="ID">
+
                 <firstStatus>
-                    <ObjectStatus text="{projects>Owner}" />
+                    <ObjectStatus
+                        text="{projects>Status}"
+                        state="{= ${projects>ActiveProject} ? 'Warning' : 'Success' }" />
                 </firstStatus>
+
+                <attributes>
+                    <ObjectAttribute text="{= 'Role: ' + (${projects>RoleInProject} || '-') }" />
+                    <ObjectAttribute text="{= 'Priority: ' + (${projects>Priority} || '-') }" />
+                    <ObjectAttribute text="{= 'Hours: ' + (${projects>HoursSpent} || 0) + ' / ' + (${projects>HoursAllocated} || 0) }" />
+                </attributes>
             </ObjectListItem>
         </List>
     </VBox>

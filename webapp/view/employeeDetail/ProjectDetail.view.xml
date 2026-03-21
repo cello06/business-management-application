@@ -1,0 +1,132 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.ProjectDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Page
+        title="Project Detail"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox class="sapUiContentPadding">
+                <ObjectHeader
+                    title="{detail>/ProjectName}"
+                    intro="{detail>/ProjectDesc}"
+                    number="{= 'PRJ-' + ${detail>/ProjectId} }"
+                    numberUnit="ID"
+                    
+                    class="sapUiSmallMarginBottom">
+                    <statuses>
+                        <ObjectStatus
+                            text="{detail>/ProjectCategory}"
+                            state="Information" />
+                        <ObjectStatus
+                            text="{= ${detail>/ActiveProject} ? 'In Progress' : 'Completed' }"
+                            state="{= ${detail>/ActiveProject} ? 'Warning' : 'Success' }" />
+                    </statuses>
+                </ObjectHeader>
+
+                <HBox
+                    width="100%"
+                    wrap="Wrap"
+                    renderType="Bare"
+                >
+                    <VBox
+                        width="58%"
+                        class="sapUiSmallMarginEnd sapUiResponsiveMargin"
+                    >
+                        <Panel headerText="Project Information">
+                            <content>
+                                <f:SimpleForm
+                                    editable="false"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="4"
+                                    labelSpanL="4"
+                                    labelSpanM="4"
+                                    labelSpanS="12"
+                                    adjustLabelSpan="false"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    emptySpanS="0"
+                                    columnsXL="1"
+                                    columnsL="1"
+                                    columnsM="1"
+                                >
+                                    <Label text="Project ID" />
+                                    <Text
+                                        text="{= 'PRJ-' + ${detail>/ProjectId} }"
+                                    />
+
+                                    <Label text="Category" />
+                                    <Text text="{detail>/ProjectCategory}" />
+
+                                    <Label text="Status" />
+                                    <Text text="{detail>/Status}" />
+
+                                    <Label text="Priority" />
+                                    <Text text="{detail>/Priority}" />
+
+                                    <Label text="Assigned Date" />
+                                    <Text text="{detail>/AssignedDate}" />
+
+                                    <Label text="Role in Project" />
+                                    <Text text="{detail>/RoleInProject}" />
+
+                                    <Label text="Hours Allocated" />
+                                    <Text text="{detail>/HoursAllocated}" />
+
+                                    <Label text="Hours Spent" />
+                                    <Text text="{detail>/HoursSpent}" />
+
+                                    <Label text="Remaining Hours" />
+                                    <Text text="{detail>/RemainingHours}" />
+
+                                    <Label text="Assignment Status" />
+                                    <ObjectStatus
+                                        text="{= ${detail>/ActiveProject} ? 'Active' : 'Completed' }"
+                                        state="{= ${detail>/ActiveProject} ? 'Warning' : 'Success' }"
+                                    />
+                                </f:SimpleForm>
+                            </content>
+                        </Panel>
+                    </VBox>
+
+                    <VBox
+                        width="38%"
+                        class="sapUiResponsiveMargin"
+                    >
+                        <Panel headerText="Progress Overview">
+                            <content>
+                                <VBox
+                                    alignItems="Center"
+                                    justifyContent="Center"
+                                    class="sapUiContentPadding sapUiLargeMarginTop sapUiLargeMarginBottom"
+                                >
+                                    <ProgressIndicator
+                                        percentValue="{detail>/ProgressPercent}"
+                                        displayValue="{= ${detail>/ProgressPercent} + '%' }"
+                                        state="{detail>/ProgressState}"
+                                        width="80%"
+                                        class="sapUiMediumMarginBottom"
+                                    />
+
+                                    <Text
+                                        text="{= 'Spent ' + ${detail>/HoursSpent} + ' of ' + ${detail>/HoursAllocated} + ' hours' }"
+                                        class="sapUiSmallMarginBottom"
+                                    />
+
+                                    <Text
+                                        text="{= 'Remaining: ' + ${detail>/RemainingHours} + ' hours' }"
+                                    />
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

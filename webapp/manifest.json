@@ -133,6 +133,11 @@
           "target": "TargetCourseDetail"
         },
         {
+          "name": "RouteProjectDetail",
+          "pattern": "projectDetail/{sectorId}/{persId}/{projectId}",
+          "target": "TargetProjectDetail"
+        },
+        {
           "name": "RouteEmployee",
           "pattern": "employees/{sectorId}",
           "target": [
@@ -162,6 +167,11 @@
           "transition": "slide",
           "viewId": "Sectors",
           "viewName": "Sectors"
+        },
+        "TargetProjectDetail": {
+          "viewType": "XML",
+          "viewId": "ProjectDetail",
+          "viewName": "employeeDetail.ProjectDetail"
         },
         "TargetEmployee": {
           "viewType": "XML",

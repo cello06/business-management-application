@@ -5,21 +5,48 @@ sap.ui.define([
   "use strict";
 
   return Controller.extend("hrproject.controller.employeeDetail.AssignedProjectsDetail", {
-    onAssignProjectPress: function () {
-      MessageToast.show("Assign project action will be added.");
+    _oParentController: null,
+
+    setParentController: function (oParentController) {
+      this._oParentController = oParentController;
     },
 
-    onViewTimelinePress: function () {
-      MessageToast.show("Project timeline page will be added.");
+    onRefreshPress: function () {
+      if (this._oParentController && this._oParentController._loadProjects) {
+        this._oParentController._loadProjects();
+        MessageToast.show("Assigned projects refreshed.");
+        return;
+      }
+
+      MessageToast.show("Parent controller not found.");
     },
 
-    onProjectSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem");
+    onProjectPress: function (oEvent) {
+      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
       if (!oItem) {
         return;
       }
 
-      MessageToast.show("Project selected: " + oItem.getTitle());
+      var oContext = oItem.getBindingContext("projects");
+      if (!oContext) {
+        MessageToast.show("Project data not found.");
+        return;
+      }
+
+      var oData = oContext.getObject();
+      console.log("Selected assigned project:", oData);
+
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      if (!this._oParentController.onOpenProjectDetail) {
+        MessageToast.show("Project detail navigation is not ready.");
+        return;
+      }
+
+      this._oParentController.onOpenProjectDetail(oData);
     }
   });
 });

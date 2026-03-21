@@ -189,23 +189,31 @@ sap.ui.define([
         }
       });
     },
+    formatProjectDisplayId: function (vProjectId) {
+      if (!vProjectId && vProjectId !== 0) {
+        return "";
+      }
+      return "PRJ-" + vProjectId;
+    },
 
     _loadProjects: function () {
-      this.getView().getModel("projects").setData({
-        items: [
-          {
-            ProjectId: "PRJ-1001",
-            ProjectName: "HR Transformation",
-            Status: "In Progress",
-            Owner: "PMO Office"
-          },
-          {
-            ProjectId: "PRJ-1002",
-            ProjectName: "Learning Portal Upgrade",
-            Status: "Planned",
-            Owner: "IT Team"
-          }
-        ]
+      var oModel = this.getView().getModel();
+      var that = this;
+
+      oModel.read("/EmployeeProjectDetails", {
+        filters: [
+          new Filter("PersId", FilterOperator.EQ, this._sPersId)
+        ],
+        success: function (oData) {
+          that.getView().getModel("projects").setData({
+            items: oData.results || []
+          });
+        },
+        error: function () {
+          that.getView().getModel("projects").setData({
+            items: []
+          });
+        }
       });
     },
 
@@ -264,6 +272,18 @@ sap.ui.define([
         persId: String(this._sPersId),
         courseId: String(oCourseData.CourseId),
         sectorId: String(this._sSectorId),
+      });
+    },
+    onOpenProjectDetail: function (oProjectData) {
+      if (!oProjectData || !oProjectData.ProjectId) {
+        MessageToast.show("ProjectId missing.");
+        return;
+      }
+
+      UIComponent.getRouterFor(this).navTo("RouteProjectDetail", {
+        sectorId: String(this._sSectorId),
+        persId: String(this._sPersId),
+        projectId: String(oProjectData.ProjectId)
       });
     },
 
