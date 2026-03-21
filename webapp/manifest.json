@@ -74,7 +74,8 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.f": {},
-        "sap.ui.layout": {}
+        "sap.ui.layout": {},
+        "sap.suite.ui.microchart": {}
       }
     },
     "contentDensities": {
@@ -127,6 +128,11 @@
           ]
         },
         {
+          "name": "RouteCourseDetail",
+          "pattern": "courseDetail/{sectorId}/{persId}/{courseId}",
+          "target": "TargetCourseDetail"
+        },
+        {
           "name": "RouteEmployee",
           "pattern": "employees/{sectorId}",
           "target": [
@@ -172,6 +178,11 @@
           "viewType": "XML",
           "viewId": "CreateEmployee",
           "viewName": "CreateEmployee"
+        },
+        "TargetCourseDetail": {
+          "viewType": "XML",
+          "viewId": "CourseDetail",
+          "viewName": "employeeDetail.CourseDetail"
         }
       }
     },

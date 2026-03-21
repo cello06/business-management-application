@@ -2,7 +2,7 @@
     controllerName="hrproject.controller.employeeDetail.CompletedCoursesDetail"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    
+
     <VBox width="100%" fitContainer="true" renderType="Bare">
         <Toolbar width="100%">
             <Title text="Completed Courses" level="H3" />
@@ -11,16 +11,26 @@
         </Toolbar>
 
         <List
+            id="completedCoursesList"
             width="100%"
             items="{courses>/completed}"
             noDataText="No completed courses found"
-            mode="SingleSelectMaster"
-            selectionChange=".onCourseSelect">
+            mode="None"
+            itemPress=".onCoursePress">
+
             <ObjectListItem
+                type="Navigation"
                 title="{courses>CourseName}"
                 intro="Completed"
                 number="{courses>CourseId}"
-                numberUnit="ID" />
+                numberUnit="ID">
+
+                <attributes>
+                    <ObjectAttribute text="{= 'Completed Hours: ' + (${courses>CompletedHours} || 0) + ' / ' + (${courses>TotalHours} || 0) }" />
+                    <ObjectAttribute text="{courses>Category}" />
+                </attributes>
+
+            </ObjectListItem>
         </List>
     </VBox>
 </mvc:View>

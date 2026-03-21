@@ -6,7 +6,8 @@ sap.ui.define([
   "sap/ui/model/FilterOperator",
   "sap/ui/core/mvc/XMLView",
   "hrproject/model/formatter",
-  "sap/m/MessageToast"
+  "sap/m/MessageToast",
+  "sap/m/MessageStrip"
 ], function (
   Controller,
   UIComponent,
@@ -15,7 +16,8 @@ sap.ui.define([
   FilterOperator,
   XMLView,
   formatter,
-  MessageToast
+  MessageToast,
+  MessageStrip
 ) {
   "use strict";
 
@@ -44,6 +46,21 @@ sap.ui.define([
       }), "nav");
     },
 
+    _onRouteMatched: function (oEvent) {
+      var oArgs = oEvent.getParameter("arguments");
+
+      this._sSectorId = oArgs.sectorId;
+      this._sPersId = oArgs.persId;
+
+      this.getView().bindElement({
+        path: "/Employees('" + this._sPersId + "')"
+      });
+
+      this._loadCourses(this._sPersId);
+      this._loadProjects();
+      this._clearDetailHost();
+    },
+
     onTreeSelectionChange: function (oEvent) {
       var oItem = oEvent.getParameter("listItem");
       if (!oItem) {
@@ -57,22 +74,6 @@ sap.ui.define([
 
       var sKey = oContext.getProperty("key");
       this._loadDetailView(sKey);
-    },
-
-    _onRouteMatched: function (oEvent) {
-      var oArgs = oEvent.getParameter("arguments");
-
-      var sPersId = oArgs.persId;
-      this._sSectorId = oArgs.sectorId;
-      this._sPersId = sPersId;
-
-      this.getView().bindElement({
-        path: "/Employees('" + sPersId + "')"
-      });
-
-      this._loadCourses(sPersId);
-      this._loadProjects();
-      this._clearDetailHost();
     },
 
     _loadCourses: function (sPersId) {
@@ -134,8 +135,14 @@ sap.ui.define([
             var oCourseDetail = mCoursesById[oEmpCourse.CourseId] || {};
 
             var oMergedCourse = {
+              PersId: oEmpCourse.PersId,
               CourseId: oEmpCourse.CourseId,
               CourseName: oCourseDetail.CourseName || ("Course " + oEmpCourse.CourseId),
+              CourseDesc: oCourseDetail.CourseDesc || "",
+              Category: oCourseDetail.Category || "",
+              DurationHours: oCourseDetail.DurationHours || 0,
+              TotalHours: oEmpCourse.TotalHours || 0,
+              CompletedHours: oEmpCourse.CompletedHours || 0,
               ActiveCourse: oEmpCourse.ActiveCourse
             };
 
@@ -157,8 +164,14 @@ sap.ui.define([
 
           aEmployeeCourses.forEach(function (oEmpCourse) {
             var oFallbackCourse = {
+              PersId: oEmpCourse.PersId,
               CourseId: oEmpCourse.CourseId,
               CourseName: "Course " + oEmpCourse.CourseId,
+              CourseDesc: "",
+              Category: "",
+              DurationHours: 0,
+              TotalHours: oEmpCourse.TotalHours || 0,
+              CompletedHours: oEmpCourse.CompletedHours || 0,
               ActiveCourse: oEmpCourse.ActiveCourse
             };
 
@@ -200,7 +213,7 @@ sap.ui.define([
       var oHost = this.byId("detailHost");
       oHost.removeAllItems();
 
-      oHost.addItem(new sap.m.MessageStrip({
+      oHost.addItem(new MessageStrip({
         text: "Select a category from the left side.",
         type: "Information",
         showIcon: true
@@ -233,8 +246,25 @@ sap.ui.define([
         oDetailView.setModel(this.getView().getModel("projects"), "projects");
         oDetailView.setModel(this.getView().getModel("nav"), "nav");
 
+        if (oDetailView.getController() && oDetailView.getController().setParentController) {
+          oDetailView.getController().setParentController(this);
+        }
+
         oHost.addItem(oDetailView);
       }.bind(this));
+    },
+
+    onOpenCourseDetail: function (oCourseData) {
+      if (!oCourseData || !oCourseData.CourseId) {
+        MessageToast.show("CourseId missing.");
+        return;
+      }
+
+      UIComponent.getRouterFor(this).navTo("RouteCourseDetail", {
+        persId: String(this._sPersId),
+        courseId: String(oCourseData.CourseId),
+        sectorId: String(this._sSectorId),
+      });
     },
 
     onNavBack: function () {
@@ -244,7 +274,7 @@ sap.ui.define([
     },
 
     onAssignPress: function () {
-      MessageToast.show("Assign page daha sonra eklenecek.");
+      MessageToast.show("Assign page will be added.");
     }
   });
 });

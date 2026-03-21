@@ -12,16 +12,26 @@
         </Toolbar>
 
         <List
+            id="ongoingCoursesList"
             width="100%"
             items="{courses>/ongoing}"
             noDataText="No ongoing courses found"
-            mode="SingleSelectMaster"
-            selectionChange=".onCourseSelect">
+            mode="None"
+            itemPress=".onCoursePress">
+
             <ObjectListItem
+                type="Navigation"
                 title="{courses>CourseName}"
-                intro="Active Course"
+                
                 number="{courses>CourseId}"
-                numberUnit="ID" />
+                numberUnit="ID">
+
+                <attributes>
+                    <ObjectAttribute text="{= 'Completed Hours: ' + (${courses>CompletedHours} || 0) + ' / ' + (${courses>TotalHours} || 0) }" />
+                    <ObjectAttribute text="{courses>Category}" />
+                </attributes>
+
+            </ObjectListItem>
         </List>
     </VBox>
 </mvc:View>

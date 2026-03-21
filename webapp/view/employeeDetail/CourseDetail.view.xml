@@ -1,0 +1,147 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.CourseDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="Course Detail"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox class="sapUiContentPadding sapUiMediumMarginBottom" renderType="Bare">
+
+                <ObjectHeader
+                    title="{detail>/CourseName}"
+                    number="{detail>/ProgressPercent}"
+                    numberUnit="%"
+                    intro="{detail>/CourseDesc}"
+                    responsive="true"
+                    class="sapUiSmallMarginBottom">
+                    <statuses>
+                        <ObjectStatus
+                            text="{detail>/Category}"
+                            state="Information" />
+                        <ObjectStatus
+                            text="{= ${detail>/ActiveCourse} ? 'Active' : 'Completed' }"
+                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }" />
+                    </statuses>
+                </ObjectHeader>
+
+                <HBox
+                    width="100%"
+                    wrap="Wrap"
+                    renderType="Bare"
+                    class="sapUiTinyMarginTop">
+
+                    <VBox
+                        width="58%"
+                        class="sapUiSmallMarginEnd sapUiResponsiveMargin">
+                        <Panel
+                            headerText="Course Information"
+                            class="sapUiNoContentPadding">
+                            <content>
+                                <VBox class="sapUiContentPadding">
+                                    <Text
+                                        text="{detail>/CourseDesc}"
+                                        wrapping="true"
+                                        class="sapUiSmallMarginBottom" />
+
+                                    <f:SimpleForm
+                                        editable="false"
+                                        layout="ResponsiveGridLayout"
+                                        labelSpanXL="4"
+                                        labelSpanL="4"
+                                        labelSpanM="4"
+                                        labelSpanS="12"
+                                        adjustLabelSpan="false"
+                                        emptySpanXL="0"
+                                        emptySpanL="0"
+                                        emptySpanM="0"
+                                        emptySpanS="0"
+                                        columnsXL="1"
+                                        columnsL="1"
+                                        columnsM="1">
+                                        
+                                        <Label text="Category" />
+                                        <ObjectStatus
+                                            text="{detail>/Category}"
+                                            state="Information" />
+
+                                        <Label text="Duration Hours" />
+                                        <Text text="{detail>/DurationHours}" />
+
+                                        <Label text="Total Hours" />
+                                        <Text text="{detail>/TotalHours}" />
+
+                                        <Label text="Completed Hours" />
+                                        <Text text="{detail>/CompletedHours}" />
+
+                                        <Label text="Remaining Hours" />
+                                        <Text text="{detail>/RemainingHours}" />
+
+                                        <Label text="Course Status" />
+                                        <ObjectStatus
+                                            text="{= ${detail>/ActiveCourse} ? 'In Progress' : 'Completed' }"
+                                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }" />
+                                    </f:SimpleForm>
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </VBox>
+
+                    <VBox
+                        width="38%"
+                        class="sapUiResponsiveMargin">
+                        <Panel
+                            headerText="Progress Overview"
+                            class="sapUiNoContentPadding">
+                            <content>
+                                <VBox
+                                    alignItems="Center"
+                                    justifyContent="Center"
+                                    class="sapUiContentPadding sapUiLargeMarginTop sapUiLargeMarginBottom">
+
+                                    <NumericContent
+                                        value="{detail>/ProgressPercent}"
+                                        scale="%"
+                                        valueColor="{detail>/ProgressColor}"
+                                        withMargin="false"
+                                        nullifyValue="false" />
+
+                                    <ProgressIndicator
+                                        percentValue="{detail>/ProgressPercent}"
+                                        displayValue="{= ${detail>/ProgressPercent} + '%' }"
+                                        state="{detail>/ProgressState}"
+                                        width="80%"
+                                        class="sapUiMediumMarginTop sapUiSmallMarginBottom" />
+
+                                    <HBox
+                                        justifyContent="SpaceAround"
+                                        width="100%"
+                                        class="sapUiMediumMarginTop">
+                                        <VBox alignItems="Center">
+                                            <Title text="{detail>/CompletedHours}" level="H4" />
+                                            <Text text="Completed" />
+                                        </VBox>
+                                        <VBox alignItems="Center">
+                                            <Title text="{detail>/RemainingHours}" level="H4" />
+                                            <Text text="Remaining" />
+                                        </VBox>
+                                        <VBox alignItems="Center">
+                                            <Title text="{detail>/TotalHours}" level="H4" />
+                                            <Text text="Total" />
+                                        </VBox>
+                                    </HBox>
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </VBox>
+
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

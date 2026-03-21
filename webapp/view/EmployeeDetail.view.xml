@@ -3,20 +3,18 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.ui.layout.form"
-    xmlns:core="sap.ui.core"
-    xmlns:layout="sap.ui.layout"
->
+    xmlns:layout="sap.ui.layout">
+
     <Page
         title="Employee Detail"
         showNavButton="true"
-        navButtonPress=".onNavBack"
-    >
+        navButtonPress=".onNavBack">
+
         <headerContent>
             <Button
                 text="Assign"
                 type="Emphasized"
-                press=".onAssignPress"
-            />
+                press=".onAssignPress" />
         </headerContent>
 
         <content>
@@ -25,8 +23,8 @@
                     editable="false"
                     layout="ResponsiveGridLayout"
                     title="Personal Information"
-                    class="sapUiSmallMarginBottom"
-                >
+                    class="sapUiSmallMarginBottom">
+
                     <Label text="Person ID" />
                     <Text text="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
 
@@ -46,16 +44,15 @@
                 <layout:Splitter
                     id="employeeDetailSplitter"
                     height="600px"
-                    class="sapUiSmallMarginTop"
-                >
+                    class="sapUiSmallMarginTop">
+
                     <layout:contentAreas>
                         <VBox width="100%">
                             <layoutData>
                                 <layout:SplitterLayoutData
                                     size="25%"
                                     resizable="true"
-                                    minSize="220"
-                                />
+                                    minSize="220" />
                             </layoutData>
 
                             <Panel headerText="Employee Navigation" height="100%">
@@ -63,12 +60,11 @@
                                     id="employeeTree"
                                     items="{nav>/nodes}"
                                     mode="SingleSelectMaster"
-                                    selectionChange=".onTreeSelectionChange"
-                                >
+                                    selectionChange=".onTreeSelectionChange">
+
                                     <StandardTreeItem
                                         title="{nav>title}"
-                                        icon="{nav>icon}"
-                                    />
+                                        icon="{nav>icon}" />
                                 </Tree>
                             </Panel>
                         </VBox>
@@ -78,8 +74,7 @@
                                 <layout:SplitterLayoutData
                                     size="75%"
                                     resizable="true"
-                                    minSize="450"
-                                />
+                                    minSize="450" />
                             </layoutData>
 
                             <Panel headerText="Details" height="100%">
@@ -87,13 +82,12 @@
                                     id="detailHost"
                                     width="100%"
                                     fitContainer="true"
-                                    class="sapUiSmallMargin"
-                                >
+                                    class="sapUiSmallMargin">
+
                                     <MessageStrip
                                         text="Select a category from the left side."
                                         type="Information"
-                                        showIcon="true"
-                                    />
+                                        showIcon="true" />
                                 </VBox>
                             </Panel>
                         </VBox>

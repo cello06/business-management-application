@@ -5,6 +5,12 @@ sap.ui.define([
   "use strict";
 
   return Controller.extend("hrproject.controller.employeeDetail.OngoingCoursesDetail", {
+    _oParentController: null,
+
+    setParentController: function (oParentController) {
+      this._oParentController = oParentController;
+    },
+
     onAddCoursePress: function () {
       MessageToast.show("Add Course action will be added.");
     },
@@ -13,13 +19,27 @@ sap.ui.define([
       MessageToast.show("Ongoing courses refreshed.");
     },
 
-    onCourseSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem");
+    onCoursePress: function (oEvent) {
+      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
       if (!oItem) {
         return;
       }
 
-      MessageToast.show("Selected: " + oItem.getTitle());
+      var oContext = oItem.getBindingContext("courses");
+      if (!oContext) {
+        MessageToast.show("Course data not found.");
+        return;
+      }
+
+      var oData = oContext.getObject();
+      console.log("Selected ongoing course:", oData);
+
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      this._oParentController.onOpenCourseDetail(oData);
     }
   });
 });

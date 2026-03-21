@@ -5,17 +5,36 @@ sap.ui.define([
   "use strict";
 
   return Controller.extend("hrproject.controller.employeeDetail.CompletedCoursesDetail", {
-    onExportPress: function () {
-      MessageToast.show("Export for completed courses will be added.");
+    _oParentController: null,
+
+    setParentController: function (oParentController) {
+      this._oParentController = oParentController;
     },
 
-    onCourseSelect: function (oEvent) {
-      var oItem = oEvent.getParameter("listItem");
+    onExportPress: function () {
+      MessageToast.show("Export action will be added.");
+    },
+
+    onCoursePress: function (oEvent) {
+      var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
       if (!oItem) {
         return;
       }
 
-      MessageToast.show("Completed course selected: " + oItem.getTitle());
+      var oContext = oItem.getBindingContext("courses");
+      if (!oContext) {
+        MessageToast.show("Course data not found.");
+        return;
+      }
+
+      var oData = oContext.getObject();
+
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      this._oParentController.onOpenCourseDetail(oData);
     }
   });
 });
