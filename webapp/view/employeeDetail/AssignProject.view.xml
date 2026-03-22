@@ -1,0 +1,185 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.AssignProject"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core">
+
+    <Page
+        title="Assign Projects"
+        showNavButton="true"
+        navButtonPress=".onNavBack">
+
+        <content>
+            <VBox class="sapUiMediumMargin" width="100%">
+                <Toolbar>
+                    <Title text="Assign Projects to Employee" level="H2" />
+                    <ToolbarSpacer />
+                    <SearchField
+                        id="searchAvailableProjects"
+                        width="18rem"
+                        liveChange=".onSearchAvailableProjects"
+                        placeholder="Search available projects" />
+                </Toolbar>
+
+                <layout:Splitter
+                    id="assignProjectSplitter"
+                    height="600px"
+                    class="sapUiSmallMarginTop">
+
+                    <layout:contentAreas>
+
+                        <!-- Available Projects -->
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="47%"
+                                    resizable="true"
+                                    minSize="300" />
+                            </layoutData>
+
+                            <Panel headerText="Available Projects" height="100%">
+                                <Table
+                                    id="availableProjectsTable"
+                                    mode="MultiSelect"
+                                    items="{assignProject>/availableProjects}"
+                                    growing="true"
+                                    growingScrollToLoad="true">
+
+                                    <columns>
+                                        <Column>
+                                            <Text text="Project ID" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Project Name" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Category" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Status" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Priority" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <customData>
+                                                <core:CustomData
+                                                    key="availprojectstatus"
+                                                    value="{= ${assignProject>Status} === 'Completed' ? 'completed' : (${assignProject>Status} === 'In Progress' ? 'inprogress' : (${assignProject>Status} === 'Planned' ? 'planned' : 'default')) }"
+                                                    writeToDom="true" />
+                                            </customData>
+                                            <cells>
+                                                <Text text="{assignProject>ProjectId}" />
+                                                <Text text="{assignProject>ProjectName}" />
+                                                <Text text="{assignProject>ProjectCategory}" />
+                                                <Text text="{assignProject>Status}" />
+                                                <Text text="{assignProject>Priority}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </Panel>
+                        </VBox>
+
+                        <!-- Buttons -->
+                        <VBox
+                            width="100%"
+                            alignItems="Center"
+                            justifyContent="Center">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="6%"
+                                    resizable="false"
+                                    minSize="80" />
+                            </layoutData>
+
+                            <Button
+                                icon="sap-icon://navigation-right-arrow"
+                                type="Emphasized"
+                                press=".onAssignSelected"
+                                class="sapUiTinyMarginBottom" />
+
+                            <Button
+                                icon="sap-icon://navigation-left-arrow"
+                                press=".onRemoveSelected" />
+                        </VBox>
+
+                        <!-- Assigned Projects -->
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="47%"
+                                    resizable="true"
+                                    minSize="300" />
+                            </layoutData>
+
+                            <Panel headerText="Assigned Projects" height="100%">
+                                <Table
+                                    id="assignedProjectsTable"
+                                    mode="MultiSelect"
+                                    items="{assignProject>/assignedProjects}"
+                                    growing="true"
+                                    growingScrollToLoad="true">
+
+                                    <columns>
+                                        <Column>
+                                            <Text text="Project ID" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Project Name" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Role" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Priority" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Hours" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <customData>
+                                                <core:CustomData
+                                                    key="assignedprojectstatus"
+                                                    value="{= ${assignProject>HoursSpent} > ${assignProject>TotalHours} ? 'overdue' : 'ok' }"
+                                                    writeToDom="true" />
+                                            </customData>
+                                            <cells>
+                                                <Text text="{assignProject>ProjectId}" />
+                                                <Text text="{assignProject>ProjectName}" />
+                                                <Text text="{assignProject>Role}" />
+                                                <Text text="{assignProject>Priority}" />
+                                                <Text text="{= ${assignProject>HoursSpent} + ' / ' + ${assignProject>TotalHours} }" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </Panel>
+                        </VBox>
+
+                    </layout:contentAreas>
+                </layout:Splitter>
+            </VBox>
+        </content>
+
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="Save"
+                    type="Emphasized"
+                    press=".onSave" />
+                <Button
+                    text="Cancel"
+                    press=".onNavBack" />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

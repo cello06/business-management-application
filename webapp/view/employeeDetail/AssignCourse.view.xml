@@ -1,0 +1,204 @@
+<mvc:View
+    controllerName="hrproject.controller.employeeDetail.AssignCourse"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="Assign Courses"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox
+                class="sapUiMediumMargin"
+                width="100%"
+            >
+                <Toolbar>
+                    <Title
+                        text="Assign Courses to Employee"
+                        level="H2"
+                    />
+                    <ToolbarSpacer />
+                    <SearchField
+                        id="searchAvailableCourses"
+                        width="18rem"
+                        liveChange=".onSearchAvailableCourses"
+                        placeholder="Search available courses"
+                    />
+                </Toolbar>
+
+                <layout:Splitter
+                    id="assignCourseSplitter"
+                    height="600px"
+                    class="sapUiSmallMarginTop"
+                >
+                    <layout:contentAreas>
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="47%"
+                                    resizable="true"
+                                    minSize="300"
+                                />
+                            </layoutData>
+
+                            <Panel
+                                headerText="Available Courses"
+                                height="100%"
+                            >
+                                <Table
+                                    id="availableCoursesTable"
+                                    mode="MultiSelect"
+                                    items="{assign>/availableCourses}"
+                                    growing="true"
+                                    growingScrollToLoad="true"
+                                >
+                                    <columns>
+                                        <Column>
+                                            <Text text="Course ID" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Course Name" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Category" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Duration" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text
+                                                    text="{assign>CourseId}"
+                                                />
+                                                <Text
+                                                    text="{assign>CourseName}"
+                                                />
+                                                <Text
+                                                    text="{assign>Category}"
+                                                />
+                                                <Text
+                                                    text="{assign>DurationHours}"
+                                                />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </Panel>
+                        </VBox>
+
+                        <VBox
+                            width="100%"
+                            alignItems="Center"
+                            justifyContent="Center"
+                        >
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="6%"
+                                    resizable="false"
+                                    minSize="80"
+                                />
+                            </layoutData>
+
+                            <Button
+                                icon="sap-icon://navigation-right-arrow"
+                                type="Emphasized"
+                                press=".onAssignSelected"
+                                class="sapUiTinyMarginBottom"
+                            />
+
+                            <Button
+                                icon="sap-icon://navigation-left-arrow"
+                                press=".onRemoveSelected"
+                            />
+                        </VBox>
+
+                        <VBox width="100%">
+                            <layoutData>
+                                <layout:SplitterLayoutData
+                                    size="47%"
+                                    resizable="true"
+                                    minSize="300"
+                                />
+                            </layoutData>
+
+                            <Panel
+                                headerText="Assigned Courses"
+                                height="100%"
+                            >
+                                <Table
+                                    id="assignedCoursesTable"
+                                    mode="MultiSelect"
+                                    items="{assign>/assignedCourses}"
+                                    growing="true"
+                                    growingScrollToLoad="true"
+                                >
+                                    <columns>
+                                        <Column>
+                                            <Text text="Course ID" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Course Name" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Completed Hours" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Total Hours" />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <customData>
+                                                <core:CustomData
+                                                    key="coursestatus"
+                                                    value="{= ${assign>CompletedHours} >= ${assign>TotalHours} ? 'completed' : 'inprogress' }"
+                                                    writeToDom="true"
+                                                />
+                                            </customData>
+                                            <cells>
+                                                <Text
+                                                    text="{assign>CourseId}"
+                                                />
+                                                <Text
+                                                    text="{assign>CourseName}"
+                                                />
+                                                <Text
+                                                    text="{assign>CompletedHours}"
+                                                />
+                                                <Text
+                                                    text="{assign>TotalHours}"
+                                                />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </Panel>
+                        </VBox>
+                    </layout:contentAreas>
+                </layout:Splitter>
+            </VBox>
+        </content>
+
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="Save"
+                    type="Emphasized"
+                    press=".onSave"
+                />
+                <Button
+                    text="Cancel"
+                    press=".onNavBack"
+                />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

@@ -153,6 +153,16 @@
           "name": "RouteCreateEmployee",
           "pattern": "employeeCreate/{sectorId}",
           "target": "TargetCreateEmployee"
+        },
+        {
+          "pattern": "assignCourse/{sectorId}/{persId}",
+          "name": "RouteAssignCourse",
+          "target": "TargetAssignCourse"
+        },
+        {
+          "name": "RouteAssignProject",
+          "pattern": "assignProject/{sectorId}/{persId}",
+          "target": "TargetAssignProject"
         }
       ],
       "targets": {
@@ -193,6 +203,20 @@
           "viewType": "XML",
           "viewId": "CourseDetail",
           "viewName": "employeeDetail.CourseDetail"
+        },
+        "TargetAssignCourse": {
+          "viewType": "XML",
+          "viewName": "employeeDetail.AssignCourse",
+          "viewId": "AssignCourse",
+          "controlId": "app",
+          "controlAggregation": "pages"
+        },
+        "TargetAssignProject": {
+          "viewType": "XML",
+          "viewId": "AssignProject",
+          "viewName": "employeeDetail.AssignProject",
+          "controlId": "app",
+          "controlAggregation": "pages"
         }
       }
     },

@@ -10,12 +10,7 @@
         showNavButton="true"
         navButtonPress=".onNavBack">
 
-        <headerContent>
-            <Button
-                text="Assign"
-                type="Emphasized"
-                press=".onAssignPress" />
-        </headerContent>
+      
 
         <content>
             <VBox class="sapUiSmallMargin" width="100%">

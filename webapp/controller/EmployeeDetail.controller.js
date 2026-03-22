@@ -295,6 +295,17 @@ sap.ui.define([
 
     onAssignPress: function () {
       MessageToast.show("Assign page will be added.");
+    },
+    onAddCoursePress: function () {
+      UIComponent.getRouterFor(this).navTo("RouteAssignCourse", {
+        sectorId: String(this._sSectorId),
+        persId: String(this._sPersId)
+      });
+    }, onAssignProjectPress: function () {
+      UIComponent.getRouterFor(this).navTo("RouteAssignProject", {
+        sectorId: String(this._sSectorId),
+        persId: String(this._sPersId)
+      });
     }
   });
 });

@@ -12,10 +12,21 @@ sap.ui.define([
     },
 
     onAddCoursePress: function () {
-      MessageToast.show("Add Course action will be added.");
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      this._oParentController.onAddCoursePress();
     },
 
     onRefreshPress: function () {
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      this._oParentController._loadCourses(this._oParentController._sPersId);
       MessageToast.show("Ongoing courses refreshed.");
     },
 
@@ -32,7 +43,6 @@ sap.ui.define([
       }
 
       var oData = oContext.getObject();
-      console.log("Selected ongoing course:", oData);
 
       if (!this._oParentController) {
         MessageToast.show("Parent controller not found.");

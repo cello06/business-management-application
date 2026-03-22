@@ -58,3 +58,32 @@
   object-position: center center !important;
   display: block !important;
 }
+tr[data-coursestatus="completed"] td {
+  background-color: #e8f5e9 !important;
+}
+
+tr[data-coursestatus="inprogress"] td {
+  background-color: #fff8e1 !important;
+}
+
+/* Assign Project - Available Projects */
+tr[data-availprojectstatus="completed"] td {
+  background-color: #e8f5e9 !important;
+}
+
+tr[data-availprojectstatus="inprogress"] td {
+  background-color: #fff8e1 !important;
+}
+
+tr[data-availprojectstatus="planned"] td {
+  background-color: #e3f2fd !important;
+}
+
+/* Assign Project - Assigned Projects */
+tr[data-assignedprojectstatus="ok"] td {
+  background-color: #e8f5e9 !important;
+}
+
+tr[data-assignedprojectstatus="overdue"] td {
+  background-color: #ffebee !important;
+}

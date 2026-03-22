@@ -11,14 +11,23 @@ sap.ui.define([
       this._oParentController = oParentController;
     },
 
-    onRefreshPress: function () {
-      if (this._oParentController && this._oParentController._loadProjects) {
-        this._oParentController._loadProjects();
-        MessageToast.show("Assigned projects refreshed.");
+    onAssignProjectPress: function () {
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
         return;
       }
 
-      MessageToast.show("Parent controller not found.");
+      this._oParentController.onAssignProjectPress();
+    },
+
+    onRefreshPress: function () {
+      if (!this._oParentController) {
+        MessageToast.show("Parent controller not found.");
+        return;
+      }
+
+      this._oParentController._loadProjects();
+      MessageToast.show("Assigned projects refreshed.");
     },
 
     onProjectPress: function (oEvent) {
@@ -34,15 +43,9 @@ sap.ui.define([
       }
 
       var oData = oContext.getObject();
-      console.log("Selected assigned project:", oData);
 
       if (!this._oParentController) {
         MessageToast.show("Parent controller not found.");
-        return;
-      }
-
-      if (!this._oParentController.onOpenProjectDetail) {
-        MessageToast.show("Project detail navigation is not ready.");
         return;
       }
 

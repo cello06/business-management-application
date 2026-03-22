@@ -7,7 +7,14 @@
         <Toolbar width="100%">
             <Title text="Assigned Projects" level="H3" />
             <ToolbarSpacer />
-            <Button text="Refresh" press=".onRefreshPress" />
+            <Button
+                text="Assign"
+                type="Emphasized"
+                press=".onAssignProjectPress"
+                class="sapUiTinyMarginEnd" />
+            <Button
+                text="Refresh"
+                press=".onRefreshPress" />
         </Toolbar>
 
         <List
@@ -21,21 +28,16 @@
             <ObjectListItem
                 type="Navigation"
                 title="{projects>ProjectName}"
-                intro="{projects>ProjectCategory}"
-                number="{= 'PRJ-' + ${projects>ProjectId} }"
+                number="{projects>ProjectId}"
                 numberUnit="ID">
-
-                <firstStatus>
-                    <ObjectStatus
-                        text="{projects>Status}"
-                        state="{= ${projects>ActiveProject} ? 'Warning' : 'Success' }" />
-                </firstStatus>
-
                 <attributes>
-                    <ObjectAttribute text="{= 'Role: ' + (${projects>RoleInProject} || '-') }" />
-                    <ObjectAttribute text="{= 'Priority: ' + (${projects>Priority} || '-') }" />
-                    <ObjectAttribute text="{= 'Hours: ' + (${projects>HoursSpent} || 0) + ' / ' + (${projects>HoursAllocated} || 0) }" />
+                    <ObjectAttribute text="{= 'Role: ' + (${projects>Role} || '') }" />
+                    <ObjectAttribute text="{= 'Priority: ' + (${projects>Priority} || '') }" />
+                    <ObjectAttribute text="{= 'Hours: ' + (${projects>CompletedHours} || 0) + ' / ' + (${projects>TotalHours} || 0) }" />
                 </attributes>
+                <firstStatus>
+                    <ObjectStatus text="{projects>StatusText}" state="{projects>StatusState}" />
+                </firstStatus>
             </ObjectListItem>
         </List>
     </VBox>
