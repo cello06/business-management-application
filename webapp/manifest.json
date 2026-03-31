@@ -150,6 +150,16 @@
           "target": "TargetEmployeeDetail"
         },
         {
+          "name": "RouteMyCourses",
+          "pattern": "myCourses/{persId}",
+          "target": "TargetMyCourses"
+        },
+        {
+          "name": "RouteCourseList",
+          "pattern": "courseList/{type}/{persId}",
+          "target": "TargetCourseList"
+        },
+        {
           "name": "RouteCreateEmployee",
           "pattern": "employeeCreate/{sectorId}",
           "target": "TargetCreateEmployee"
@@ -182,6 +192,18 @@
           "viewType": "XML",
           "viewId": "ProjectDetail",
           "viewName": "employeeDetail.ProjectDetail"
+        },
+        "TargetMyCourses": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "MyCourses",
+          "viewName": "myCourses.MyCourses"
+        },
+        "TargetCourseList": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "CourseList",
+          "viewName": "myCourses.CourseList"
         },
         "TargetEmployee": {
           "viewType": "XML",

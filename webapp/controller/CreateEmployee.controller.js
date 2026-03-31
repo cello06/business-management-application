@@ -60,12 +60,15 @@ sap.ui.define([
     onSave: function () {
       var oModel = this.getView().getModel();
       var oPersIdInput = this.byId("inpPersId");
+      var sSalary = this.byId("inpSalary").getValue();
+      var sSalary = this.byId("inpSalary").getValue().trim().replace(",", ".");
 
       var oPayload = {
         PersId: oPersIdInput.getValue().trim(),
         FirstName: this.byId("inpFirstName").getValue().trim(),
         LastName: this.byId("inpLastName").getValue().trim(),
         Title: this.byId("inpTitle").getValue().trim(),
+        Salary: sSalary ? sSalary : "0.00",
         SectorId: parseInt(this.byId("inpSectorId").getValue(), 10)
       };
 

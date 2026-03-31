@@ -24,53 +24,105 @@ sap.ui.define([
   return Controller.extend("hrproject.controller.Home", {
 
     onInit: function () {
-      const oHomeModel = new JSONModel({ sectorCount: 0 });
+      const oHomeModel = new JSONModel({
+        sectorCount: 0,
+        isAdmin: false,
+        persId: null,
+        hero1: "hero.jpg",
+        hero2: "hero2.jpg",
+        hero3: "hero3.jpg",
+        hero4: "hero4.jpg"
+      });
+
       this.getView().setModel(oHomeModel, "home");
+      this._loadUserRole();
       this._loadSectorCount();
 
-      // Carousel timer handle
       this._heroTimer = null;
-      this._heroIntervalMs = 2500; // 2.5s (istersen 2000/3000 yap)
+      this._heroIntervalMs = 2500;
     },
 
-onAfterRendering: function () {
-  this._startHeroCarousel();
+    // ── Role detection ──────────────────────────────────────────────
+    _loadUserRole: function () {
+      const oModel = this.getOwnerComponent().getModel();
+      const oHomeModel = this.getView().getModel("home");
 
-  const oCarousel = this.byId("heroCarousel");
-  if (oCarousel) {
-    const $dom = oCarousel.$(); // jQuery wrapper
-
-    // Önce varsa eski handler’ları kaldır (duplicate olmasın)
-    $dom.off("mouseenter.hero mouseleave.hero");
-
-    // Hover -> durdur
-    $dom.on("mouseenter.hero", this._stopHeroCarousel.bind(this));
-
-    // Hover çıkınca -> devam
-    $dom.on("mouseleave.hero", this._startHeroCarousel.bind(this));
-  }
-},
-
-    onExit: function () {
-      // Controller kapanırken timer temizle
-      this._stopHeroCarousel();
-    },
-
-    // ===== Carousel helpers =====
-    _startHeroCarousel: function () {
-      const oCarousel = this.byId("heroCarousel");
-      if (!oCarousel) {
-        return; // XML'de id yoksa sessiz geç
+      let sUsername = "";
+      try {
+        sUsername = sap.ushell.Container.getService("UserInfo").getId();
+        // BTP preview returns DEFAULT_USER — fall back to real username
+        if (!sUsername || sUsername === "DEFAULT_USER") {
+          sUsername = "CAKTURK";
+        }
+      } catch (e) {
+        sUsername = "CAKTURK";
       }
 
-      // Eski timer varsa kapat
-      this._stopHeroCarousel();
+      console.log("Using username:", sUsername);
 
-      this._heroTimer = setInterval(function () {
-        // tab görünür değilse boşuna dönmesin
-        if (document.hidden) {
-          return;
+      oModel.read("/UserRoles", {
+        urlParameters: {
+          "$filter": "SapUsername eq '" + sUsername + "'",
+          "$select": "SapUsername,Role",
+          "$top": "1"
+        },
+        success: function (oData) {
+          const bIsAdmin = oData.results &&
+            oData.results.length > 0 &&
+            oData.results[0].Role === "ADMIN";
+
+          oHomeModel.setProperty("/isAdmin", bIsAdmin);
+
+          if (!bIsAdmin) {
+            oModel.read("/Employees", {
+              urlParameters: {
+                "$filter": "SapUsername eq '" + sUsername + "'",
+                "$select": "PersId",
+                "$top": "1"
+              },
+              success: function (oEmpData) {
+                if (oEmpData.results && oEmpData.results.length > 0) {
+                  oHomeModel.setProperty(
+                    "/persId",
+                    oEmpData.results[0].PersId.toString()
+                  );
+                }
+              },
+              error: function () {
+                MessageToast.show("Could not load employee profile.");
+              }
+            });
+          }
+        },
+        error: function () {
+          oHomeModel.setProperty("/isAdmin", false);
         }
+      });
+    },
+
+    // ── Carousel ────────────────────────────────────────────────────
+    onAfterRendering: function () {
+      this._startHeroCarousel();
+
+      const oCarousel = this.byId("heroCarousel");
+      if (oCarousel) {
+        const $dom = oCarousel.$();
+        $dom.off("mouseenter.hero mouseleave.hero");
+        $dom.on("mouseenter.hero", this._stopHeroCarousel.bind(this));
+        $dom.on("mouseleave.hero", this._startHeroCarousel.bind(this));
+      }
+    },
+
+    onExit: function () {
+      this._stopHeroCarousel();
+    },
+
+    _startHeroCarousel: function () {
+      const oCarousel = this.byId("heroCarousel");
+      if (!oCarousel) return;
+      this._stopHeroCarousel();
+      this._heroTimer = setInterval(function () {
+        if (document.hidden) return;
         oCarousel.next();
       }, this._heroIntervalMs);
     },
@@ -82,25 +134,19 @@ onAfterRendering: function () {
       }
     },
 
-    // XML’de event bağlarsan (mouseover/mouseout) pause/resume
-    onHeroHover: function () {
-      this._stopHeroCarousel();
-    },
+    onHeroHover: function () { this._stopHeroCarousel(); },
+    onHeroOut: function () { this._startHeroCarousel(); },
 
-    onHeroOut: function () {
-      this._startHeroCarousel();
-    },
-
-    // ===== Existing logic =====
+    // ── Sector count ────────────────────────────────────────────────
     _loadSectorCount: function () {
       const oModel = this.getOwnerComponent().getModel();
       const oHomeModel = this.getView().getModel("home");
 
       oModel.read("/Sectors/$count", {
         success: function (oData) {
-          const s = (typeof oData === "string") ? oData : (oData && oData.toString ? oData.toString() : "0");
-          const iCount = parseInt(s, 10) || 0;
-          oHomeModel.setProperty("/sectorCount", iCount);
+          const s = (typeof oData === "string") ? oData
+            : (oData && oData.toString ? oData.toString() : "0");
+          oHomeModel.setProperty("/sectorCount", parseInt(s, 10) || 0);
         },
         error: function () {
           oHomeModel.setProperty("/sectorCount", 0);
@@ -108,6 +154,7 @@ onAfterRendering: function () {
       });
     },
 
+    // ── Admin tile handlers ──────────────────────────────────────────
     onOpenSectors: function () {
       this.getOwnerComponent().getRouter().navTo("RouteSectors");
     },
@@ -142,7 +189,9 @@ onAfterRendering: function () {
           }),
           endButton: new Button({
             text: "Cancel",
-            press: function () { this._oCreateDeptDialog.close(); }.bind(this)
+            press: function () {
+              this._oCreateDeptDialog.close();
+            }.bind(this)
           }),
           afterClose: function () {
             this.getView().getModel("createDept").setProperty("/sectorName", "");
@@ -159,7 +208,6 @@ onAfterRendering: function () {
       setTimeout(() => this._oDeptNameInput.focus(), 0);
     },
 
-    // 1) Max SectorId oku -> 2) +1 -> 3) Create'e SectorId ile git
     _onCreateDepartmentConfirm: function () {
       const sName = (this._oDeptNameInput.getValue() || "").trim();
       if (!sName) {
@@ -178,16 +226,12 @@ onAfterRendering: function () {
         },
         success: function (oData) {
           let iMax = 0;
-
           if (oData && oData.results && oData.results.length > 0) {
-            const v = oData.results[0].SectorId;
-            iMax = parseInt(v, 10) || 0;
+            iMax = parseInt(oData.results[0].SectorId, 10) || 0;
           }
 
-          const iNext = iMax + 1;
-
           oModel.create("/Sectors", {
-            SectorId: iNext,
+            SectorId: iMax + 1,
             SectorName: sName
           }, {
             success: function () {
@@ -199,21 +243,15 @@ onAfterRendering: function () {
             }.bind(this),
             error: function (oErr) {
               this.getView().setBusy(false);
-
               let sMsg = "Create failed.";
               try {
-                const sText = oErr && oErr.responseText;
-                if (sText) {
-                  const oJson = JSON.parse(sText);
-                  const vMsg = oJson?.error?.message?.value;
-                  if (vMsg) sMsg = vMsg;
-                }
-              } catch (e) { /* ignore */ }
-
+                const oJson = JSON.parse(oErr && oErr.responseText);
+                const vMsg = oJson?.error?.message?.value;
+                if (vMsg) sMsg = vMsg;
+              } catch (e) { }
               MessageBox.error(sMsg);
             }.bind(this)
           });
-
         }.bind(this),
         error: function () {
           this.getView().setBusy(false);
@@ -222,13 +260,52 @@ onAfterRendering: function () {
       });
     },
 
+    // ── Employee tile handlers ───────────────────────────────────────
+    onMyCourses: function () {
+      const sPersId = this.getView().getModel("home").getProperty("/persId");
+      if (!sPersId) {
+        MessageToast.show("Please wait, loading your profile...");
+        return;
+      }
+      this.getOwnerComponent().getRouter().navTo("RouteMyCourses", {
+        persId: sPersId
+      });
+    },
+
+    onMyProjects: function () {
+      const sPersId = this.getView().getModel("home").getProperty("/persId");
+      if (!sPersId) {
+        MessageToast.show("Please wait, loading your profile...");
+        return;
+      }
+      this.getOwnerComponent().getRouter().navTo("RouteMyProjects", {
+        persId: sPersId
+      });
+    },
+
+    onDailyActivities: function () {
+      MessageToast.show("Daily Activities — coming soon.");
+    },
+
+    onMyProfile: function () {
+      MessageToast.show("My Profile — coming soon.");
+    },
+
     onEmployeeRegistration: function () {
       MessageToast.show("Employee Registration - next step!");
     },
 
     onCourseRegistration: function () {
       MessageToast.show("Course Registration - next step!");
-    }
+    },
 
+    // ── Image helper ─────────────────────────────────────────────────
+    getImagePath: function (sFileName) {
+      if (!sFileName) return "";
+      const sBase = jQuery.sap
+        ? jQuery.sap.getModulePath("hrproject")
+        : sap.ui.require.toUrl("hrproject");
+      return sBase + "/img/" + sFileName;
+    }
   });
 });

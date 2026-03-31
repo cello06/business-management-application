@@ -9,8 +9,14 @@
             <VBox class="sapUiMediumMargin">
                 <f:Card class="homeHeroCard">
                     <f:content>
-                        <VBox class="sapUiSmallMargin" width="100%">
-                            <VBox class="homeHeroTextBox" width="100%">
+                        <VBox
+                            class="sapUiSmallMargin"
+                            width="100%"
+                        >
+                            <VBox
+                                class="homeHeroTextBox"
+                                width="100%"
+                            >
                                 <Title
                                     text="Company Business Management Site"
                                     level="H1"
@@ -21,8 +27,10 @@
                                     class="homeHeroSubtitle sapUiSmallMarginBottom"
                                 />
                             </VBox>
-
-                            <VBox class="homeHeroCarouselBox" width="100%">
+                            <VBox
+                                class="homeHeroCarouselBox"
+                                width="100%"
+                            >
                                 <Carousel
                                     id="heroCarousel"
                                     height="420px"
@@ -32,28 +40,35 @@
                                     class="homeHeroCarousel"
                                 >
                                     <Image
-                                        src="./img/hero.jpg"
+                                        src="module:hrproject/img/hero.jpg"
                                         decorative="true"
                                         densityAware="false"
                                         class="homeHeroSlideImg"
                                     />
                                     <Image
-                                        src="./img/hero2.jpg"
+                                        src="module:hrproject/img/hero2.jpg"
                                         decorative="true"
                                         densityAware="false"
                                         class="homeHeroSlideImg"
                                     />
                                     <Image
-                                        src="./img/hero3.jpg"
+                                        src="module:hrproject/img/hero3.jpg"
                                         decorative="true"
                                         densityAware="false"
                                         class="homeHeroSlideImg"
                                     />
                                     <Image
-                                        src="./img/hero4.jpg"
+                                        src="module:hrproject/img/hero4.jpg"
                                         decorative="true"
                                         densityAware="false"
                                         class="homeHeroSlideImg"
+                                    />
+                                    <Image
+                                        src="https://picsum.photos/800/400"
+                                        decorative="true"
+                                        densityAware="false"
+                                        class="homeHeroSlideImg"
+                                        width="100%"
                                     />
                                 </Carousel>
                             </VBox>
@@ -80,9 +95,10 @@
                             gap="1rem"
                         />
                     </f:layout>
-
                     <f:items>
+                        <!-- ADMIN TILES -->
                         <GenericTile
+                            visible="{home>/isAdmin}"
                             class="sectorTile homeActionTile"
                             header="Sectors"
                             subheader="Browse departments"
@@ -91,7 +107,10 @@
                             press=".onOpenSectors"
                         >
                             <layoutData>
-                                <f:GridContainerItemLayoutData columns="2" rows="1" />
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
                             </layoutData>
                             <tileContent>
                                 <TileContent>
@@ -107,6 +126,7 @@
                         </GenericTile>
 
                         <GenericTile
+                            visible="{home>/isAdmin}"
                             class="sectorTile homeActionTile"
                             header="Create Department"
                             subheader="Add a new sector"
@@ -115,7 +135,10 @@
                             press=".onCreateDepartment"
                         >
                             <layoutData>
-                                <f:GridContainerItemLayoutData columns="2" rows="1" />
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
                             </layoutData>
                             <tileContent>
                                 <TileContent>
@@ -127,6 +150,7 @@
                         </GenericTile>
 
                         <GenericTile
+                            visible="{home>/isAdmin}"
                             class="sectorTile homeActionTile"
                             header="Employee Registration"
                             subheader="Register a new employee"
@@ -135,7 +159,10 @@
                             press=".onEmployeeRegistration"
                         >
                             <layoutData>
-                                <f:GridContainerItemLayoutData columns="2" rows="1" />
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
                             </layoutData>
                             <tileContent>
                                 <TileContent>
@@ -147,6 +174,7 @@
                         </GenericTile>
 
                         <GenericTile
+                            visible="{home>/isAdmin}"
                             class="sectorTile homeActionTile"
                             header="Course Registration"
                             subheader="Assign courses"
@@ -155,12 +183,116 @@
                             press=".onCourseRegistration"
                         >
                             <layoutData>
-                                <f:GridContainerItemLayoutData columns="2" rows="1" />
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
                             </layoutData>
                             <tileContent>
                                 <TileContent>
                                     <content>
                                         <Text text="Assign" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
+
+                        <!-- EMPLOYEE TILES -->
+                        <GenericTile
+                            visible="{= !${home>/isAdmin} }"
+                            enabled="{home>/persIdReady}"
+                            class="sectorTile homeActionTile"
+                            header="My Courses"
+                            subheader="View assigned courses"
+                            headerImage="sap-icon://courses"
+                            frameType="TwoByOne"
+                            press=".onMyCourses"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="View" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            visible="{= !${home>/isAdmin} }"
+                            enabled="{home>/persIdReady}"
+                            class="sectorTile homeActionTile"
+                            header="My Projects"
+                            subheader="View assigned projects"
+                            headerImage="sap-icon://project-definition-triangle"
+                            frameType="TwoByOne"
+                            press=".onMyProjects"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="View" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            visible="{= !${home>/isAdmin} }"
+                            enabled="{home>/persIdReady}"
+                            class="sectorTile homeActionTile"
+                            header="Daily Activities"
+                            subheader="Track your day"
+                            headerImage="sap-icon://activity-items"
+                            frameType="TwoByOne"
+                            press=".onDailyActivities"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="Track" />
+                                    </content>
+                                </TileContent>
+                            </tileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            visible="{= !${home>/isAdmin} }"
+                            enabled="{home>/persIdReady}"
+                            class="sectorTile homeActionTile"
+                            header="My Profile"
+                            subheader="View your details"
+                            headerImage="sap-icon://employee"
+                            frameType="TwoByOne"
+                            press=".onMyProfile"
+                        >
+                            <layoutData>
+                                <f:GridContainerItemLayoutData
+                                    columns="2"
+                                    rows="1"
+                                />
+                            </layoutData>
+                            <tileContent>
+                                <TileContent>
+                                    <content>
+                                        <Text text="View" />
                                     </content>
                                 </TileContent>
                             </tileContent>

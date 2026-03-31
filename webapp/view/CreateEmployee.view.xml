@@ -25,6 +25,9 @@
           <Label text="Title" />
           <Input id="inpTitle" />
 
+          <Label text="Salary" />
+          <Input id="inpSalary" type="Number"/>
+
           <Label text="Sector ID" />
           <Input id="inpSectorId" editable="false" />
 

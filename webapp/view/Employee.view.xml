@@ -1,36 +1,65 @@
 <mvc:View
-  controllerName="hrproject.controller.Employee"
-  xmlns:mvc="sap.ui.core.mvc"
-  xmlns="sap.m">
+    controllerName="hrproject.controller.Employee"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Page
+        id="page"
+        title="Employees"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <HBox
+                    class="sapUiSmallMarginBottom"
+                    alignItems="Center"
+                    justifyContent="SpaceBetween"
+                >
+                    <Title
+                        text="Employees"
+                        level="H2"
+                    />
+                    <Text
+                        id="sectorInfoText"
+                        text=""
+                    />
+                </HBox>
+                <Toolbar>
+                    <Title
+                        id="sectorTitle"
+                        text="Employees"
+                        level="H2"
+                    />
+                    <ToolbarSpacer />
+                    <Button
+                        text="Create"
+                        type="Emphasized"
+                        press=".onCreateEmployee"
+                    />
+                    <Button
+                        text="Delete"
+                        type="Reject"
+                        press=".onDeleteEmployee"
+                    />
+                </Toolbar>
 
-  <Page id="page" title="Employees" showNavButton="true" navButtonPress=".onNavBack">
-    <content>
-      <VBox class="sapUiSmallMargin">
-
-        <Toolbar>
-          <Title text="Employees" level="H2" />
-          <ToolbarSpacer />
-          <Button text="Create" type="Emphasized" press=".onCreateEmployee" />
-          <Button text="Delete" type="Reject" press=".onDeleteEmployee" />
-        </Toolbar>
-
-        <List
-          id="employeeList"
-          mode="MultiSelect"
-          growing="true"
-          growingScrollToLoad="true"
-          items="{/Employees}"
-          itemPress=".onEmployeePress">
-
-          <StandardListItem
-            type="Active"
-            title="{FirstName} {LastName}"
-            description="{Title}"
-            info="{path: 'PersId', formatter: '.formatter.maskTcId'}" />
-        </List>
-
-      </VBox>
-    </content>
-  </Page>
-
+                <List
+                    id="employeeList"
+                    mode="MultiSelect"
+                    growing="true"
+                    growingScrollToLoad="true"
+                    items="{/Employees}"
+                    itemPress=".onEmployeePress"
+                >
+                    <StandardListItem
+                        type="Active"
+                        title="{FirstName} {LastName}"
+                        description="{Title}"
+                        info="{path: 'PersId', formatter: '.formatter.maskTcId'}"
+                    />
+                </List>
+            </VBox>
+        </content>
+    </Page>
 </mvc:View>
