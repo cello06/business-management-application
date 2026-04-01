@@ -1,8 +1,9 @@
 sap.ui.define([
   "sap/ui/core/mvc/Controller",
   "sap/ui/model/json/JSONModel",
-  "sap/ui/core/routing/History"
-], function (Controller, JSONModel, History) {
+  "sap/ui/core/routing/History",
+  "sap/m/MessageToast"
+], function (Controller, JSONModel, History, MessageToast) {
   "use strict";
 
   return Controller.extend("hrproject.controller.myCourses.MyCourses", {
@@ -11,8 +12,7 @@ sap.ui.define([
       const oModel = new JSONModel({
         ongoingCount:  0,
         finishedCount: 0,
-        allCount:      0,
-        assignedCount: 0
+        allCount:      0
       });
       this.getView().setModel(oModel, "myCourses");
 
@@ -32,6 +32,7 @@ sap.ui.define([
       const oViewModel  = this.getView().getModel("myCourses");
       const sPersId     = this._sPersId;
 
+      // Ongoing: ActiveCourse = true
       oODataModel.read("/EmployeeCourses/$count", {
         urlParameters: {
           "$filter": "PersId eq '" + sPersId + "' and ActiveCourse eq true"
@@ -41,6 +42,7 @@ sap.ui.define([
         }
       });
 
+      // Finished: ActiveCourse = false
       oODataModel.read("/EmployeeCourses/$count", {
         urlParameters: {
           "$filter": "PersId eq '" + sPersId + "' and ActiveCourse eq false"
@@ -50,15 +52,7 @@ sap.ui.define([
         }
       });
 
-      oODataModel.read("/EmployeeCourses/$count", {
-        urlParameters: {
-          "$filter": "PersId eq '" + sPersId + "'"
-        },
-        success: function (oData) {
-          oViewModel.setProperty("/assignedCount", parseInt(oData, 10) || 0);
-        }
-      });
-
+      // All courses total
       oODataModel.read("/Courses/$count", {
         success: function (oData) {
           oViewModel.setProperty("/allCount", parseInt(oData, 10) || 0);
@@ -74,6 +68,10 @@ sap.ui.define([
       });
     },
 
+    onCertificatesPress: function () {
+      MessageToast.show("Certificates — coming soon.");
+    },
+
     onNavBack: function () {
       const sPreviousHash = History.getInstance().getPreviousHash();
       if (sPreviousHash !== undefined) {
@@ -82,6 +80,5 @@ sap.ui.define([
         this.getOwnerComponent().getRouter().navTo("RouteHome", {}, true);
       }
     }
-
   });
 });

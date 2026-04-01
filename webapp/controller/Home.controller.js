@@ -27,6 +27,7 @@ sap.ui.define([
       const oHomeModel = new JSONModel({
         sectorCount: 0,
         isAdmin: false,
+        roleLoaded: false,
         persId: null,
         hero1: "hero.jpg",
         hero2: "hero2.jpg",
@@ -44,58 +45,95 @@ sap.ui.define([
 
     // ── Role detection ──────────────────────────────────────────────
     _loadUserRole: function () {
-      const oModel = this.getOwnerComponent().getModel();
+      const oModel     = this.getOwnerComponent().getModel();
       const oHomeModel = this.getView().getModel("home");
 
+      oHomeModel.setProperty("/roleLoaded", false);
+      oHomeModel.setProperty("/isAdmin", false);
+
+      // Safety fallback: if OData never responds, show employee tiles after 5s
+      const iFallbackTimer = setTimeout(function () {
+        if (!oHomeModel.getProperty("/roleLoaded")) {
+          console.warn("UserRoles request timed out — showing employee tiles as fallback.");
+          oHomeModel.setProperty("/isAdmin", false);
+          oHomeModel.setProperty("/roleLoaded", true);
+        }
+      }, 5000);
+
+      // Resolve SAP username
       let sUsername = "";
       try {
         sUsername = sap.ushell.Container.getService("UserInfo").getId();
-        // BTP preview returns DEFAULT_USER — fall back to real username
-        if (!sUsername || sUsername === "DEFAULT_USER") {
-          sUsername = "CAKTURK";
-        }
+        console.log("UserInfo.getId() returned:", sUsername);
       } catch (e) {
+        console.warn("UserInfo service not available:", e.message);
+      }
+
+      if (!sUsername || sUsername === "DEFAULT_USER") {
+        console.warn("Falling back to hardcoded username: CAKTURK");
         sUsername = "CAKTURK";
       }
 
-      console.log("Using username:", sUsername);
+      console.log("Querying UserRoles for username:", sUsername);
+
+      // Keep sUsername accessible in nested callbacks
+      const sFinalUsername = sUsername;
 
       oModel.read("/UserRoles", {
         urlParameters: {
-          "$filter": "SapUsername eq '" + sUsername + "'",
+          "$filter": "SapUsername eq '" + sFinalUsername + "'",
           "$select": "SapUsername,Role",
           "$top": "1"
         },
         success: function (oData) {
-          const bIsAdmin = oData.results &&
-            oData.results.length > 0 &&
-            oData.results[0].Role === "ADMIN";
+          clearTimeout(iFallbackTimer);
+          console.log("UserRoles response:", JSON.stringify(oData));
+
+          if (!oData.results || oData.results.length === 0) {
+            console.warn("No UserRoles record found for:", sFinalUsername);
+            oHomeModel.setProperty("/isAdmin", false);
+            oHomeModel.setProperty("/roleLoaded", true);
+            return;
+          }
+
+          const sRole   = oData.results[0].Role;
+          const bIsAdmin = (sRole || "").toUpperCase() === "ADMIN";
+          console.log("Role found:", sRole, "→ isAdmin:", bIsAdmin);
 
           oHomeModel.setProperty("/isAdmin", bIsAdmin);
+          oHomeModel.setProperty("/roleLoaded", true);
 
+          // For non-admin employees: look up PersId by filtering
+          // Employees on SapUsername — field is exposed in the OData service
           if (!bIsAdmin) {
             oModel.read("/Employees", {
               urlParameters: {
-                "$filter": "SapUsername eq '" + sUsername + "'",
-                "$select": "PersId",
+                "$filter": "SapUsername eq '" + sFinalUsername + "'",
+                "$select": "PersId,SapUsername",
                 "$top": "1"
               },
               success: function (oEmpData) {
                 if (oEmpData.results && oEmpData.results.length > 0) {
-                  oHomeModel.setProperty(
-                    "/persId",
-                    oEmpData.results[0].PersId.toString()
-                  );
+                  const sPersId = oEmpData.results[0].PersId.toString();
+                  console.log("PersId resolved:", sPersId);
+                  oHomeModel.setProperty("/persId", sPersId);
+                } else {
+                  console.warn("No Employee record found for SapUsername:", sFinalUsername);
                 }
               },
-              error: function () {
+              error: function (oErr) {
+                console.error("Employees read failed:", oErr && oErr.responseText);
                 MessageToast.show("Could not load employee profile.");
               }
             });
           }
         },
-        error: function () {
+        error: function (oErr) {
+          clearTimeout(iFallbackTimer);
+          console.error("UserRoles read failed. Status:", oErr && oErr.statusCode,
+            "Response:", oErr && oErr.responseText);
           oHomeModel.setProperty("/isAdmin", false);
+          oHomeModel.setProperty("/roleLoaded", true);
         }
       });
     },
@@ -135,11 +173,11 @@ sap.ui.define([
     },
 
     onHeroHover: function () { this._stopHeroCarousel(); },
-    onHeroOut: function () { this._startHeroCarousel(); },
+    onHeroOut:   function () { this._startHeroCarousel(); },
 
     // ── Sector count ────────────────────────────────────────────────
     _loadSectorCount: function () {
-      const oModel = this.getOwnerComponent().getModel();
+      const oModel     = this.getOwnerComponent().getModel();
       const oHomeModel = this.getView().getModel("home");
 
       oModel.read("/Sectors/$count", {
@@ -246,7 +284,7 @@ sap.ui.define([
               let sMsg = "Create failed.";
               try {
                 const oJson = JSON.parse(oErr && oErr.responseText);
-                const vMsg = oJson?.error?.message?.value;
+                const vMsg  = oJson?.error?.message?.value;
                 if (vMsg) sMsg = vMsg;
               } catch (e) { }
               MessageBox.error(sMsg);

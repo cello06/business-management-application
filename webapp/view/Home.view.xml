@@ -84,9 +84,11 @@
                     class="sapUiSmallMarginBottom"
                 />
 
+                <!-- Tiles are hidden until role is resolved from backend -->
                 <f:GridContainer
                     containerQuery="true"
                     class="homeActionsGrid"
+                    visible="{home>/roleLoaded}"
                 >
                     <f:layout>
                         <f:GridContainerSettings
@@ -200,7 +202,6 @@
                         <!-- EMPLOYEE TILES -->
                         <GenericTile
                             visible="{= !${home>/isAdmin} }"
-                            enabled="{home>/persIdReady}"
                             class="sectorTile homeActionTile"
                             header="My Courses"
                             subheader="View assigned courses"
@@ -225,7 +226,6 @@
 
                         <GenericTile
                             visible="{= !${home>/isAdmin} }"
-                            enabled="{home>/persIdReady}"
                             class="sectorTile homeActionTile"
                             header="My Projects"
                             subheader="View assigned projects"
@@ -250,7 +250,6 @@
 
                         <GenericTile
                             visible="{= !${home>/isAdmin} }"
-                            enabled="{home>/persIdReady}"
                             class="sectorTile homeActionTile"
                             header="Daily Activities"
                             subheader="Track your day"
@@ -275,7 +274,6 @@
 
                         <GenericTile
                             visible="{= !${home>/isAdmin} }"
-                            enabled="{home>/persIdReady}"
                             class="sectorTile homeActionTile"
                             header="My Profile"
                             subheader="View your details"

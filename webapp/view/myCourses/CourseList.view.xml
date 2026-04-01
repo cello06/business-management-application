@@ -1,0 +1,139 @@
+<mvc:View
+    controllerName="hrproject.controller.myCourses.CourseList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        title="{courseList>/pageTitle}"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <VBox class="sapUiMediumMargin">
+
+                <!-- Summary strip -->
+                <HBox
+                    class="sapUiSmallMarginBottom"
+                    alignItems="Center"
+                    justifyContent="SpaceBetween"
+                >
+                    <Title text="{courseList>/pageTitle}" level="H3"/>
+                    <ObjectStatus
+                        text="{= ${courseList>/totalCount} + ' course(s)'}"
+                        state="Information"
+                    />
+                </HBox>
+
+                <!-- Search bar -->
+                <SearchField
+                    id="courseSearchField"
+                    placeholder="Search by course name..."
+                    liveChange=".onSearch"
+                    width="100%"
+                    class="sapUiSmallMarginBottom"
+                />
+
+                <!-- Course list -->
+                <List
+                    id="courseList"
+                    items="{courseList>/items}"
+                    noDataText="No courses found."
+                    busyIndicatorDelay="0"
+                    growing="true"
+                    growingThreshold="20"
+                >
+                    <CustomListItem press=".onCoursePress" type="Navigation">
+                        <HBox width="100%" alignItems="Center" class="sapUiSmallMargin">
+
+                            <!-- Left: course info -->
+                            <VBox width="70%" class="sapUiSmallMarginEnd">
+                                <Title
+                                    text="{courseList>CourseName}"
+                                    level="H5"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <Text
+                                    text="{courseList>CourseDesc}"
+                                    maxLines="2"
+                                    wrapping="true"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <HBox alignItems="Center" wrap="Wrap">
+                                    <!-- Category badge -->
+                                    <ObjectStatus
+                                        visible="{= !!${courseList>Category} }"
+                                        text="{courseList>Category}"
+                                        state="Information"
+                                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                                    />
+                                    <!-- Enrollment status badge - only for employee views (ActiveCourse !== null) -->
+                                    <ObjectStatus
+                                        visible="{= ${courseList>ActiveCourse} !== null }"
+                                        text="{= ${courseList>ActiveCourse} ? 'In Progress' : 'Completed' }"
+                                        state="{= ${courseList>ActiveCourse} ? 'Warning' : 'Success' }"
+                                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                                    />
+                                    <!-- Enrollment badge for "All Courses" view -->
+                                    <ObjectStatus
+                                        visible="{= ${courseList>enrollmentStatus} === 'ongoing' }"
+                                        text="In Progress"
+                                        state="Warning"
+                                        icon="sap-icon://status-in-process"
+                                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                                    />
+                                    <ObjectStatus
+                                        visible="{= ${courseList>enrollmentStatus} === 'completed' }"
+                                        text="Completed"
+                                        state="Success"
+                                        icon="sap-icon://accept"
+                                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"
+                                    />
+                                </HBox>
+
+                                <!-- Hours: employee views -->
+                                <Text
+                                    visible="{= ${courseList>ActiveCourse} !== null }"
+                                    text="{= 'Completed Hours: ' + ${courseList>CompletedHours} + ' / ' + ${courseList>TotalHours} }"
+                                    class="sapUiTinyMarginTop"
+                                />
+                                <!-- Duration: all courses view -->
+                                <Text
+                                    visible="{= ${courseList>ActiveCourse} === null }"
+                                    text="{= 'Duration: ' + ${courseList>DurationHours} + ' hours' }"
+                                    class="sapUiTinyMarginTop"
+                                />
+                            </VBox>
+
+                            <!-- Right: progress or course ID -->
+                            <VBox width="30%" alignItems="End">
+                                <!-- Progress for employee-specific views -->
+                                <ObjectNumber
+                                    visible="{= ${courseList>ActiveCourse} !== null }"
+                                    number="{courseList>ProgressPercent}"
+                                    unit="%"
+                                    state="{courseList>ProgressState}"
+                                    emphasized="false"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <ProgressIndicator
+                                    visible="{= ${courseList>ActiveCourse} !== null }"
+                                    percentValue="{courseList>ProgressPercent}"
+                                    state="{courseList>ProgressState}"
+                                    width="120px"
+                                    height="8px"
+                                />
+                                <Text
+                                    text="{= 'ID ' + ${courseList>CourseId} }"
+                                    class="sapUiTinyMarginTop"
+                                />
+                            </VBox>
+
+                        </HBox>
+                    </CustomListItem>
+                </List>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

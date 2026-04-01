@@ -15,40 +15,57 @@
 
                 <ObjectHeader
                     title="{detail>/CourseName}"
-                    number="{detail>/ProgressPercent}"
-                    numberUnit="%"
+                    number="{= ${detail>/isEnrolled} ? ${detail>/ProgressPercent} : '' }"
+                    numberUnit="{= ${detail>/isEnrolled} ? '%' : '' }"
                     intro="{detail>/CourseDesc}"
                     responsive="true"
-                    class="sapUiSmallMarginBottom">
+                    class="sapUiSmallMarginBottom"
+                >
                     <statuses>
                         <ObjectStatus
                             text="{detail>/Category}"
-                            state="Information" />
+                            state="Information"
+                        />
+                        <!-- Enrolled: show progress status -->
                         <ObjectStatus
-                            text="{= ${detail>/ActiveCourse} ? 'Active' : 'Completed' }"
-                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }" />
+                            visible="{detail>/isEnrolled}"
+                            text="{= ${detail>/ActiveCourse} ? 'In Progress' : 'Completed' }"
+                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }"
+                        />
+                        <!-- Not enrolled: show badge -->
+                        <ObjectStatus
+                            visible="{= !${detail>/isEnrolled} }"
+                            text="Not Enrolled"
+                            state="None"
+                            icon="sap-icon://course-book"
+                        />
                     </statuses>
                 </ObjectHeader>
 
-                <HBox
-                    width="100%"
-                    wrap="Wrap"
-                    renderType="Bare"
-                    class="sapUiTinyMarginTop">
+                <!-- Not enrolled info strip -->
+                <MessageStrip
+                    visible="{= !${detail>/isEnrolled} }"
+                    text="You are not enrolled in this course. Contact your admin to get assigned."
+                    type="Information"
+                    showIcon="true"
+                    class="sapUiSmallMarginBottom sapUiSmallMarginTop"
+                />
 
+                <HBox width="100%" wrap="Wrap" renderType="Bare" class="sapUiTinyMarginTop">
+
+                    <!-- Course Information panel — always visible -->
                     <VBox
-                        width="58%"
-                        class="sapUiSmallMarginEnd sapUiResponsiveMargin">
-                        <Panel
-                            headerText="Course Information"
-                            class="sapUiNoContentPadding">
+                        width="{= ${detail>/isEnrolled} ? '58%' : '100%' }"
+                        class="sapUiSmallMarginEnd sapUiResponsiveMargin"
+                    >
+                        <Panel headerText="Course Information" class="sapUiNoContentPadding">
                             <content>
                                 <VBox class="sapUiContentPadding">
                                     <Text
                                         text="{detail>/CourseDesc}"
                                         wrapping="true"
-                                        class="sapUiSmallMarginBottom" />
-
+                                        class="sapUiSmallMarginBottom"
+                                    />
                                     <f:SimpleForm
                                         editable="false"
                                         layout="ResponsiveGridLayout"
@@ -63,76 +80,79 @@
                                         emptySpanS="0"
                                         columnsXL="1"
                                         columnsL="1"
-                                        columnsM="1">
-                                        
-                                        <Label text="Category" />
+                                        columnsM="1"
+                                    >
+                                        <Label text="Category"/>
+                                        <ObjectStatus text="{detail>/Category}" state="Information"/>
+
+                                        <Label text="Duration Hours"/>
+                                        <Text text="{detail>/DurationHours}"/>
+
+                                        <!-- Only show these for enrolled users -->
+                                        <Label visible="{detail>/isEnrolled}" text="Total Hours"/>
+                                        <Text  visible="{detail>/isEnrolled}" text="{detail>/TotalHours}"/>
+
+                                        <Label visible="{detail>/isEnrolled}" text="Completed Hours"/>
+                                        <Text  visible="{detail>/isEnrolled}" text="{detail>/CompletedHours}"/>
+
+                                        <Label visible="{detail>/isEnrolled}" text="Remaining Hours"/>
+                                        <Text  visible="{detail>/isEnrolled}" text="{detail>/RemainingHours}"/>
+
+                                        <Label visible="{detail>/isEnrolled}" text="Course Status"/>
                                         <ObjectStatus
-                                            text="{detail>/Category}"
-                                            state="Information" />
-
-                                        <Label text="Duration Hours" />
-                                        <Text text="{detail>/DurationHours}" />
-
-                                        <Label text="Total Hours" />
-                                        <Text text="{detail>/TotalHours}" />
-
-                                        <Label text="Completed Hours" />
-                                        <Text text="{detail>/CompletedHours}" />
-
-                                        <Label text="Remaining Hours" />
-                                        <Text text="{detail>/RemainingHours}" />
-
-                                        <Label text="Course Status" />
-                                        <ObjectStatus
+                                            visible="{detail>/isEnrolled}"
                                             text="{= ${detail>/ActiveCourse} ? 'In Progress' : 'Completed' }"
-                                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }" />
+                                            state="{= ${detail>/ActiveCourse} ? 'Warning' : 'Success' }"
+                                        />
                                     </f:SimpleForm>
                                 </VBox>
                             </content>
                         </Panel>
                     </VBox>
 
+                    <!-- Progress Overview panel — only for enrolled users -->
                     <VBox
+                        visible="{detail>/isEnrolled}"
                         width="38%"
-                        class="sapUiResponsiveMargin">
-                        <Panel
-                            headerText="Progress Overview"
-                            class="sapUiNoContentPadding">
+                        class="sapUiResponsiveMargin"
+                    >
+                        <Panel headerText="Progress Overview" class="sapUiNoContentPadding">
                             <content>
                                 <VBox
                                     alignItems="Center"
                                     justifyContent="Center"
-                                    class="sapUiContentPadding sapUiLargeMarginTop sapUiLargeMarginBottom">
-
+                                    class="sapUiContentPadding sapUiLargeMarginTop sapUiLargeMarginBottom"
+                                >
                                     <NumericContent
                                         value="{detail>/ProgressPercent}"
                                         scale="%"
                                         valueColor="{detail>/ProgressColor}"
                                         withMargin="false"
-                                        nullifyValue="false" />
-
+                                        nullifyValue="false"
+                                    />
                                     <ProgressIndicator
                                         percentValue="{detail>/ProgressPercent}"
                                         displayValue="{= ${detail>/ProgressPercent} + '%' }"
                                         state="{detail>/ProgressState}"
                                         width="80%"
-                                        class="sapUiMediumMarginTop sapUiSmallMarginBottom" />
-
+                                        class="sapUiMediumMarginTop sapUiSmallMarginBottom"
+                                    />
                                     <HBox
                                         justifyContent="SpaceAround"
                                         width="100%"
-                                        class="sapUiMediumMarginTop">
+                                        class="sapUiMediumMarginTop"
+                                    >
                                         <VBox alignItems="Center">
-                                            <Title text="{detail>/CompletedHours}" level="H4" />
-                                            <Text text="Completed" />
+                                            <Title text="{detail>/CompletedHours}" level="H4"/>
+                                            <Text text="Completed"/>
                                         </VBox>
                                         <VBox alignItems="Center">
-                                            <Title text="{detail>/RemainingHours}" level="H4" />
-                                            <Text text="Remaining" />
+                                            <Title text="{detail>/RemainingHours}" level="H4"/>
+                                            <Text text="Remaining"/>
                                         </VBox>
                                         <VBox alignItems="Center">
-                                            <Title text="{detail>/TotalHours}" level="H4" />
-                                            <Text text="Total" />
+                                            <Title text="{detail>/TotalHours}" level="H4"/>
+                                            <Text text="Total"/>
                                         </VBox>
                                     </HBox>
                                 </VBox>

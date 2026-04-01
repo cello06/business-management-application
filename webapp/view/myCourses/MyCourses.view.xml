@@ -19,10 +19,7 @@
                     class="sapUiSmallMarginBottom"
                 />
 
-                <f:GridContainer
-                    containerQuery="true"
-                    class="homeActionsGrid"
-                >
+                <f:GridContainer containerQuery="true" class="homeActionsGrid">
                     <f:layout>
                         <f:GridContainerSettings
                             rowSize="10rem"
@@ -113,17 +110,15 @@
                             </tileContent>
                         </GenericTile>
 
+                        <!-- Certificates tile (coming soon) -->
                         <GenericTile
                             class="homeActionTile"
-                            header="Assigned"
-                            subheader="Assigned by admin"
-                            headerImage="sap-icon://add-coursebook"
+                            header="Certificates"
+                            subheader="Your achievements"
+                            headerImage="sap-icon://badge"
                             frameType="TwoByOne"
-                            press=".onTilePress"
+                            press=".onCertificatesPress"
                         >
-                            <customData>
-                                <core:CustomData key="type" value="assigned"/>
-                            </customData>
                             <layoutData>
                                 <f:GridContainerItemLayoutData columns="2" rows="1"/>
                             </layoutData>
@@ -131,7 +126,7 @@
                                 <TileContent>
                                     <content>
                                         <NumericContent
-                                            value="{myCourses>/assignedCount}"
+                                            value="{myCourses>/finishedCount}"
                                             indicator="None"
                                             withMargin="false"
                                         />
