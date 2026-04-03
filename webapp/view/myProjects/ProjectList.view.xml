@@ -1,0 +1,67 @@
+<mvc:View
+    controllerName="hrproject.controller.myProjects.ProjectList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Page
+        title="{projectList>/title}"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+    >
+        <content>
+            <List
+                id="projectList"
+                width="100%"
+                items="{projectList>/items}"
+                noDataText="No projects found"
+                mode="None"
+                busy="{projectList>/busy}"
+                itemPress=".onProjectPress"
+            >
+                <ObjectListItem
+                    type="Navigation"
+                    title="{projectList>ProjectName}"
+                    intro="{projectList>ProjectCategory}"
+                    number="{= 'PRJ-' + ${projectList>ProjectId} }"
+                    numberUnit="ID"
+                    press=".onProjectPress"
+                >
+                    <attributes>
+                        <!-- Shown for ongoing/finished (assigned projects) -->
+                        <ObjectAttribute
+                            text="{= 'Role: ' + (${projectList>RoleInProject} || '—') }"
+                            visible="{= !!${projectList>RoleInProject} }"
+                        />
+                        <ObjectAttribute
+                            text="{= 'Hours: ' + (${projectList>HoursSpent} || 0) + ' / ' + (${projectList>HoursAllocated} || 0) }"
+                            visible="{= !!${projectList>RoleInProject} }"
+                        />
+                        <!-- Shown for all company projects -->
+                        <ObjectAttribute
+                            text="{= 'Priority: ' + (${projectList>Priority} || '—') }"
+                        />
+                        <ObjectAttribute
+                            text="{projectList>ProjectDesc}"
+                            visible="{= !!${projectList>ProjectDesc} }"
+                        />
+                    </attributes>
+                    <firstStatus>
+                        <!-- Project status (In Progress / Completed / Planned) -->
+                        <ObjectStatus
+                            text="{projectList>StatusText}"
+                            state="{projectList>StatusState}"
+                        />
+                    </firstStatus>
+                    <secondStatus>
+                        <!-- Assignment badge: Assigned (green) / Not Assigned (grey) -->
+                        <ObjectStatus
+                            text="{projectList>AssignedBadge}"
+                            state="{projectList>AssignedState}"
+                            visible="{= !!${projectList>AssignedBadge} }"
+                        />
+                    </secondStatus>
+                </ObjectListItem>
+            </List>
+        </content>
+    </Page>
+</mvc:View>

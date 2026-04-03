@@ -2,302 +2,216 @@
     controllerName="hrproject.controller.Home"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:f="sap.f"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
 >
-    <Page title="Company Business Management Site">
-        <content>
-            <VBox class="sapUiMediumMargin">
-                <f:Card class="homeHeroCard">
-                    <f:content>
-                        <VBox
-                            class="sapUiSmallMargin"
-                            width="100%"
-                        >
-                            <VBox
-                                class="homeHeroTextBox"
-                                width="100%"
-                            >
-                                <Title
-                                    text="Company Business Management Site"
-                                    level="H1"
-                                    class="homeHeroTitle"
-                                />
-                                <Text
-                                    text="Manage departments, employees and courses from a single place."
-                                    class="homeHeroSubtitle sapUiSmallMarginBottom"
-                                />
-                            </VBox>
-                            <VBox
-                                class="homeHeroCarouselBox"
-                                width="100%"
-                            >
-                                <Carousel
-                                    id="heroCarousel"
-                                    height="420px"
-                                    loop="true"
-                                    showPageIndicator="true"
-                                    pageIndicatorPlacement="Bottom"
-                                    class="homeHeroCarousel"
-                                >
-                                    <Image
-                                        src="module:hrproject/img/hero.jpg"
-                                        decorative="true"
-                                        densityAware="false"
-                                        class="homeHeroSlideImg"
-                                    />
-                                    <Image
-                                        src="module:hrproject/img/hero2.jpg"
-                                        decorative="true"
-                                        densityAware="false"
-                                        class="homeHeroSlideImg"
-                                    />
-                                    <Image
-                                        src="module:hrproject/img/hero3.jpg"
-                                        decorative="true"
-                                        densityAware="false"
-                                        class="homeHeroSlideImg"
-                                    />
-                                    <Image
-                                        src="module:hrproject/img/hero4.jpg"
-                                        decorative="true"
-                                        densityAware="false"
-                                        class="homeHeroSlideImg"
-                                    />
-                                    <Image
-                                        src="https://picsum.photos/800/400"
-                                        decorative="true"
-                                        densityAware="false"
-                                        class="homeHeroSlideImg"
-                                        width="100%"
-                                    />
-                                </Carousel>
-                            </VBox>
-                        </VBox>
-                    </f:content>
-                </f:Card>
-            </VBox>
+    <Page showHeader="false">
 
-            <VBox class="sapUiMediumMargin">
-                <Title
-                    text="Quick Actions"
-                    level="H2"
-                    class="sapUiSmallMarginBottom"
-                />
+        <l:BlockLayout background="Default">
 
-                <!-- Tiles are hidden until role is resolved from backend -->
-                <f:GridContainer
-                    containerQuery="true"
-                    class="homeActionsGrid"
-                    visible="{home>/roleLoaded}"
-                >
-                    <f:layout>
-                        <f:GridContainerSettings
-                            rowSize="10rem"
-                            columnSize="12rem"
-                            gap="1rem"
+            <!-- ═══ ROW 1 — Hero Image ═══════════════════════ -->
+            <l:BlockLayoutRow>
+                <l:BlockLayoutCell class="hrHeroImageCell sapUiNoContentPadding">
+                    <Image
+                        src="../img/hero.jpg"
+                        width="100%"
+                        densityAware="false"
+                        decorative="true"
+                        class="hrHeroImage"
+                    />
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+
+            <!-- ═══ ROW 2 — ADMIN tiles ══════════════════════ -->
+            <l:BlockLayoutRow visible="{= ${home>/roleLoaded} &amp;&amp; ${home>/isAdmin} }">
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Sectors"
+                        subheader="Browse departments"
+                        frameType="TwoByOne"
+                        press=".onOpenSectors">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://organization-chart" size="2rem" color="Default"/>
+                                        <NumericContent value="{home>/sectorCount}" indicator="None" withMargin="false"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Create Department"
+                        subheader="Add a new sector"
+                        frameType="TwoByOne"
+                        press=".onCreateDepartment">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://add" size="2rem" color="Default"/>
+                                        <Text text="Create a new department" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Employee Registration"
+                        subheader="Register a new employee"
+                        frameType="TwoByOne"
+                        press=".onEmployeeRegistration">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://add-employee" size="2rem" color="Default"/>
+                                        <Text text="Register employees" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Course Registration"
+                        subheader="Assign courses"
+                        frameType="TwoByOne"
+                        press=".onCourseRegistration">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://course-book" size="2rem" color="Default"/>
+                                        <Text text="Assign training courses" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+            </l:BlockLayoutRow>
+
+            <!-- ═══ ROW 2 — EMPLOYEE tiles ═══════════════════ -->
+            <l:BlockLayoutRow visible="{= ${home>/roleLoaded} &amp;&amp; !${home>/isAdmin} }">
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="My Courses"
+                        subheader="View assigned courses"
+                        frameType="TwoByOne"
+                        press=".onMyCourses">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://courses" size="2rem" color="Default"/>
+                                        <Text text="Track your training" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="My Projects"
+                        subheader="View assigned projects"
+                        frameType="TwoByOne"
+                        press=".onMyProjects">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://project-definition-triangle" size="2rem" color="Default"/>
+                                        <Text text="See your active projects" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Daily Activities"
+                        subheader="Track your day"
+                        frameType="TwoByOne"
+                        press=".onDailyActivities">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://activity-items" size="2rem" color="Default"/>
+                                        <Text text="Log daily work" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="My Profile"
+                        subheader="View your details"
+                        frameType="TwoByOne"
+                        press=".onMyProfile">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://employee" size="2rem" color="Default"/>
+                                        <Text text="Personal information" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+            </l:BlockLayoutRow>
+
+            <!-- ═══ ROW 3 — Welcome message ══════════════════ -->
+            <l:BlockLayoutRow visible="{home>/roleLoaded}">
+                <l:BlockLayoutCell
+                    backgroundColorSet="ColorSet11"
+                    backgroundColorShade="ShadeB"
+                    class="hrFeatureCell">
+                    <l:VerticalLayout width="100%">
+                        <core:Icon src="sap-icon://hr-approval" size="3rem" color="Default" class="sapUiTinyMarginBottom"/>
+                        <Title
+                            text="Welcome to Company Business Management Site"
+                            level="H2"
+                            titleStyle="H3"
+                            class="sapUiTinyMarginTopBottom"
                         />
-                    </f:layout>
-                    <f:items>
-                        <!-- ADMIN TILES -->
-                        <GenericTile
-                            visible="{home>/isAdmin}"
-                            class="sectorTile homeActionTile"
-                            header="Sectors"
-                            subheader="Browse departments"
-                            headerImage="sap-icon://organization-chart"
-                            frameType="TwoByOne"
-                            press=".onOpenSectors"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <NumericContent
-                                            value="{home>/sectorCount}"
-                                            indicator="None"
-                                            withMargin="false"
-                                        />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
+                        <Text text="Manage departments, employees and courses from a single place. Use the tiles above to navigate to the area you need."/>
+                    </l:VerticalLayout>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
 
-                        <GenericTile
-                            visible="{home>/isAdmin}"
-                            class="sectorTile homeActionTile"
-                            header="Create Department"
-                            subheader="Add a new sector"
-                            headerImage="sap-icon://add"
-                            frameType="TwoByOne"
-                            press=".onCreateDepartment"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="Create" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
+        </l:BlockLayout>
 
-                        <GenericTile
-                            visible="{home>/isAdmin}"
-                            class="sectorTile homeActionTile"
-                            header="Employee Registration"
-                            subheader="Register a new employee"
-                            headerImage="sap-icon://add-employee"
-                            frameType="TwoByOne"
-                            press=".onEmployeeRegistration"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="Register" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-
-                        <GenericTile
-                            visible="{home>/isAdmin}"
-                            class="sectorTile homeActionTile"
-                            header="Course Registration"
-                            subheader="Assign courses"
-                            headerImage="sap-icon://course-book"
-                            frameType="TwoByOne"
-                            press=".onCourseRegistration"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="Assign" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-
-                        <!-- EMPLOYEE TILES -->
-                        <GenericTile
-                            visible="{= !${home>/isAdmin} }"
-                            class="sectorTile homeActionTile"
-                            header="My Courses"
-                            subheader="View assigned courses"
-                            headerImage="sap-icon://courses"
-                            frameType="TwoByOne"
-                            press=".onMyCourses"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="View" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-
-                        <GenericTile
-                            visible="{= !${home>/isAdmin} }"
-                            class="sectorTile homeActionTile"
-                            header="My Projects"
-                            subheader="View assigned projects"
-                            headerImage="sap-icon://project-definition-triangle"
-                            frameType="TwoByOne"
-                            press=".onMyProjects"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="View" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-
-                        <GenericTile
-                            visible="{= !${home>/isAdmin} }"
-                            class="sectorTile homeActionTile"
-                            header="Daily Activities"
-                            subheader="Track your day"
-                            headerImage="sap-icon://activity-items"
-                            frameType="TwoByOne"
-                            press=".onDailyActivities"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="Track" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-
-                        <GenericTile
-                            visible="{= !${home>/isAdmin} }"
-                            class="sectorTile homeActionTile"
-                            header="My Profile"
-                            subheader="View your details"
-                            headerImage="sap-icon://employee"
-                            frameType="TwoByOne"
-                            press=".onMyProfile"
-                        >
-                            <layoutData>
-                                <f:GridContainerItemLayoutData
-                                    columns="2"
-                                    rows="1"
-                                />
-                            </layoutData>
-                            <tileContent>
-                                <TileContent>
-                                    <content>
-                                        <Text text="View" />
-                                    </content>
-                                </TileContent>
-                            </tileContent>
-                        </GenericTile>
-                    </f:items>
-                </f:GridContainer>
-            </VBox>
-        </content>
     </Page>
 </mvc:View>

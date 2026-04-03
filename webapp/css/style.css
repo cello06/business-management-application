@@ -15,68 +15,82 @@
   line-height: 1.2rem;
 }
 
-.homeHeroCard {
-  border-radius: 18px;
-  overflow: hidden;
+/* ═══════════════════════════════════════
+   SIDEBAR — Brand item styling
+═══════════════════════════════════════ */
+.hrSideNavBrand .sapTntNavLIText {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #0a6ed1 !important;
 }
 
-.homeHeroCarouselBox {
-  width: 100%;
-  margin-top: 1rem;
+/* ═══════════════════════════════════════
+   HOME — Hero image spacing & rounding
+═══════════════════════════════════════ */
+.hrHeroImageCell > .sapUiBlockCellContent {
+  padding: 1.5rem 2rem !important;
 }
 
-.homeHeroCarousel {
+.hrHeroImage,
+.hrHeroImage .sapMImg,
+.hrHeroImage img {
   width: 100% !important;
-  max-width: none !important;
-  height: 420px !important;
-  margin: 0 auto;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.homeHeroCarousel .sapMCrslInner,
-.homeHeroCarousel .sapMCrslItem,
-.homeHeroCarousel .sapMCrslItemTable,
-.homeHeroCarousel .sapMCrslItemTableCell {
-  width: 100% !important;
-  height: 420px !important;
-}
-
-.homeHeroSlideImg {
-  width: 100% !important;
-  height: 420px !important;
-  display: block !important;
-}
-
-.homeHeroSlideImg,
-.homeHeroSlideImg .sapMImg,
-.homeHeroSlideImg img {
-  width: 100% !important;
-  height: 420px !important;
-  min-height: 420px !important;
+  height: 360px !important;
   object-fit: cover !important;
   object-position: center center !important;
   display: block !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.14) !important;
 }
+
+/* ═══════════════════════════════════════
+   HOME — Feature cells (tile rows)
+═══════════════════════════════════════ */
+.hrFeatureCell > .sapUiBlockCellContent {
+  padding: 1.5rem 2rem;
+}
+
+/* GenericTile blends with cell background */
+.hrBlockTile.sapMGT {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer;
+}
+
+.hrBlockTile.sapMGT:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px;
+}
+
+.hrBlockTile .sapMGTHdrContent {
+  background: transparent !important;
+}
+
+/* ═══════════════════════════════════════
+   TABLE ROW COLORS — Courses
+═══════════════════════════════════════ */
 tr[data-coursestatus="completed"] td {
-  background-color: #e8f5e9 !important;
+  background-color: #e8f5e9;
 }
 
 tr[data-coursestatus="inprogress"] td {
-  background-color: #fff8e1 !important;
+  background-color: #fff8e1;
 }
 
 /* Assign Project - Available Projects */
 tr[data-availprojectstatus="completed"] td {
-  background-color: #e8f5e9 !important;
+  background-color: #e8f5e9;
 }
 
 tr[data-availprojectstatus="inprogress"] td {
-  background-color: #fff8e1 !important;
+  background-color: #fff8e1;
 }
 
 tr[data-availprojectstatus="planned"] td {
-  background-color: #e3f2fd !important;
+  background-color: #e3f2fd;
 }
 
 /* Assign Project - Assigned Projects */
@@ -85,5 +99,5 @@ tr[data-assignedprojectstatus="ok"] td {
 }
 
 tr[data-assignedprojectstatus="overdue"] td {
-  background-color: #ffebee !important;
+  background-color: #ffebee;
 }

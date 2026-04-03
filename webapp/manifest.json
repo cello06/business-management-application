@@ -4,9 +4,7 @@
     "id": "hrproject",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "0.0.1"
-    },
+    "applicationVersion": { "version": "0.0.1" },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
@@ -19,17 +17,13 @@
       "ZUI_HR_V2_BIND_VAN": {
         "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_HR_V2_BIND_VAN',Version='0001')/$value/",
         "type": "ODataAnnotation",
-        "settings": {
-          "localUri": "localService/mainService/ZUI_HR_V2_BIND_VAN.xml"
-        }
+        "settings": { "localUri": "localService/mainService/ZUI_HR_V2_BIND_VAN.xml" }
       },
       "mainService": {
         "uri": "/sap/opu/odata/sap/ZUI_HR_V2_BIND/",
         "type": "OData",
         "settings": {
-          "annotations": [
-            "ZUI_HR_V2_BIND_VAN"
-          ],
+          "annotations": ["ZUI_HR_V2_BIND_VAN"],
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "2.0"
         }
@@ -42,29 +36,15 @@
           "action": "manage",
           "title": "{{department-manage.flpTitle}}",
           "subTitle": "{{department-manage.flpSubtitle}}",
-          "signature": {
-            "parameters": {},
-            "additionalParameters": "allowed"
-          }
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
         }
       }
     }
   },
   "sap.ui": {
     "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
+    "icons": { "icon": "", "favIcon": "", "phone": "", "phone@2": "", "tablet": "", "tablet@2": "" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
   "sap.ui5": {
     "flexEnabled": false,
@@ -78,16 +58,11 @@
         "sap.suite.ui.microchart": {}
       }
     },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
+    "contentDensities": { "compact": true, "cozy": true },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "hrproject.i18n.i18n"
-        }
+        "settings": { "bundleName": "hrproject.i18n.i18n" }
       },
       "": {
         "dataSource": "mainService",
@@ -96,11 +71,7 @@
       }
     },
     "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ]
+      "css": [{ "uri": "css/style.css" }]
     },
     "routing": {
       "config": {
@@ -113,133 +84,34 @@
         "clearControlAggregation": false
       },
       "routes": [
-        {
-          "name": "RouteHome",
-          "pattern": "",
-          "target": [
-            "TargetHome"
-          ]
-        },
-        {
-          "name": "RouteSectors",
-          "pattern": "sectors",
-          "target": [
-            "TargetSectors"
-          ]
-        },
-        {
-          "name": "RouteCourseDetail",
-          "pattern": "courseDetail/{sectorId}/{persId}/{courseId}",
-          "target": "TargetCourseDetail"
-        },
-        {
-          "name": "RouteProjectDetail",
-          "pattern": "projectDetail/{sectorId}/{persId}/{projectId}",
-          "target": "TargetProjectDetail"
-        },
-        {
-          "name": "RouteEmployee",
-          "pattern": "employees/{sectorId}",
-          "target": [
-            "TargetEmployee"
-          ]
-        },
-        {
-          "name": "RouteEmployeeDetail",
-          "pattern": "employee/{sectorId}/{persId}",
-          "target": "TargetEmployeeDetail"
-        },
-        {
-          "name": "RouteMyCourses",
-          "pattern": "myCourses/{persId}",
-          "target": "TargetMyCourses"
-        },
-        {
-          "name": "RouteCourseList",
-          "pattern": "courseList/{type}/{persId}",
-          "target": "TargetCourseList"
-        },
-        {
-          "name": "RouteCreateEmployee",
-          "pattern": "employeeCreate/{sectorId}",
-          "target": "TargetCreateEmployee"
-        },
-        {
-          "pattern": "assignCourse/{sectorId}/{persId}",
-          "name": "RouteAssignCourse",
-          "target": "TargetAssignCourse"
-        },
-        {
-          "name": "RouteAssignProject",
-          "pattern": "assignProject/{sectorId}/{persId}",
-          "target": "TargetAssignProject"
-        }
+        { "name": "RouteHome",           "pattern": "",                                        "target": ["TargetHome"] },
+        { "name": "RouteSectors",        "pattern": "sectors",                                 "target": ["TargetSectors"] },
+        { "name": "RouteEmployee",       "pattern": "employees/{sectorId}",                    "target": ["TargetEmployee"] },
+        { "name": "RouteEmployeeDetail", "pattern": "employee/{sectorId}/{persId}",            "target": "TargetEmployeeDetail" },
+        { "name": "RouteCreateEmployee", "pattern": "employeeCreate/{sectorId}",               "target": "TargetCreateEmployee" },
+        { "name": "RouteMyCourses",      "pattern": "myCourses/{persId}",                      "target": "TargetMyCourses" },
+        { "name": "RouteCourseList",     "pattern": "courseList/{type}/{persId}",              "target": "TargetCourseList" },
+        { "name": "RouteCourseDetail",   "pattern": "courseDetail/{sectorId}/{persId}/{courseId}", "target": "TargetCourseDetail" },
+        { "name": "RouteAssignCourse",   "pattern": "assignCourse/{sectorId}/{persId}",        "target": "TargetAssignCourse" },
+        { "name": "RouteProjectDetail",  "pattern": "projectDetail/{sectorId}/{persId}/{projectId}", "target": "TargetProjectDetail" },
+        { "name": "RouteAssignProject",  "pattern": "assignProject/{sectorId}/{persId}",       "target": "TargetAssignProject" },
+        { "name": "RouteMyProjects",     "pattern": "myprojects/{persId}",                     "target": ["TargetMyProjects"] },
+        { "name": "RouteProjectList",    "pattern": "myprojects/{persId}/{type}",              "target": ["TargetProjectList"] }
       ],
       "targets": {
-        "TargetHome": {
-          "viewType": "XML",
-          "transition": "slide",
-          "viewId": "Home",
-          "viewName": "Home"
-        },
-        "TargetSectors": {
-          "viewType": "XML",
-          "transition": "slide",
-          "viewId": "Sectors",
-          "viewName": "Sectors"
-        },
-        "TargetProjectDetail": {
-          "viewType": "XML",
-          "viewId": "ProjectDetail",
-          "viewName": "employeeDetail.ProjectDetail"
-        },
-        "TargetMyCourses": {
-          "viewType": "XML",
-          "transition": "slide",
-          "viewId": "MyCourses",
-          "viewName": "myCourses.MyCourses"
-        },
-        "TargetCourseList": {
-          "viewType": "XML",
-          "transition": "slide",
-          "viewId": "CourseList",
-          "viewName": "myCourses.CourseList"
-        },
-        "TargetEmployee": {
-          "viewType": "XML",
-          "transition": "slide",
-          "viewId": "Employee",
-          "viewName": "Employee"
-        },
-        "TargetEmployeeDetail": {
-          "viewType": "XML",
-          "viewId": "EmployeeDetail",
-          "viewName": "EmployeeDetail"
-        },
-        "TargetCreateEmployee": {
-          "viewType": "XML",
-          "viewId": "CreateEmployee",
-          "viewName": "CreateEmployee"
-        },
-        "TargetCourseDetail": {
-          "viewType": "XML",
-          "viewId": "CourseDetail",
-          "viewName": "employeeDetail.CourseDetail"
-        },
-        "TargetAssignCourse": {
-          "viewType": "XML",
-          "viewName": "employeeDetail.AssignCourse",
-          "viewId": "AssignCourse",
-          "controlId": "app",
-          "controlAggregation": "pages"
-        },
-        "TargetAssignProject": {
-          "viewType": "XML",
-          "viewId": "AssignProject",
-          "viewName": "employeeDetail.AssignProject",
-          "controlId": "app",
-          "controlAggregation": "pages"
-        }
+        "TargetHome":           { "viewType": "XML", "transition": "slide", "viewId": "Home",           "viewName": "Home" },
+        "TargetSectors":        { "viewType": "XML", "transition": "slide", "viewId": "Sectors",        "viewName": "Sectors" },
+        "TargetEmployee":       { "viewType": "XML", "transition": "slide", "viewId": "Employee",       "viewName": "Employee" },
+        "TargetEmployeeDetail": { "viewType": "XML", "transition": "slide", "viewId": "EmployeeDetail", "viewName": "EmployeeDetail" },
+        "TargetCreateEmployee": { "viewType": "XML", "transition": "slide", "viewId": "CreateEmployee", "viewName": "CreateEmployee" },
+        "TargetMyCourses":      { "viewType": "XML", "transition": "slide", "viewId": "MyCourses",      "viewName": "myCourses.MyCourses" },
+        "TargetCourseList":     { "viewType": "XML", "transition": "slide", "viewId": "CourseList",     "viewName": "myCourses.CourseList" },
+        "TargetCourseDetail":   { "viewType": "XML", "transition": "slide", "viewId": "CourseDetail",   "viewName": "employeeDetail.CourseDetail" },
+        "TargetAssignCourse":   { "viewType": "XML", "viewId": "AssignCourse",  "viewName": "employeeDetail.AssignCourse",  "controlId": "app", "controlAggregation": "pages" },
+        "TargetProjectDetail":  { "viewType": "XML", "transition": "slide", "viewId": "ProjectDetail",  "viewName": "employeeDetail.ProjectDetail" },
+        "TargetAssignProject":  { "viewType": "XML", "viewId": "AssignProject", "viewName": "employeeDetail.AssignProject", "controlId": "app", "controlAggregation": "pages" },
+        "TargetMyProjects":     { "viewType": "XML", "transition": "slide", "viewId": "MyProjects",     "viewName": "myProjects.MyProjects" },
+        "TargetProjectList":    { "viewType": "XML", "transition": "slide", "viewId": "ProjectList",    "viewName": "myProjects.ProjectList" }
       }
     },
     "rootView": {

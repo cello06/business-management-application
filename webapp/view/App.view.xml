@@ -1,7 +1,92 @@
-<mvc:View controllerName="hrproject.controller.App"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <App id="app">
-    </App>
+<mvc:View
+    controllerName="hrproject.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    displayBlock="true"
+>
+    <tnt:ToolPage id="toolPage">
+
+        <!-- ═══════════════════════════════
+             TOP HEADER BAR
+        ════════════════════════════════ -->
+        <tnt:header>
+            <tnt:ToolHeader>
+                <!-- Sidebar toggle button -->
+                <Button
+                    icon="sap-icon://menu2"
+                    type="Transparent"
+                    press=".onSidebarToggle"
+                    tooltip="Toggle Navigation"
+                >
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                    </layoutData>
+                </Button>
+                <ToolbarSpacer/>
+                <Title text="Company Business Management Site" level="H2"/>
+                <ToolbarSpacer/>
+            </tnt:ToolHeader>
+        </tnt:header>
+
+        <!-- ═══════════════════════════════
+             LEFT SIDEBAR
+        ════════════════════════════════ -->
+        <tnt:sideContent>
+            <tnt:SideNavigation id="sideNav" expanded="true">
+
+                <tnt:NavigationList>
+
+                    <!-- Logo / Brand area -->
+                    <tnt:NavigationListItem
+                        text="HR Management"
+                        icon="sap-icon://building"
+                        expanded="false"
+                        selectable="false"
+                        class="hrSideNavBrand"
+                    />
+
+                </tnt:NavigationList>
+
+                <!-- Fixed bottom section: Company Overview stats -->
+                <tnt:fixedItem>
+                    <tnt:NavigationList selectable="false" class="hrSideNavStats">
+                        <tnt:NavigationListItem
+                            text="Company Overview"
+                            icon="sap-icon://org-chart"
+                            expanded="true"
+                            selectable="false"
+                        >
+                            <tnt:NavigationListItem
+                                text="Sectors: {app>/sectorCount}"
+                                icon="sap-icon://organization-chart"
+                                selectable="false"
+                            />
+                            <tnt:NavigationListItem
+                                text="Employees: {app>/employeeCount}"
+                                icon="sap-icon://group"
+                                selectable="false"
+                            />
+                            <tnt:NavigationListItem
+                                text="Courses: {app>/courseCount}"
+                                icon="sap-icon://course-book"
+                                selectable="false"
+                            />
+                        </tnt:NavigationListItem>
+                    </tnt:NavigationList>
+                </tnt:fixedItem>
+
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+
+        <!-- ═══════════════════════════════
+             MAIN CONTENT AREA
+        ════════════════════════════════ -->
+        <tnt:mainContents>
+            <App id="app"/>
+        </tnt:mainContents>
+
+    </tnt:ToolPage>
 </mvc:View>

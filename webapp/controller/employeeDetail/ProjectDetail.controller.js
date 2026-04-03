@@ -7,24 +7,15 @@ sap.ui.define([
   "use strict";
 
   return Controller.extend("hrproject.controller.employeeDetail.ProjectDetail", {
+
     onInit: function () {
       var oDetailModel = new JSONModel({
-        ProjectId: "",
-        ProjectName: "",
-        ProjectDesc: "",
-        ProjectCategory: "",
-        Status: "",
-        Priority: "",
-        AssignedDate: "",
-        RoleInProject: "",
-        HoursAllocated: 0,
-        HoursSpent: 0,
-        RemainingHours: 0,
-        ProgressPercent: 0,
-        ProgressState: "None",
-        ActiveProject: false
+        ProjectId: "", ProjectName: "", ProjectDesc: "",
+        ProjectCategory: "", Status: "", Priority: "",
+        AssignedDate: "", RoleInProject: "",
+        HoursAllocated: 0, HoursSpent: 0, RemainingHours: 0,
+        ProgressPercent: 0, ProgressState: "None", ActiveProject: false
       });
-
       this.getView().setModel(oDetailModel, "detail");
 
       UIComponent.getRouterFor(this)
@@ -33,69 +24,69 @@ sap.ui.define([
     },
 
     _onRouteMatched: function (oEvent) {
-      var oArgs = oEvent.getParameter("arguments");
-
-      this._sSectorId = oArgs.sectorId;
-      this._sPersId = oArgs.persId;
+      var oArgs        = oEvent.getParameter("arguments");
+      this._sSectorId  = oArgs.sectorId;   // "0" = came from MyProjects
+      this._sPersId    = oArgs.persId;
       this._sProjectId = oArgs.projectId;
-
       this._loadProjectDetail(this._sPersId, this._sProjectId);
     },
 
     _loadProjectDetail: function (sPersId, sProjectId) {
-      var oModel = this.getOwnerComponent().getModel();
+      var oModel       = this.getOwnerComponent().getModel();
       var oDetailModel = this.getView().getModel("detail");
-      var sPath = "/EmployeeProjectDetails(PersId='" + sPersId + "',ProjectId=" + sProjectId + ")";
+      var sPath = "/EmployeeProjectDetails(PersId='" + sPersId +
+                  "',ProjectId=" + sProjectId + ")";
 
       this.getView().setBusy(true);
 
       oModel.read(sPath, {
         success: function (oData) {
           var iAllocated = Number(oData.HoursAllocated || 0);
-          var iSpent = Number(oData.HoursSpent || 0);
+          var iSpent     = Number(oData.HoursSpent     || 0);
           var iRemaining = Math.max(0, iAllocated - iSpent);
-          var fPercent = iAllocated > 0 ? (iSpent / iAllocated) * 100 : 0;
+          var fPercent   = iAllocated > 0 ? (iSpent / iAllocated) * 100 : 0;
 
-          var sProgressState = "Error";
-          if (fPercent >= 100) {
-            sProgressState = "Success";
-          } else if (fPercent >= 50) {
-            sProgressState = "Warning";
-          }
+          var sState = fPercent >= 100 ? "Success" : fPercent >= 50 ? "Warning" : "Error";
 
           oDetailModel.setData({
-            ProjectId: oData.ProjectId,
-            ProjectName: oData.ProjectName || "",
-            ProjectDesc: oData.ProjectDesc || "",
+            ProjectId:       oData.ProjectId,
+            ProjectName:     oData.ProjectName     || "",
+            ProjectDesc:     oData.ProjectDesc     || "",
             ProjectCategory: oData.ProjectCategory || "",
-            Status: oData.Status || "",
-            Priority: oData.Priority || "",
-            AssignedDate: oData.AssignedDate || "",
-            RoleInProject: oData.RoleInProject || "",
-            HoursAllocated: iAllocated,
-            HoursSpent: iSpent,
-            RemainingHours: iRemaining,
+            Status:          oData.Status          || "",
+            Priority:        oData.Priority        || "",
+            AssignedDate:    oData.AssignedDate    || "",
+            RoleInProject:   oData.RoleInProject   || "",
+            HoursAllocated:  iAllocated,
+            HoursSpent:      iSpent,
+            RemainingHours:  iRemaining,
             ProgressPercent: Number(fPercent.toFixed(1)),
-            ProgressState: sProgressState,
-            ActiveProject: !!oData.ActiveProject
+            ProgressState:   sState,
+            ActiveProject:   !!oData.ActiveProject
           });
-
           this.getView().setBusy(false);
         }.bind(this),
-
-        error: function (oError) {
+        error: function () {
           this.getView().setBusy(false);
-          console.error("Project detail read error:", oError);
           MessageBox.error("Project detail could not be loaded.");
         }.bind(this)
       });
     },
 
     onNavBack: function () {
-      UIComponent.getRouterFor(this).navTo("RouteEmployeeDetail", {
-        sectorId: this._sSectorId,
-        persId: this._sPersId
-      });
+      if (this._sSectorId === "0") {
+        // Came from MyProjects flow
+        UIComponent.getRouterFor(this).navTo("RouteProjectList", {
+          persId: this._sPersId,
+          type:   "all"
+        });
+      } else {
+        // Came from EmployeeDetail
+        UIComponent.getRouterFor(this).navTo("RouteEmployeeDetail", {
+          sectorId: this._sSectorId,
+          persId:   this._sPersId
+        });
+      }
     }
   });
 });
