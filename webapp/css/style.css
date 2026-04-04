@@ -101,3 +101,193 @@ tr[data-assignedprojectstatus="ok"] td {
 tr[data-assignedprojectstatus="overdue"] td {
   background-color: #ffebee;
 }
+
+/* ═══════════════════════════════════════
+   KANBAN BOARD STYLES
+═══════════════════════════════════════ */
+
+/* Column container */
+.kanbanColumn {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  background: #f5f6f8;
+  min-height: 500px;
+}
+
+/* Flexible column — grows to fill available space */
+.kanbanColumnFlex {
+  min-width: 200px;
+  flex: 1 1 200px;
+}
+
+/* Kanban scroll area */
+.kanbanScrollArea {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+/* Column header toolbars */
+.kanbanHeaderTodo.sapMTB {
+  background: #e8f1ff !important;
+  border-bottom: 3px solid #0064d9 !important;
+  padding: 0.5rem 0.75rem !important;
+  min-height: 3rem !important;
+}
+
+.kanbanHeaderInProgress.sapMTB {
+  background: #fff3e0 !important;
+  border-bottom: 3px solid #e9730c !important;
+  padding: 0.5rem 0.75rem !important;
+  min-height: 3rem !important;
+}
+
+.kanbanHeaderTest.sapMTB {
+  background: #f3e8ff !important;
+  border-bottom: 3px solid #6b2fbb !important;
+  padding: 0.5rem 0.75rem !important;
+  min-height: 3rem !important;
+}
+
+.kanbanHeaderCompleted.sapMTB {
+  background: #e8f5e9 !important;
+  border-bottom: 3px solid #107e3e !important;
+  padding: 0.5rem 0.75rem !important;
+  min-height: 3rem !important;
+}
+
+.kanbanHeaderBacklog.sapMTB {
+  background: #EEEDFE !important;
+  border-bottom: 3px solid #534AB7 !important;
+  padding: 0.5rem 0.75rem !important;
+  min-height: 3rem !important;
+}
+
+/* List background */
+.kanbanList.sapMList {
+  background: #f5f6f8 !important;
+  padding: 0.5rem !important;
+}
+
+.kanbanList .sapMListNoData {
+  background: #f5f6f8 !important;
+  color: #999 !important;
+  font-style: italic !important;
+  padding: 2rem 1rem !important;
+  text-align: center !important;
+}
+
+/* Card base */
+.kanbanCard.sapMLIB {
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  margin-bottom: 0.5rem !important;
+  border-left: 4px solid #0064d9 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+  transition: box-shadow 0.2s ease, transform 0.1s ease !important;
+}
+
+.kanbanCard.sapMLIB:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Card variants */
+.kanbanCardWarning.sapMLIB {
+  border-left-color: #e9730c !important;
+}
+
+.kanbanCardTest.sapMLIB {
+  border-left-color: #6b2fbb !important;
+}
+
+.kanbanCardSuccess.sapMLIB {
+  border-left-color: #107e3e !important;
+}
+
+.kanbanCardBacklog.sapMLIB {
+  border-left-color: #534AB7 !important;
+  background: #FAFAFE !important;
+}
+
+.kanbanCardBacklog.sapMLIB:hover {
+  box-shadow: 0 4px 12px rgba(83, 74, 183, 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Drag & Drop indicators */
+.sapUiDnDDragging {
+  opacity: 0.5 !important;
+}
+
+.sapUiDnDDropIndicator {
+  background: #0064d9 !important;
+  height: 3px !important;
+  border-radius: 3px !important;
+}
+
+/* ═══════════════════════════════════════
+   KANBAN RIGHT PANEL
+═══════════════════════════════════════ */
+
+/* Right panel container */
+.kanbanRightPanel {
+  flex-shrink: 0 !important;
+  background: #f5f6f8 !important;
+  border-left: 1px solid #e5e5e5 !important;
+}
+
+/* Stats card */
+.kanbanStatCard {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.75rem;
+}
+
+/* Stat numbers */
+.kanbanStatNumber {
+  font-size: 1.4rem !important;
+  font-weight: bold !important;
+  color: #0064d9 !important;
+  text-align: center !important;
+}
+
+.kanbanStatWarning {
+  color: #e9730c !important;
+}
+
+.kanbanStatSuccess {
+  color: #107e3e !important;
+}
+
+.kanbanStatLabel {
+  font-size: 0.7rem !important;
+  color: #666 !important;
+  text-align: center !important;
+}
+
+/* Quote card */
+.kanbanQuoteCard {
+  background: #EEEDFE;
+  border-radius: 10px;
+  padding: 1rem;
+  border-left: 4px solid #534AB7;
+  box-shadow: 0 1px 4px rgba(83, 74, 183, 0.15);
+}
+
+.kanbanQuoteText {
+  font-size: 0.85rem !important;
+  font-style: italic !important;
+  color: #3C3489 !important;
+  line-height: 1.5 !important;
+}
+
+.kanbanQuoteAuthor {
+  font-size: 0.75rem !important;
+  color: #534AB7 !important;
+  font-weight: bold !important;
+  margin-top: 0.5rem !important;
+  text-align: right !important;
+}

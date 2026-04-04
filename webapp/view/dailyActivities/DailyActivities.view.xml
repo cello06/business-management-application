@@ -1,0 +1,188 @@
+<mvc:View
+  controllerName="hrproject.controller.dailyActivities.DailyActivities"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:dnd="sap.ui.core.dnd"
+  xmlns:core="sap.ui.core"
+  displayBlock="true">
+
+  <Page showNavButton="false" showHeader="false" backgroundDesign="Solid">
+    <content>
+
+      <!-- ── Top Bar ── -->
+      <Toolbar class="sapUiNoMargin">
+        <Button icon="sap-icon://nav-back" type="Transparent" press="onNavBack"/>
+        <Title text="Daily Activities" level="H4"/>
+        <ToolbarSpacer/>
+        <Button
+          id="backlogToggleBtn"
+          icon="sap-icon://shelf"
+          text="Backlog (0)"
+          type="Default"
+          press="onToggleBacklog"/>
+        <Button
+          text="+ New Task"
+          type="Emphasized"
+          press="onCreateTask"
+          class="sapUiTinyMarginBegin"/>
+      </Toolbar>
+
+      <ScrollContainer horizontal="true" vertical="true" width="100%" height="calc(100vh - 3rem)">
+        <HBox alignItems="Start" class="sapUiMediumMargin">
+
+          <!-- ══ BACKLOG ══ -->
+          <VBox
+            id="backlogPanel"
+            class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex"
+            visible="{kanban>/backlogVisible}">
+            <Toolbar class="kanbanHeaderBacklog">
+              <core:Icon src="sap-icon://shelf" color="#534AB7"/>
+              <Title text="Backlog" level="H5" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <ObjectStatus id="backlogCount" text="0" inverted="true" state="None"/>
+              <Button icon="sap-icon://decline" type="Transparent" tooltip="Close" press="onToggleBacklog"/>
+            </Toolbar>
+            <List id="backlogList" noDataText="No backlog tasks" showSeparators="None" class="kanbanList" items="{kanban>/backlog}">
+              <dragDropConfig>
+                <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
+                <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
+              </dragDropConfig>
+              <CustomListItem class="kanbanCard kanbanCardBacklog">
+                <VBox class="sapUiSmallMargin">
+                  <HBox justifyContent="SpaceBetween" alignItems="Start">
+                    <Title text="{kanban>Title}" level="H6" wrapping="true"/>
+                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                  </HBox>
+                  <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop"/>
+                  <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
+                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="None"/>
+                    <Text text="By: {kanban>CreatedBy}"/>
+                  </HBox>
+                  <Button text="Assign to Me" type="Emphasized" icon="sap-icon://person-placeholder" press="onAssignTask" width="100%" class="sapUiTinyMarginTop"/>
+                </VBox>
+              </CustomListItem>
+            </List>
+          </VBox>
+
+          <!-- ══ TO DO ══ -->
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
+            <Toolbar class="kanbanHeaderTodo">
+              <core:Icon src="sap-icon://task" color="#0064d9"/>
+              <Title text="To Do" level="H5" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <ObjectStatus id="todoCount" text="0" inverted="true" state="Information"/>
+            </Toolbar>
+            <List id="todoList" noDataText="No tasks" showSeparators="None" class="kanbanList" items="{kanban>/todo}">
+              <dragDropConfig>
+                <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
+                <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
+              </dragDropConfig>
+              <CustomListItem class="kanbanCard">
+                <VBox class="sapUiSmallMargin">
+                  <HBox justifyContent="SpaceBetween" alignItems="Start">
+                    <Title text="{kanban>Title}" level="H6" wrapping="true"/>
+                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                  </HBox>
+                  <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+                  <HBox alignItems="Center" justifyContent="SpaceBetween">
+                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Information"/>
+                    <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
+                  </HBox>
+                </VBox>
+              </CustomListItem>
+            </List>
+          </VBox>
+
+          <!-- ══ IN PROGRESS ══ -->
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
+            <Toolbar class="kanbanHeaderInProgress">
+              <core:Icon src="sap-icon://process" color="#e9730c"/>
+              <Title text="In Progress" level="H5" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <ObjectStatus id="inProgressCount" text="0" inverted="true" state="Warning"/>
+            </Toolbar>
+            <List id="inProgressList" noDataText="No tasks in progress" showSeparators="None" class="kanbanList" items="{kanban>/inProgress}">
+              <dragDropConfig>
+                <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
+                <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
+              </dragDropConfig>
+              <CustomListItem class="kanbanCard kanbanCardWarning">
+                <VBox class="sapUiSmallMargin">
+                  <HBox justifyContent="SpaceBetween" alignItems="Start">
+                    <Title text="{kanban>Title}" level="H6" wrapping="true"/>
+                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                  </HBox>
+                  <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+                  <HBox alignItems="Center" justifyContent="SpaceBetween">
+                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Warning"/>
+                    <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
+                  </HBox>
+                </VBox>
+              </CustomListItem>
+            </List>
+          </VBox>
+
+          <!-- ══ TEST ══ -->
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
+            <Toolbar class="kanbanHeaderTest">
+              <core:Icon src="sap-icon://lab" color="#6b2fbb"/>
+              <Title text="Test" level="H5" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <ObjectStatus id="testCount" text="0" inverted="true" state="Error"/>
+            </Toolbar>
+            <List id="testList" noDataText="No tasks in test" showSeparators="None" class="kanbanList" items="{kanban>/test}">
+              <dragDropConfig>
+                <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
+                <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
+              </dragDropConfig>
+              <CustomListItem class="kanbanCard kanbanCardTest">
+                <VBox class="sapUiSmallMargin">
+                  <HBox justifyContent="SpaceBetween" alignItems="Start">
+                    <Title text="{kanban>Title}" level="H6" wrapping="true"/>
+                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                  </HBox>
+                  <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+                  <HBox alignItems="Center" justifyContent="SpaceBetween">
+                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Error"/>
+                    <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
+                  </HBox>
+                </VBox>
+              </CustomListItem>
+            </List>
+          </VBox>
+
+          <!-- ══ COMPLETED ══ -->
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
+            <Toolbar class="kanbanHeaderCompleted">
+              <core:Icon src="sap-icon://accept" color="#107e3e"/>
+              <Title text="Completed" level="H5" class="sapUiTinyMarginBegin"/>
+              <ToolbarSpacer/>
+              <ObjectStatus id="completedCount" text="0" inverted="true" state="Success"/>
+            </Toolbar>
+            <List id="completedList" noDataText="No completed tasks" showSeparators="None" class="kanbanList" items="{kanban>/completed}">
+              <dragDropConfig>
+                <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
+                <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
+              </dragDropConfig>
+              <CustomListItem class="kanbanCard kanbanCardSuccess">
+                <VBox class="sapUiSmallMargin">
+                  <HBox justifyContent="SpaceBetween" alignItems="Start">
+                    <Title text="{kanban>Title}" level="H6" wrapping="true"/>
+                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                  </HBox>
+                  <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+                  <HBox alignItems="Center" justifyContent="SpaceBetween">
+                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Success"/>
+                    <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
+                  </HBox>
+                </VBox>
+              </CustomListItem>
+            </List>
+          </VBox>
+
+        </HBox>
+      </ScrollContainer>
+
+    </content>
+  </Page>
+</mvc:View>

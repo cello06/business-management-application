@@ -107,7 +107,7 @@
 
             </l:BlockLayoutRow>
 
-            <!-- ═══ ROW 2 — EMPLOYEE tiles ═══════════════════ -->
+            <!-- ═══ ROW 2 — EMPLOYEE tiles (all 5 in one row) ══ -->
             <l:BlockLayoutRow visible="{= ${home>/roleLoaded} &amp;&amp; !${home>/isAdmin} }">
 
                 <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
@@ -171,6 +171,26 @@
                 </l:BlockLayoutCell>
 
                 <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="My Calendar"
+                        subheader="Your schedule"
+                        frameType="TwoByOne"
+                        press=".onMyCalendar">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://appointment-2" size="2rem" color="Default"/>
+                                        <Text text="Plan your appointments" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+
+                <l:BlockLayoutCell backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD" class="hrFeatureCell">
                     <GenericTile
                         class="hrBlockTile"
                         header="My Profile"

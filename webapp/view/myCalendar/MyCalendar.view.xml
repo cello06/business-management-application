@@ -1,0 +1,54 @@
+<mvc:View
+  controllerName="hrproject.controller.myCalendar.MyCalendar"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:unified="sap.ui.unified"
+  displayBlock="true">
+
+  <Page showNavButton="false" showHeader="false">
+    <content>
+
+      <Toolbar class="sapUiNoMargin">
+        <Button icon="sap-icon://nav-back" type="Transparent" press="onNavBack"/>
+        <Title text="My Calendar" level="H4"/>
+        <ToolbarSpacer/>
+        <Button
+          text="+ New Appointment"
+          type="Emphasized"
+          icon="sap-icon://add"
+          press="onCreateAppointment"/>
+      </Toolbar>
+
+      <SinglePlanningCalendar
+        id="myCalendar"
+        title=""
+        startDate="{calModel>/startDate}"
+        enableAppointmentsDragAndDrop="true"
+        enableAppointmentsResize="true"
+        enableAppointmentsCreate="false"
+        appointmentDrop="onAppointmentDrop"
+        appointmentResize="onAppointmentResize"
+        appointmentSelect="onAppointmentSelect"
+        appointments="{path: 'calModel>/appointments'}">
+
+        <views>
+          <SinglePlanningCalendarDayView      key="DayView"      title="Day"/>
+          <SinglePlanningCalendarWorkWeekView key="WorkWeekView" title="Work Week"/>
+          <SinglePlanningCalendarWeekView     key="WeekView"     title="Week"/>
+          <SinglePlanningCalendarMonthView    key="MonthView"    title="Month"/>
+        </views>
+
+        <appointments>
+          <unified:CalendarAppointment
+            title="{calModel>title}"
+            text="{calModel>description}"
+            type="{calModel>type}"
+            startDate="{calModel>startDate}"
+            endDate="{calModel>endDate}"/>
+        </appointments>
+
+      </SinglePlanningCalendar>
+
+    </content>
+  </Page>
+</mvc:View>

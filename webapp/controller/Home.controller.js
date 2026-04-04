@@ -45,7 +45,7 @@ sap.ui.define([
 
     // ── Role detection ──────────────────────────────────────────────
     _loadUserRole: function () {
-      const oModel     = this.getOwnerComponent().getModel();
+      const oModel = this.getOwnerComponent().getModel();
       const oHomeModel = this.getView().getModel("home");
 
       oHomeModel.setProperty("/roleLoaded", false);
@@ -96,7 +96,7 @@ sap.ui.define([
             return;
           }
 
-          const sRole   = oData.results[0].Role;
+          const sRole = oData.results[0].Role;
           const bIsAdmin = (sRole || "").toUpperCase() === "ADMIN";
           console.log("Role found:", sRole, "→ isAdmin:", bIsAdmin);
 
@@ -117,6 +117,10 @@ sap.ui.define([
                   const sPersId = oEmpData.results[0].PersId.toString();
                   console.log("PersId resolved:", sPersId);
                   oHomeModel.setProperty("/persId", sPersId);
+                  oHomeModel.setProperty("/sapUsername", sFinalUsername);
+                  // Store on component for cross-controller access
+                  this.getOwnerComponent()._sPersId      = sPersId;
+                  this.getOwnerComponent()._sSapUsername = sFinalUsername;
                 } else {
                   console.warn("No Employee record found for SapUsername:", sFinalUsername);
                 }
@@ -173,11 +177,11 @@ sap.ui.define([
     },
 
     onHeroHover: function () { this._stopHeroCarousel(); },
-    onHeroOut:   function () { this._startHeroCarousel(); },
+    onHeroOut: function () { this._startHeroCarousel(); },
 
     // ── Sector count ────────────────────────────────────────────────
     _loadSectorCount: function () {
-      const oModel     = this.getOwnerComponent().getModel();
+      const oModel = this.getOwnerComponent().getModel();
       const oHomeModel = this.getView().getModel("home");
 
       oModel.read("/Sectors/$count", {
@@ -284,7 +288,7 @@ sap.ui.define([
               let sMsg = "Create failed.";
               try {
                 const oJson = JSON.parse(oErr && oErr.responseText);
-                const vMsg  = oJson?.error?.message?.value;
+                const vMsg = oJson?.error?.message?.value;
                 if (vMsg) sMsg = vMsg;
               } catch (e) { }
               MessageBox.error(sMsg);
@@ -322,7 +326,25 @@ sap.ui.define([
     },
 
     onDailyActivities: function () {
-      MessageToast.show("Daily Activities — coming soon.");
+      const sPersId = this.getView().getModel("home").getProperty("/persId");
+      if (!sPersId) {
+        MessageToast.show("Please wait, loading your profile...");
+        return;
+      }
+      this.getOwnerComponent().getRouter().navTo("RouteDailyActivities", {
+        persId: sPersId   // ← pass persId in route
+      });
+    },
+
+    onMyCalendar: function () {
+      const sPersId = this.getView().getModel("home").getProperty("/persId");
+      if (!sPersId) {
+        MessageToast.show("Please wait, loading your profile...");
+        return;
+      }
+      this.getOwnerComponent().getRouter().navTo("RouteMyCalendar", {
+        persId: sPersId
+      });
     },
 
     onMyProfile: function () {

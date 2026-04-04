@@ -1,0 +1,75 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="appointmentDialog"
+    title="New Appointment"
+    contentWidth="460px"
+    draggable="true"
+    resizable="true">
+
+    <content>
+      <VBox class="sapUiSmallMargin sapUiSmallMarginTop">
+
+        <Label text="Title" required="true" class="sapUiTinyMarginBottom"/>
+        <Input
+          id="apptTitle"
+          placeholder="Enter appointment title"
+          width="100%"
+          class="sapUiSmallMarginBottom"/>
+
+        <Label text="Description" class="sapUiTinyMarginBottom"/>
+        <TextArea
+          id="apptDesc"
+          placeholder="Optional description"
+          rows="2"
+          width="100%"
+          class="sapUiSmallMarginBottom"/>
+
+        <HBox width="100%" class="sapUiSmallMarginBottom">
+          <VBox width="50%" class="sapUiSmallMarginEnd">
+            <Label text="Start Date" required="true" class="sapUiTinyMarginBottom"/>
+            <DatePicker id="apptDateFrom" width="100%" valueFormat="yyyyMMdd" displayFormat="dd.MM.yyyy"/>
+          </VBox>
+          <VBox width="50%">
+            <Label text="Start Time" required="true" class="sapUiTinyMarginBottom"/>
+            <TimePicker id="apptTimeFrom" width="100%" valueFormat="HHmm" displayFormat="HH:mm"/>
+          </VBox>
+        </HBox>
+
+        <HBox width="100%" class="sapUiSmallMarginBottom">
+          <VBox width="50%" class="sapUiSmallMarginEnd">
+            <Label text="End Date" required="true" class="sapUiTinyMarginBottom"/>
+            <DatePicker id="apptDateTo" width="100%" valueFormat="yyyyMMdd" displayFormat="dd.MM.yyyy"/>
+          </VBox>
+          <VBox width="50%">
+            <Label text="End Time" required="true" class="sapUiTinyMarginBottom"/>
+            <TimePicker id="apptTimeTo" width="100%" valueFormat="HHmm" displayFormat="HH:mm"/>
+          </VBox>
+        </HBox>
+
+        <Label text="Color / Type" class="sapUiTinyMarginBottom"/>
+        <Select id="apptType" width="100%">
+          <items>
+            <core:Item key="Type01" text="Blue — Work"/>
+            <core:Item key="Type02" text="Green — Available"/>
+            <core:Item key="Type03" text="Teal — Meeting"/>
+            <core:Item key="Type05" text="Orange — Personal"/>
+            <core:Item key="Type07" text="Pink — Social"/>
+            <core:Item key="Type08" text="Red — Urgent"/>
+            <core:Item key="Type09" text="Purple — Reminder"/>
+          </items>
+        </Select>
+
+      </VBox>
+    </content>
+
+    <buttons>
+      <Button text="Save" type="Emphasized" press="onSaveAppointment"/>
+      <Button text="Delete" type="Reject" press="onDeleteAppointment"/>
+      <Button text="Cancel" press="onCancelAppointment"/>
+    </buttons>
+
+  </Dialog>
+</core:FragmentDefinition>

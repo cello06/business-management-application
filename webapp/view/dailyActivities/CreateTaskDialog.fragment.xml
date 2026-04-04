@@ -1,0 +1,59 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="createTaskDialog"
+    title="New Task"
+    contentWidth="420px"
+    draggable="true"
+    resizable="true">
+
+    <content>
+      <VBox class="sapUiSmallMargin sapUiSmallMarginTop">
+
+        <Label text="Title" required="true" class="sapUiTinyMarginBottom"/>
+        <Input
+          id="taskTitle"
+          placeholder="Enter task title"
+          width="100%"
+          class="sapUiSmallMarginBottom"/>
+
+        <Label text="Description" class="sapUiTinyMarginBottom"/>
+        <TextArea
+          id="taskDesc"
+          placeholder="Enter description (optional)"
+          rows="3"
+          width="100%"
+          class="sapUiSmallMarginBottom"/>
+
+        <Label text="Status" class="sapUiTinyMarginBottom"/>
+        <Select id="taskStatus" width="100%" class="sapUiSmallMarginBottom">
+          <items>
+            <core:Item key="BACKLOG"     text="Backlog (unassigned)"/>
+            <core:Item key="TODO"        text="To Do"/>
+            <core:Item key="IN_PROGRESS" text="In Progress"/>
+            <core:Item key="TEST"        text="Test"/>
+            <core:Item key="COMPLETED"   text="Completed"/>
+          </items>
+        </Select>
+
+        <Label text="Points" class="sapUiTinyMarginBottom"/>
+        <StepInput
+          id="taskPoints"
+          min="0"
+          max="100"
+          step="5"
+          value="10"
+          width="100%"/>
+
+      </VBox>
+    </content>
+
+    <buttons>
+      <Button text="Save" type="Emphasized" press="onSaveTask"/>
+      <Button text="Cancel" press="onCancelTask"/>
+    </buttons>
+
+  </Dialog>
+</core:FragmentDefinition>
