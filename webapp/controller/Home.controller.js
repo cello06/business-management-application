@@ -54,7 +54,7 @@ sap.ui.define([
       // Safety fallback: if OData never responds, show employee tiles after 5s
       const iFallbackTimer = setTimeout(function () {
         if (!oHomeModel.getProperty("/roleLoaded")) {
-          console.warn("UserRoles request timed out — showing employee tiles as fallback.");
+          console.warn("UserRoles request timed out - showing employee tiles as fallback.");
           oHomeModel.setProperty("/isAdmin", false);
           oHomeModel.setProperty("/roleLoaded", true);
         }
@@ -76,7 +76,6 @@ sap.ui.define([
 
       console.log("Querying UserRoles for username:", sUsername);
 
-      // Keep sUsername accessible in nested callbacks
       const sFinalUsername = sUsername;
 
       oModel.read("/UserRoles", {
@@ -93,51 +92,57 @@ sap.ui.define([
             console.warn("No UserRoles record found for:", sFinalUsername);
             oHomeModel.setProperty("/isAdmin", false);
             oHomeModel.setProperty("/roleLoaded", true);
+            // Still load PersId even if no role found (default to employee)
+            this._loadPersId(sFinalUsername, oHomeModel, oModel);
             return;
           }
 
           const sRole = oData.results[0].Role;
           const bIsAdmin = (sRole || "").toUpperCase() === "ADMIN";
-          console.log("Role found:", sRole, "→ isAdmin:", bIsAdmin);
+          console.log("Role found:", sRole, "-> isAdmin:", bIsAdmin);
 
           oHomeModel.setProperty("/isAdmin", bIsAdmin);
           oHomeModel.setProperty("/roleLoaded", true);
 
-          // For non-admin employees: look up PersId by filtering
-          // Employees on SapUsername — field is exposed in the OData service
-          if (!bIsAdmin) {
-            oModel.read("/Employees", {
-              urlParameters: {
-                "$filter": "SapUsername eq '" + sFinalUsername + "'",
-                "$select": "PersId,SapUsername",
-                "$top": "1"
-              },
-              success: function (oEmpData) {
-                if (oEmpData.results && oEmpData.results.length > 0) {
-                  const sPersId = oEmpData.results[0].PersId.toString();
-                  console.log("PersId resolved:", sPersId);
-                  oHomeModel.setProperty("/persId", sPersId);
-                  oHomeModel.setProperty("/sapUsername", sFinalUsername);
-                  // Store on component for cross-controller access
-                  this.getOwnerComponent()._sPersId      = sPersId;
-                  this.getOwnerComponent()._sSapUsername = sFinalUsername;
-                } else {
-                  console.warn("No Employee record found for SapUsername:", sFinalUsername);
-                }
-              },
-              error: function (oErr) {
-                console.error("Employees read failed:", oErr && oErr.responseText);
-                MessageToast.show("Could not load employee profile.");
-              }
-            });
-          }
-        },
+          // ALWAYS load PersId regardless of admin or employee role
+          this._loadPersId(sFinalUsername, oHomeModel, oModel);
+        }.bind(this),
         error: function (oErr) {
           clearTimeout(iFallbackTimer);
           console.error("UserRoles read failed. Status:", oErr && oErr.statusCode,
             "Response:", oErr && oErr.responseText);
           oHomeModel.setProperty("/isAdmin", false);
           oHomeModel.setProperty("/roleLoaded", true);
+        }
+      });
+    },
+
+    // ── PersId loader (called for ALL users, admin or employee) ─────
+    _loadPersId: function (sUsername, oHomeModel, oModel) {
+      var oComp = this.getOwnerComponent();
+
+      oModel.read("/Employees", {
+        urlParameters: {
+          "$filter": "SapUsername eq '" + sUsername + "'",
+          "$select": "PersId,SapUsername",
+          "$top": "1"
+        },
+        success: function (oEmpData) {
+          if (oEmpData.results && oEmpData.results.length > 0) {
+            var sPersId = oEmpData.results[0].PersId.toString();
+            console.log("PersId resolved:", sPersId);
+            oHomeModel.setProperty("/persId", sPersId);
+            oHomeModel.setProperty("/sapUsername", sUsername);
+            // Store on component for cross-controller access
+            oComp._sPersId      = sPersId;
+            oComp._sSapUsername = sUsername;
+          } else {
+            console.warn("No Employee record found for SapUsername:", sUsername);
+          }
+        },
+        error: function (oErr) {
+          console.error("Employees read failed:", oErr && oErr.responseText);
+          MessageToast.show("Could not load employee profile.");
         }
       });
     },
@@ -332,7 +337,7 @@ sap.ui.define([
         return;
       }
       this.getOwnerComponent().getRouter().navTo("RouteDailyActivities", {
-        persId: sPersId   // ← pass persId in route
+        persId: sPersId
       });
     },
 
@@ -348,7 +353,7 @@ sap.ui.define([
     },
 
     onMyProfile: function () {
-      MessageToast.show("My Profile — coming soon.");
+      MessageToast.show("My Profile - coming soon.");
     },
 
     onEmployeeRegistration: function () {

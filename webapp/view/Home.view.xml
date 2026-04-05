@@ -13,7 +13,7 @@
             <l:BlockLayoutRow>
                 <l:BlockLayoutCell class="hrHeroImageCell sapUiNoContentPadding">
                     <Image
-                        src="../img/hero.jpg"
+                        src="/sap/bc/ui5_ui5/sap/zui5_hr_project/img/hero.jpg"
                         width="100%"
                         densityAware="false"
                         decorative="true"
@@ -121,7 +121,7 @@
                             <TileContent>
                                 <content>
                                     <l:VerticalLayout>
-                                        <core:Icon src="sap-icon://courses" size="2rem" color="Default"/>
+                                        <core:Icon src="sap-icon://education" size="2rem" color="Default"/>
                                         <Text text="Track your training" class="sapUiSmallMarginTop"/>
                                     </l:VerticalLayout>
                                 </content>
