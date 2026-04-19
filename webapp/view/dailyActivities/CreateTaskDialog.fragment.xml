@@ -5,7 +5,7 @@
   <Dialog
     id="createTaskDialog"
     title="New Task"
-    contentWidth="420px"
+    contentWidth="480px"
     draggable="true"
     resizable="true">
 
@@ -27,6 +27,16 @@
           width="100%"
           class="sapUiSmallMarginBottom"/>
 
+        <!-- Assignee row — visible only for leaders/admins -->
+        <VBox id="taskAssigneeRow" visible="false" class="sapUiSmallMarginBottom">
+          <Label text="Assignee" class="sapUiTinyMarginBottom"/>
+          <ComboBox
+            id="taskAssignee"
+            width="100%"
+            placeholder="Pick a team member (leave empty for Backlog)"
+            showSecondaryValues="false"/>
+        </VBox>
+
         <Label text="Status" class="sapUiTinyMarginBottom"/>
         <Select id="taskStatus" width="100%" class="sapUiSmallMarginBottom">
           <items>
@@ -38,13 +48,38 @@
           </items>
         </Select>
 
-        <Label text="Points" class="sapUiTinyMarginBottom"/>
+        <Label text="Priority" class="sapUiTinyMarginBottom"/>
+        <Select id="taskPriority" width="100%" class="sapUiSmallMarginBottom">
+          <items>
+            <core:Item key="H" text="&#x1F534; High"/>
+            <core:Item key="M" text="&#x1F7E1; Medium"/>
+            <core:Item key="L" text="&#x1F7E2; Low"/>
+          </items>
+        </Select>
+
+        <Label text="Due Date" class="sapUiTinyMarginBottom"/>
+        <DatePicker
+          id="taskDueDate"
+          valueFormat="yyyy-MM-dd"
+          displayFormat="dd.MM.yyyy"
+          width="100%"
+          class="sapUiSmallMarginBottom"/>
+
+        <Label text="Project (optional)" class="sapUiTinyMarginBottom"/>
+        <Select
+          id="taskProject"
+          width="100%"
+          forceSelection="false"
+          class="sapUiSmallMarginBottom"/>
+
+        <Label text="Effort (MD)" class="sapUiTinyMarginBottom"/>
         <StepInput
           id="taskPoints"
           min="0"
           max="100"
-          step="5"
-          value="10"
+          step="1"
+          value="1"
+          description="man-days"
           width="100%"/>
 
       </VBox>

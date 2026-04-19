@@ -109,10 +109,51 @@ tr[data-assignedprojectstatus="overdue"] td {
 /* Column container */
 .kanbanColumn {
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
   background: #f5f6f8;
   min-height: 500px;
+  position: relative;
+}
+
+/* Per-status column body tint — subtle, readable */
+.kanbanColumnBacklog    { background: #fafafe !important; }
+.kanbanColumnTodo       { background: #f3f7ff !important; }
+.kanbanColumnInProgress { background: #fff7ee !important; }
+.kanbanColumnTest       { background: #f9f2ff !important; }
+.kanbanColumnCompleted  { background: #f1faf3 !important; }
+
+/* Make per-column lists transparent so the column tint shows through */
+.kanbanColumnBacklog    .kanbanList.sapMList,
+.kanbanColumnTodo       .kanbanList.sapMList,
+.kanbanColumnInProgress .kanbanList.sapMList,
+.kanbanColumnTest       .kanbanList.sapMList,
+.kanbanColumnCompleted  .kanbanList.sapMList {
+  background: transparent !important;
+}
+
+/* Sticky column headers — pin to top on vertical scroll */
+.kanbanHeaderSticky.sapMTB {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 5 !important;
+}
+
+/* ── Quick-add footer ── */
+.kanbanQuickAdd {
+  border-top: 1px dashed #d0d2d6;
+  background: rgba(255, 255, 255, 0.55);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 0.25rem;
+}
+
+.kanbanQuickAddBtn.sapMBtn {
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.kanbanQuickAddBtn.sapMBtn:hover {
+  opacity: 1;
 }
 
 /* Flexible column — grows to fill available space */

@@ -185,9 +185,24 @@
           "target": "TargetDailyActivities"
         },
         {
+          "name": "RouteTaskDetail",
+          "pattern": "task/{persId}/{taskId}",
+          "target": "TargetTaskDetail"
+        },
+        {
           "name": "RouteMyCalendar",
           "pattern": "mycalendar/{persId}",
           "target": "TargetMyCalendar"
+        },
+        {
+          "name": "RouteMyAppointments",
+          "pattern": "myappointments/{persId}",
+          "target": "TargetMyAppointments"
+        },
+        {
+          "name": "RouteAppointmentDetail",
+          "pattern": "appointment/{persId}/{entryId}",
+          "target": "TargetAppointmentDetail"
         }
       ],
       "targets": {
@@ -277,11 +292,29 @@
           "viewId": "DailyActivities",
           "viewName": "dailyActivities.DailyActivities"
         },
+        "TargetTaskDetail": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "TaskDetail",
+          "viewName": "dailyActivities.TaskDetail"
+        },
         "TargetMyCalendar": {
           "viewType": "XML",
           "transition": "slide",
           "viewId": "MyCalendar",
           "viewName": "myCalendar.MyCalendar"
+        },
+        "TargetMyAppointments": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "MyAppointments",
+          "viewName": "myCalendar.MyAppointments"
+        },
+        "TargetAppointmentDetail": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "AppointmentDetail",
+          "viewName": "myCalendar.AppointmentDetail"
         }
       }
     },

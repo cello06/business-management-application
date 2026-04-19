@@ -1,0 +1,175 @@
+<mvc:View
+  controllerName="hrproject.controller.dailyActivities.TaskDetail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:core="sap.ui.core"
+  xmlns:f="sap.ui.layout.form"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page
+    showNavButton="true"
+    navButtonPress="onNavBack"
+    title="Task Details"
+    busy="{detail>/busy}">
+
+    <content>
+
+      <!-- HERO -->
+      <Panel class="sapUiSmallMargin" width="auto" backgroundDesign="Solid">
+        <HBox alignItems="Center" class="sapUiSmallMargin">
+          <core:Icon
+            src="sap-icon://task"
+            color="{detail>/statusColor}"
+            size="2.25rem"
+            class="sapUiSmallMarginEnd"/>
+          <VBox>
+            <Title text="{detail>/title}" level="H3"/>
+            <HBox alignItems="Center" class="sapUiTinyMarginTop">
+              <ObjectStatus
+                text="{detail>/statusLabel}"
+                state="{detail>/statusState}"/>
+              <Text text="#{detail>/taskId}" class="sapUiMediumMarginBegin sapUiContentLabelColor"/>
+            </HBox>
+          </VBox>
+        </HBox>
+      </Panel>
+
+      <!-- ASSIGNMENT -->
+      <Panel
+        headerText="{= 'Assigned to (' + ${detail>/assignees}.length + ')' }"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom"
+        width="auto">
+        <VBox class="sapUiSmallMargin">
+          <HBox
+            items="{detail>/assignees}"
+            wrap="Wrap"
+            visible="{= ${detail>/assignees}.length > 0 }">
+            <ObjectStatus
+              icon="sap-icon://person-placeholder"
+              text="{= (${detail>FullName} || ${detail>SapUsername} || '?') + (${detail>Role} === 'Owner' ? ' \u2605' : '') }"
+              tooltip="{= (${detail>FullName} || '') + ' (' + (${detail>SapUsername} || ${detail>PersId}) + ')' + (${detail>Role} ? ' \u2022 ' + ${detail>Role} : '') }"
+              state="Information"
+              class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+          </HBox>
+          <Text
+            text="— No assignees yet —"
+            class="sapUiContentLabelColor"
+            visible="{= ${detail>/assignees}.length === 0 &amp;&amp; !${detail>/assignee} }"/>
+          <!-- Legacy fallback — show the single DailyTasks.PersId if there
+               are no TaskAssignees rows yet -->
+          <HBox
+            alignItems="Center"
+            visible="{= ${detail>/assignees}.length === 0 &amp;&amp; !!${detail>/assignee} }">
+            <core:Icon src="sap-icon://person-placeholder"/>
+            <Text text="{detail>/assignee}" class="sapUiTinyMarginBegin"/>
+          </HBox>
+        </VBox>
+      </Panel>
+
+      <!-- META: who assigned it + effort + new Phase-2 fields -->
+      <Panel
+        headerText="Details"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom"
+        width="auto">
+        <f:SimpleForm
+          editable="false"
+          layout="ResponsiveGridLayout"
+          labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+          columnsXL="2" columnsL="2" columnsM="1">
+
+          <Label text="Priority"/>
+          <ObjectStatus
+            text="{= ${detail>/priorityLabel} || '—'}"
+            state="{detail>/priorityState}"/>
+
+          <Label text="Due date"/>
+          <ObjectStatus
+            icon="sap-icon://appointment"
+            text="{= ${detail>/dueDateFmt} || '—'}"
+            state="{detail>/dueDateState}"/>
+
+          <Label text="Project"/>
+          <Text text="{= ${detail>/projectName} || '—'}"/>
+
+          <Label text="Assigned by"/>
+          <Text text="{= ${detail>/assignedBy} || '—'}"/>
+
+          <Label text="Assigned on"/>
+          <Text text="{= ${detail>/assignedDateFmt} || '—'}"/>
+
+          <Label text="Effort"/>
+          <ObjectStatus text="{detail>/pointsText}" icon="sap-icon://time-entry-request"/>
+        </f:SimpleForm>
+      </Panel>
+
+      <!-- DESCRIPTION -->
+      <Panel
+        headerText="Description"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom"
+        width="auto">
+        <VBox class="sapUiSmallMargin">
+          <Text
+            text="{detail>/description}"
+            visible="{= !!${detail>/description}}"
+            wrapping="true"/>
+          <Text
+            text="— No description —"
+            class="sapUiContentLabelColor"
+            visible="{= !${detail>/description}}"/>
+        </VBox>
+      </Panel>
+
+      <!-- META -->
+      <Panel
+        headerText="Audit"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom"
+        width="auto">
+        <f:SimpleForm
+          editable="false"
+          layout="ResponsiveGridLayout"
+          labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+          columnsXL="2" columnsL="2" columnsM="1">
+          <Label text="Created by"/>
+          <Text text="{= ${detail>/createdBy} || '—'}"/>
+          <Label text="Created on"/>
+          <Text text="{= ${detail>/createdOnFmt} || '—'}"/>
+          <Label text="Last changed"/>
+          <Text text="{= ${detail>/changedOnFmt} || '—'}"/>
+          <Label text="Board"/>
+          <Text text="{= ${detail>/boardId} || '—'}"/>
+        </f:SimpleForm>
+      </Panel>
+
+      <!-- Still pending Phase 2 — Comments entity + SendTaskAssignmentMail -->
+      <Panel
+        headerText="Coming soon"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom"
+        width="auto"
+        expandable="true"
+        expanded="false">
+        <VBox class="sapUiSmallMargin">
+          <Text text="• Comments — waiting on TaskComments entity" class="sapUiTinyMarginBottom"/>
+          <Text text="• Email notification on assign — waiting on SendTaskAssignmentMail function import"/>
+        </VBox>
+      </Panel>
+
+    </content>
+
+    <footer>
+      <Toolbar>
+        <ToolbarSpacer/>
+        <Button
+          text="Edit"
+          icon="sap-icon://edit"
+          type="Emphasized"
+          press="onEditTask"/>
+        <Button
+          text="Delete"
+          icon="sap-icon://delete"
+          type="Reject"
+          press="onDeleteTask"/>
+      </Toolbar>
+    </footer>
+
+  </Page>
+</mvc:View>

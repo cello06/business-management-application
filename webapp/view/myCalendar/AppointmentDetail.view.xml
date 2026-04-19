@@ -1,0 +1,92 @@
+<mvc:View
+  controllerName="hrproject.controller.myCalendar.AppointmentDetail"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:core="sap.ui.core"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page
+    showNavButton="true"
+    navButtonPress="onNavBack"
+    title="Appointment Details"
+    busy="{detail>/busy}">
+
+    <content>
+
+      <!-- ═══════ HERO PANEL — colored type indicator + title ═══════ -->
+      <Panel class="sapUiSmallMargin" width="auto" backgroundDesign="Solid">
+        <HBox alignItems="Center" class="sapUiSmallMargin">
+          <core:Icon
+            src="sap-icon://circle-task-2"
+            color="{detail>/typeColor}"
+            size="2.5rem"
+            class="sapUiSmallMarginEnd"/>
+          <VBox>
+            <Title text="{detail>/title}" level="H3"/>
+            <HBox alignItems="Center" class="sapUiTinyMarginTop">
+              <core:Icon src="sap-icon://circle-task-2" color="{detail>/typeColor}" size="0.75rem"/>
+              <Text text="{detail>/typeLabel}" class="sapUiTinyMarginBegin"/>
+            </HBox>
+          </VBox>
+        </HBox>
+      </Panel>
+
+      <!-- ═══════ TIMING ═══════ -->
+      <Panel headerText="When" class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom" width="auto">
+        <f:SimpleForm
+          editable="false"
+          layout="ResponsiveGridLayout"
+          labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+          columnsXL="1" columnsL="1" columnsM="1">
+
+          <Label text="From"/>
+          <Text text="{detail>/startFormatted}"/>
+
+          <Label text="To"/>
+          <Text text="{detail>/endFormatted}"/>
+
+          <Label text="Duration"/>
+          <ObjectStatus text="{detail>/durationText}" icon="sap-icon://appointment-2"/>
+        </f:SimpleForm>
+      </Panel>
+
+      <!-- ═══════ DESCRIPTION ═══════ -->
+      <Panel headerText="Description" class="sapUiSmallMarginBegin sapUiSmallMarginEnd sapUiSmallMarginBottom" width="auto">
+        <VBox class="sapUiSmallMargin">
+          <Text
+            text="{detail>/description}"
+            visible="{= !!${detail>/description}}"
+            wrapping="true"/>
+          <Text
+            text="— No description provided —"
+            visible="{= !${detail>/description}}"
+            class="sapUiContentLabelColor"/>
+        </VBox>
+      </Panel>
+
+    </content>
+
+    <footer>
+      <Toolbar>
+        <ToolbarSpacer/>
+        <Button
+          text="Open in Calendar"
+          icon="sap-icon://appointment-2"
+          press="onOpenInCalendar"/>
+        <Button
+          text="Edit"
+          icon="sap-icon://edit"
+          type="Emphasized"
+          press="onEditAppointment"/>
+        <Button
+          text="Delete"
+          icon="sap-icon://delete"
+          type="Reject"
+          press="onDeleteAppointment"/>
+      </Toolbar>
+    </footer>
+
+  </Page>
+</mvc:View>

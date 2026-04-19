@@ -4,6 +4,7 @@
   xmlns="sap.m"
   xmlns:dnd="sap.ui.core.dnd"
   xmlns:core="sap.ui.core"
+  xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
   displayBlock="true">
 
   <Page showNavButton="false" showHeader="false" backgroundDesign="Solid">
@@ -27,15 +28,50 @@
           class="sapUiTinyMarginBegin"/>
       </Toolbar>
 
-      <ScrollContainer horizontal="true" vertical="true" width="100%" height="calc(100vh - 3rem)">
+      <!-- ── Scope switcher (My / Assigned-by-me / Team / All) ── -->
+      <Toolbar class="sapUiNoMargin sapUiSmallMarginTop sapUiSmallMarginBegin sapUiSmallMarginEnd">
+        <Label text="Show:" class="sapUiSmallMarginEnd"/>
+        <SegmentedButton
+          selectedKey="{kanban>/scope}"
+          selectionChange="onScopeChange">
+          <items>
+            <SegmentedButtonItem
+              key="MINE"
+              text="My Tasks ({kanban>/counts/MINE})"
+              icon="sap-icon://employee"/>
+            <SegmentedButtonItem
+              key="ASSIGNED_BY_ME"
+              text="Assigned by Me ({kanban>/counts/ASSIGNED_BY_ME})"
+              icon="sap-icon://share"/>
+            <SegmentedButtonItem
+              key="TEAM"
+              text="Team ({kanban>/counts/TEAM})"
+              icon="sap-icon://group"/>
+            <SegmentedButtonItem
+              key="ALL"
+              text="All Tasks ({kanban>/counts/ALL})"
+              icon="sap-icon://globe"
+              visible="{= ${user>/isLeader} === true }"/>
+          </items>
+        </SegmentedButton>
+        <ToolbarSpacer/>
+        <SearchField
+          width="240px"
+          placeholder="Search title / description / assignee"
+          value="{kanban>/searchQuery}"
+          liveChange="onBoardSearch"/>
+        <Text text="{kanban>/scopeHint}" class="sapUiContentLabelColor sapUiSmallMarginBegin"/>
+      </Toolbar>
+
+      <ScrollContainer horizontal="true" vertical="true" width="100%" height="calc(100vh - 6rem)">
         <HBox alignItems="Start" class="sapUiMediumMargin">
 
           <!-- ══ BACKLOG ══ -->
           <VBox
             id="backlogPanel"
-            class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex"
+            class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex kanbanColumnBacklog"
             visible="{kanban>/backlogVisible}">
-            <Toolbar class="kanbanHeaderBacklog">
+            <Toolbar class="kanbanHeaderBacklog kanbanHeaderSticky">
               <core:Icon src="sap-icon://shelf" color="#534AB7"/>
               <Title text="Backlog" level="H5" class="sapUiTinyMarginBegin"/>
               <ToolbarSpacer/>
@@ -47,26 +83,85 @@
                 <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
                 <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
               </dragDropConfig>
-              <CustomListItem class="kanbanCard kanbanCardBacklog">
+              <CustomListItem class="kanbanCard kanbanCardBacklog" type="Active" press="onCardPress">
                 <VBox class="sapUiSmallMargin">
                   <HBox justifyContent="SpaceBetween" alignItems="Start">
                     <Title text="{kanban>Title}" level="H6" wrapping="true"/>
-                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    <HBox alignItems="Center">
+                      <ObjectStatus
+                        icon="{kanban>priorityIcon}"
+                        text="{kanban>priorityLabel}"
+                        state="{kanban>priorityState}"
+                        visible="{= !!${kanban>priorityLabel}}"
+                        class="sapUiTinyMarginEnd"/>
+                      <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    </HBox>
                   </HBox>
                   <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop"/>
                   <HBox alignItems="Center" justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
-                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="None"/>
+                    <ObjectStatus text="{kanban>Points} MD" icon="sap-icon://time-entry-request" state="None"/>
                     <Text text="By: {kanban>CreatedBy}"/>
                   </HBox>
+                  <ObjectStatus
+                    icon="sap-icon://appointment"
+                    text="{kanban>dueDateLabel}"
+                    state="{kanban>dueDateState}"
+                    visible="{= !!${kanban>dueDateLabel}}"
+                    class="sapUiTinyMarginTop"/>
+                  <ObjectStatus
+                    icon="sap-icon://folder"
+                    text="{kanban>projectName}"
+                    state="None"
+                    visible="{= !!${kanban>projectName}}"
+                    class="sapUiTinyMarginTop"/>
                   <Button text="Assign to Me" type="Emphasized" icon="sap-icon://person-placeholder" press="onAssignTask" width="100%" class="sapUiTinyMarginTop"/>
+                  <Button
+                    text="Assign to team member..."
+                    icon="sap-icon://add-employee"
+                    type="Ghost"
+                    width="100%"
+                    class="sapUiTinyMarginTop"
+                    visible="{= ${user>/isLeader} === true }"
+                    press="onOpenAssignDialog"/>
                 </VBox>
               </CustomListItem>
             </List>
+            <VBox class="kanbanQuickAdd">
+              <Button
+                text="+ Add task"
+                type="Transparent"
+                icon="sap-icon://add"
+                press="onQuickAddOpen"
+                app:status="BACKLOG"
+                width="100%"
+                visible="{= ${kanban>/quickAdd/activeColumn} !== 'BACKLOG' }"
+                class="kanbanQuickAddBtn"/>
+              <VBox
+                visible="{= ${kanban>/quickAdd/activeColumn} === 'BACKLOG' }"
+                class="sapUiSmallMargin">
+                <Input
+                  id="quickAddInputBACKLOG"
+                  value="{kanban>/quickAdd/title}"
+                  placeholder="Task title (Enter to save)"
+                  submit="onQuickAddSubmit"
+                  app:status="BACKLOG"/>
+                <HBox class="sapUiTinyMarginTop" justifyContent="End">
+                  <Button
+                    text="Add"
+                    type="Emphasized"
+                    icon="sap-icon://add"
+                    press="onQuickAddSubmit"
+                    app:status="BACKLOG"
+                    class="sapUiTinyMarginEnd"/>
+                  <Button icon="sap-icon://decline" press="onQuickAddCancel"/>
+                </HBox>
+              </VBox>
+            </VBox>
           </VBox>
 
           <!-- ══ TO DO ══ -->
-          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
-            <Toolbar class="kanbanHeaderTodo">
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex kanbanColumnTodo">
+            <Toolbar class="kanbanHeaderTodo kanbanHeaderSticky">
               <core:Icon src="sap-icon://task" color="#0064d9"/>
               <Title text="To Do" level="H5" class="sapUiTinyMarginBegin"/>
               <ToolbarSpacer/>
@@ -77,25 +172,103 @@
                 <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
                 <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
               </dragDropConfig>
-              <CustomListItem class="kanbanCard">
+              <CustomListItem class="kanbanCard" type="Active" press="onCardPress">
                 <VBox class="sapUiSmallMargin">
                   <HBox justifyContent="SpaceBetween" alignItems="Start">
                     <Title text="{kanban>Title}" level="H6" wrapping="true"/>
-                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    <HBox alignItems="Center">
+                      <ObjectStatus
+                        icon="{kanban>priorityIcon}"
+                        text="{kanban>priorityLabel}"
+                        state="{kanban>priorityState}"
+                        visible="{= !!${kanban>priorityLabel}}"
+                        class="sapUiTinyMarginEnd"/>
+                      <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    </HBox>
                   </HBox>
                   <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
                   <HBox alignItems="Center" justifyContent="SpaceBetween">
-                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Information"/>
+                    <ObjectStatus text="{kanban>Points} MD" icon="sap-icon://time-entry-request" state="Information"/>
                     <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
                   </HBox>
+                  <ObjectStatus
+                    icon="sap-icon://appointment"
+                    text="{kanban>dueDateLabel}"
+                    state="{kanban>dueDateState}"
+                    visible="{= !!${kanban>dueDateLabel}}"
+                    class="sapUiTinyMarginTop"/>
+                  <ObjectStatus
+                    icon="sap-icon://folder"
+                    text="{kanban>projectName}"
+                    state="None"
+                    visible="{= !!${kanban>projectName}}"
+                    class="sapUiTinyMarginTop"/>
+                  <VBox
+                    class="sapUiTinyMarginTop"
+                    visible="{= !!${kanban>assignees} &amp;&amp; ${kanban>assignees}.length > 0 }">
+                    <Label
+                      text="{= 'Assigned to (' + ${kanban>assignees}.length + '):' }"
+                      design="Bold"
+                      class="sapUiTinyMarginBottom"/>
+                    <HBox
+                      items="{kanban>assignees}"
+                      wrap="Wrap"
+                      alignItems="Center">
+                      <Avatar
+                        initials="{= (${kanban>SapUsername} || '??').substring(0, 2).toUpperCase() }"
+                        displaySize="XS"
+                        displayShape="Circle"
+                        tooltip="{= (${kanban>FullName} || '') + ' (' + (${kanban>SapUsername} || ${kanban>PersId}) + ')' + (${kanban>Role} === 'Owner' ? ' \u2605 Owner' : (${kanban>Role} ? ' \u2022 ' + ${kanban>Role} : '')) }"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+                    </HBox>
+                  </VBox>
+                  <Button
+                    text="Assign..."
+                    icon="sap-icon://add-employee"
+                    type="Ghost"
+                    width="100%"
+                    class="sapUiTinyMarginTop"
+                    visible="{= ${user>/isLeader} === true }"
+                    press="onOpenAssignDialog"/>
                 </VBox>
               </CustomListItem>
             </List>
+            <VBox class="kanbanQuickAdd">
+              <Button
+                text="+ Add task"
+                type="Transparent"
+                icon="sap-icon://add"
+                press="onQuickAddOpen"
+                app:status="TODO"
+                width="100%"
+                visible="{= ${kanban>/quickAdd/activeColumn} !== 'TODO' }"
+                class="kanbanQuickAddBtn"/>
+              <VBox
+                visible="{= ${kanban>/quickAdd/activeColumn} === 'TODO' }"
+                class="sapUiSmallMargin">
+                <Input
+                  id="quickAddInputTODO"
+                  value="{kanban>/quickAdd/title}"
+                  placeholder="Task title (Enter to save)"
+                  submit="onQuickAddSubmit"
+                  app:status="TODO"/>
+                <HBox class="sapUiTinyMarginTop" justifyContent="End">
+                  <Button
+                    text="Add"
+                    type="Emphasized"
+                    icon="sap-icon://add"
+                    press="onQuickAddSubmit"
+                    app:status="TODO"
+                    class="sapUiTinyMarginEnd"/>
+                  <Button icon="sap-icon://decline" press="onQuickAddCancel"/>
+                </HBox>
+              </VBox>
+            </VBox>
           </VBox>
 
           <!-- ══ IN PROGRESS ══ -->
-          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
-            <Toolbar class="kanbanHeaderInProgress">
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex kanbanColumnInProgress">
+            <Toolbar class="kanbanHeaderInProgress kanbanHeaderSticky">
               <core:Icon src="sap-icon://process" color="#e9730c"/>
               <Title text="In Progress" level="H5" class="sapUiTinyMarginBegin"/>
               <ToolbarSpacer/>
@@ -106,25 +279,103 @@
                 <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
                 <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
               </dragDropConfig>
-              <CustomListItem class="kanbanCard kanbanCardWarning">
+              <CustomListItem class="kanbanCard kanbanCardWarning" type="Active" press="onCardPress">
                 <VBox class="sapUiSmallMargin">
                   <HBox justifyContent="SpaceBetween" alignItems="Start">
                     <Title text="{kanban>Title}" level="H6" wrapping="true"/>
-                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    <HBox alignItems="Center">
+                      <ObjectStatus
+                        icon="{kanban>priorityIcon}"
+                        text="{kanban>priorityLabel}"
+                        state="{kanban>priorityState}"
+                        visible="{= !!${kanban>priorityLabel}}"
+                        class="sapUiTinyMarginEnd"/>
+                      <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    </HBox>
                   </HBox>
                   <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
                   <HBox alignItems="Center" justifyContent="SpaceBetween">
-                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Warning"/>
+                    <ObjectStatus text="{kanban>Points} MD" icon="sap-icon://time-entry-request" state="Warning"/>
                     <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
                   </HBox>
+                  <ObjectStatus
+                    icon="sap-icon://appointment"
+                    text="{kanban>dueDateLabel}"
+                    state="{kanban>dueDateState}"
+                    visible="{= !!${kanban>dueDateLabel}}"
+                    class="sapUiTinyMarginTop"/>
+                  <ObjectStatus
+                    icon="sap-icon://folder"
+                    text="{kanban>projectName}"
+                    state="None"
+                    visible="{= !!${kanban>projectName}}"
+                    class="sapUiTinyMarginTop"/>
+                  <VBox
+                    class="sapUiTinyMarginTop"
+                    visible="{= !!${kanban>assignees} &amp;&amp; ${kanban>assignees}.length > 0 }">
+                    <Label
+                      text="{= 'Assigned to (' + ${kanban>assignees}.length + '):' }"
+                      design="Bold"
+                      class="sapUiTinyMarginBottom"/>
+                    <HBox
+                      items="{kanban>assignees}"
+                      wrap="Wrap"
+                      alignItems="Center">
+                      <Avatar
+                        initials="{= (${kanban>SapUsername} || '??').substring(0, 2).toUpperCase() }"
+                        displaySize="XS"
+                        displayShape="Circle"
+                        tooltip="{= (${kanban>FullName} || '') + ' (' + (${kanban>SapUsername} || ${kanban>PersId}) + ')' + (${kanban>Role} === 'Owner' ? ' \u2605 Owner' : (${kanban>Role} ? ' \u2022 ' + ${kanban>Role} : '')) }"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+                    </HBox>
+                  </VBox>
+                  <Button
+                    text="Assign..."
+                    icon="sap-icon://add-employee"
+                    type="Ghost"
+                    width="100%"
+                    class="sapUiTinyMarginTop"
+                    visible="{= ${user>/isLeader} === true }"
+                    press="onOpenAssignDialog"/>
                 </VBox>
               </CustomListItem>
             </List>
+            <VBox class="kanbanQuickAdd">
+              <Button
+                text="+ Add task"
+                type="Transparent"
+                icon="sap-icon://add"
+                press="onQuickAddOpen"
+                app:status="IN_PROGRESS"
+                width="100%"
+                visible="{= ${kanban>/quickAdd/activeColumn} !== 'IN_PROGRESS' }"
+                class="kanbanQuickAddBtn"/>
+              <VBox
+                visible="{= ${kanban>/quickAdd/activeColumn} === 'IN_PROGRESS' }"
+                class="sapUiSmallMargin">
+                <Input
+                  id="quickAddInputIN_PROGRESS"
+                  value="{kanban>/quickAdd/title}"
+                  placeholder="Task title (Enter to save)"
+                  submit="onQuickAddSubmit"
+                  app:status="IN_PROGRESS"/>
+                <HBox class="sapUiTinyMarginTop" justifyContent="End">
+                  <Button
+                    text="Add"
+                    type="Emphasized"
+                    icon="sap-icon://add"
+                    press="onQuickAddSubmit"
+                    app:status="IN_PROGRESS"
+                    class="sapUiTinyMarginEnd"/>
+                  <Button icon="sap-icon://decline" press="onQuickAddCancel"/>
+                </HBox>
+              </VBox>
+            </VBox>
           </VBox>
 
           <!-- ══ TEST ══ -->
-          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
-            <Toolbar class="kanbanHeaderTest">
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex kanbanColumnTest">
+            <Toolbar class="kanbanHeaderTest kanbanHeaderSticky">
               <core:Icon src="sap-icon://lab" color="#6b2fbb"/>
               <Title text="Test" level="H5" class="sapUiTinyMarginBegin"/>
               <ToolbarSpacer/>
@@ -135,25 +386,103 @@
                 <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
                 <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
               </dragDropConfig>
-              <CustomListItem class="kanbanCard kanbanCardTest">
+              <CustomListItem class="kanbanCard kanbanCardTest" type="Active" press="onCardPress">
                 <VBox class="sapUiSmallMargin">
                   <HBox justifyContent="SpaceBetween" alignItems="Start">
                     <Title text="{kanban>Title}" level="H6" wrapping="true"/>
-                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    <HBox alignItems="Center">
+                      <ObjectStatus
+                        icon="{kanban>priorityIcon}"
+                        text="{kanban>priorityLabel}"
+                        state="{kanban>priorityState}"
+                        visible="{= !!${kanban>priorityLabel}}"
+                        class="sapUiTinyMarginEnd"/>
+                      <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    </HBox>
                   </HBox>
                   <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
                   <HBox alignItems="Center" justifyContent="SpaceBetween">
-                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Error"/>
+                    <ObjectStatus text="{kanban>Points} MD" icon="sap-icon://time-entry-request" state="Error"/>
                     <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
                   </HBox>
+                  <ObjectStatus
+                    icon="sap-icon://appointment"
+                    text="{kanban>dueDateLabel}"
+                    state="{kanban>dueDateState}"
+                    visible="{= !!${kanban>dueDateLabel}}"
+                    class="sapUiTinyMarginTop"/>
+                  <ObjectStatus
+                    icon="sap-icon://folder"
+                    text="{kanban>projectName}"
+                    state="None"
+                    visible="{= !!${kanban>projectName}}"
+                    class="sapUiTinyMarginTop"/>
+                  <VBox
+                    class="sapUiTinyMarginTop"
+                    visible="{= !!${kanban>assignees} &amp;&amp; ${kanban>assignees}.length > 0 }">
+                    <Label
+                      text="{= 'Assigned to (' + ${kanban>assignees}.length + '):' }"
+                      design="Bold"
+                      class="sapUiTinyMarginBottom"/>
+                    <HBox
+                      items="{kanban>assignees}"
+                      wrap="Wrap"
+                      alignItems="Center">
+                      <Avatar
+                        initials="{= (${kanban>SapUsername} || '??').substring(0, 2).toUpperCase() }"
+                        displaySize="XS"
+                        displayShape="Circle"
+                        tooltip="{= (${kanban>FullName} || '') + ' (' + (${kanban>SapUsername} || ${kanban>PersId}) + ')' + (${kanban>Role} === 'Owner' ? ' \u2605 Owner' : (${kanban>Role} ? ' \u2022 ' + ${kanban>Role} : '')) }"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+                    </HBox>
+                  </VBox>
+                  <Button
+                    text="Assign..."
+                    icon="sap-icon://add-employee"
+                    type="Ghost"
+                    width="100%"
+                    class="sapUiTinyMarginTop"
+                    visible="{= ${user>/isLeader} === true }"
+                    press="onOpenAssignDialog"/>
                 </VBox>
               </CustomListItem>
             </List>
+            <VBox class="kanbanQuickAdd">
+              <Button
+                text="+ Add task"
+                type="Transparent"
+                icon="sap-icon://add"
+                press="onQuickAddOpen"
+                app:status="TEST"
+                width="100%"
+                visible="{= ${kanban>/quickAdd/activeColumn} !== 'TEST' }"
+                class="kanbanQuickAddBtn"/>
+              <VBox
+                visible="{= ${kanban>/quickAdd/activeColumn} === 'TEST' }"
+                class="sapUiSmallMargin">
+                <Input
+                  id="quickAddInputTEST"
+                  value="{kanban>/quickAdd/title}"
+                  placeholder="Task title (Enter to save)"
+                  submit="onQuickAddSubmit"
+                  app:status="TEST"/>
+                <HBox class="sapUiTinyMarginTop" justifyContent="End">
+                  <Button
+                    text="Add"
+                    type="Emphasized"
+                    icon="sap-icon://add"
+                    press="onQuickAddSubmit"
+                    app:status="TEST"
+                    class="sapUiTinyMarginEnd"/>
+                  <Button icon="sap-icon://decline" press="onQuickAddCancel"/>
+                </HBox>
+              </VBox>
+            </VBox>
           </VBox>
 
           <!-- ══ COMPLETED ══ -->
-          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex">
-            <Toolbar class="kanbanHeaderCompleted">
+          <VBox class="sapUiSmallMarginEnd kanbanColumn kanbanColumnFlex kanbanColumnCompleted">
+            <Toolbar class="kanbanHeaderCompleted kanbanHeaderSticky">
               <core:Icon src="sap-icon://accept" color="#107e3e"/>
               <Title text="Completed" level="H5" class="sapUiTinyMarginBegin"/>
               <ToolbarSpacer/>
@@ -164,20 +493,98 @@
                 <dnd:DragInfo groupName="kanbanDrag" sourceAggregation="items"/>
                 <dnd:DropInfo groupName="kanbanDrag" targetAggregation="items" dropPosition="Between" dropEffect="Move" drop="onDrop"/>
               </dragDropConfig>
-              <CustomListItem class="kanbanCard kanbanCardSuccess">
+              <CustomListItem class="kanbanCard kanbanCardSuccess" type="Active" press="onCardPress">
                 <VBox class="sapUiSmallMargin">
                   <HBox justifyContent="SpaceBetween" alignItems="Start">
                     <Title text="{kanban>Title}" level="H6" wrapping="true"/>
-                    <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    <HBox alignItems="Center">
+                      <ObjectStatus
+                        icon="{kanban>priorityIcon}"
+                        text="{kanban>priorityLabel}"
+                        state="{kanban>priorityState}"
+                        visible="{= !!${kanban>priorityLabel}}"
+                        class="sapUiTinyMarginEnd"/>
+                      <Button icon="sap-icon://delete" type="Transparent" press="onDeleteTask"/>
+                    </HBox>
                   </HBox>
                   <Text text="{kanban>Description}" wrapping="true" maxLines="2" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
                   <HBox alignItems="Center" justifyContent="SpaceBetween">
-                    <ObjectStatus text="{kanban>Points} pts" icon="sap-icon://favorite" state="Success"/>
+                    <ObjectStatus text="{kanban>Points} MD" icon="sap-icon://time-entry-request" state="Success"/>
                     <Button icon="sap-icon://edit" type="Transparent" press="onEditTask"/>
                   </HBox>
+                  <ObjectStatus
+                    icon="sap-icon://appointment"
+                    text="{kanban>dueDateLabel}"
+                    state="{kanban>dueDateState}"
+                    visible="{= !!${kanban>dueDateLabel}}"
+                    class="sapUiTinyMarginTop"/>
+                  <ObjectStatus
+                    icon="sap-icon://folder"
+                    text="{kanban>projectName}"
+                    state="None"
+                    visible="{= !!${kanban>projectName}}"
+                    class="sapUiTinyMarginTop"/>
+                  <VBox
+                    class="sapUiTinyMarginTop"
+                    visible="{= !!${kanban>assignees} &amp;&amp; ${kanban>assignees}.length > 0 }">
+                    <Label
+                      text="{= 'Assigned to (' + ${kanban>assignees}.length + '):' }"
+                      design="Bold"
+                      class="sapUiTinyMarginBottom"/>
+                    <HBox
+                      items="{kanban>assignees}"
+                      wrap="Wrap"
+                      alignItems="Center">
+                      <Avatar
+                        initials="{= (${kanban>SapUsername} || '??').substring(0, 2).toUpperCase() }"
+                        displaySize="XS"
+                        displayShape="Circle"
+                        tooltip="{= (${kanban>FullName} || '') + ' (' + (${kanban>SapUsername} || ${kanban>PersId}) + ')' + (${kanban>Role} === 'Owner' ? ' \u2605 Owner' : (${kanban>Role} ? ' \u2022 ' + ${kanban>Role} : '')) }"
+                        class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+                    </HBox>
+                  </VBox>
+                  <Button
+                    text="Assign..."
+                    icon="sap-icon://add-employee"
+                    type="Ghost"
+                    width="100%"
+                    class="sapUiTinyMarginTop"
+                    visible="{= ${user>/isLeader} === true }"
+                    press="onOpenAssignDialog"/>
                 </VBox>
               </CustomListItem>
             </List>
+            <VBox class="kanbanQuickAdd">
+              <Button
+                text="+ Add task"
+                type="Transparent"
+                icon="sap-icon://add"
+                press="onQuickAddOpen"
+                app:status="COMPLETED"
+                width="100%"
+                visible="{= ${kanban>/quickAdd/activeColumn} !== 'COMPLETED' }"
+                class="kanbanQuickAddBtn"/>
+              <VBox
+                visible="{= ${kanban>/quickAdd/activeColumn} === 'COMPLETED' }"
+                class="sapUiSmallMargin">
+                <Input
+                  id="quickAddInputCOMPLETED"
+                  value="{kanban>/quickAdd/title}"
+                  placeholder="Task title (Enter to save)"
+                  submit="onQuickAddSubmit"
+                  app:status="COMPLETED"/>
+                <HBox class="sapUiTinyMarginTop" justifyContent="End">
+                  <Button
+                    text="Add"
+                    type="Emphasized"
+                    icon="sap-icon://add"
+                    press="onQuickAddSubmit"
+                    app:status="COMPLETED"
+                    class="sapUiTinyMarginEnd"/>
+                  <Button icon="sap-icon://decline" press="onQuickAddCancel"/>
+                </HBox>
+              </VBox>
+            </VBox>
           </VBox>
 
         </HBox>

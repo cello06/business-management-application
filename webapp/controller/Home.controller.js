@@ -81,28 +81,55 @@ sap.ui.define([
       oModel.read("/UserRoles", {
         urlParameters: {
           "$filter": "SapUsername eq '" + sFinalUsername + "'",
-          "$select": "SapUsername,Role",
+          "$select": "SapUsername,Role,IsLeader",
           "$top": "1"
         },
         success: function (oData) {
           clearTimeout(iFallbackTimer);
           console.log("UserRoles response:", JSON.stringify(oData));
 
+          const oComp = this.getOwnerComponent();
+
           if (!oData.results || oData.results.length === 0) {
             console.warn("No UserRoles record found for:", sFinalUsername);
             oHomeModel.setProperty("/isAdmin", false);
+            oHomeModel.setProperty("/isLeader", false);
             oHomeModel.setProperty("/roleLoaded", true);
+            oComp._sRole = "";
+            oComp._bIsAdmin = false;
+            oComp._bIsLeader = false;
             // Still load PersId even if no role found (default to employee)
             this._loadPersId(sFinalUsername, oHomeModel, oModel);
             return;
           }
 
           const sRole = oData.results[0].Role;
-          const bIsAdmin = (sRole || "").toUpperCase() === "ADMIN";
-          console.log("Role found:", sRole, "-> isAdmin:", bIsAdmin);
+          const sRoleUpper = (sRole || "").toUpperCase();
+          const bIsAdmin = sRoleUpper === "ADMIN";
+          // IsLeader from OData V2 may arrive as boolean true OR string "true"
+          const vIsLeaderRaw = oData.results[0].IsLeader;
+          const bIsLeader = (vIsLeaderRaw === true || vIsLeaderRaw === "true" || vIsLeaderRaw === "X");
+          console.log("Role found:", sRole, "IsLeader raw:", vIsLeaderRaw,
+                      "-> isAdmin:", bIsAdmin, "isLeader:", bIsLeader);
 
           oHomeModel.setProperty("/isAdmin", bIsAdmin);
+          oHomeModel.setProperty("/isLeader", bIsLeader);
+          oHomeModel.setProperty("/role", sRoleUpper);
           oHomeModel.setProperty("/roleLoaded", true);
+
+          // Cache on Component so other controllers can read without re-querying
+          oComp._sRole     = sRoleUpper;
+          oComp._bIsAdmin  = bIsAdmin;
+          oComp._bIsLeader = bIsLeader;
+
+          // Mirror into the component-level `user` JSONModel so views can bind
+          const oUserModel = oComp.getModel("user");
+          if (oUserModel) {
+            oUserModel.setProperty("/isLeader", bIsLeader);
+            oUserModel.setProperty("/isAdmin", bIsAdmin);
+            oUserModel.setProperty("/role", sRoleUpper);
+            oUserModel.setProperty("/roleLoaded", true);
+          }
 
           // ALWAYS load PersId regardless of admin or employee role
           this._loadPersId(sFinalUsername, oHomeModel, oModel);
@@ -124,18 +151,29 @@ sap.ui.define([
       oModel.read("/Employees", {
         urlParameters: {
           "$filter": "SapUsername eq '" + sUsername + "'",
-          "$select": "PersId,SapUsername",
+          "$select": "PersId,SapUsername,SectorId",
           "$top": "1"
         },
         success: function (oEmpData) {
           if (oEmpData.results && oEmpData.results.length > 0) {
-            var sPersId = oEmpData.results[0].PersId.toString();
-            console.log("PersId resolved:", sPersId);
+            var oEmp = oEmpData.results[0];
+            var sPersId   = oEmp.PersId ? oEmp.PersId.toString() : "";
+            var sSectorId = oEmp.SectorId ? oEmp.SectorId.toString() : "";
+            console.log("PersId resolved:", sPersId, "SectorId:", sSectorId);
             oHomeModel.setProperty("/persId", sPersId);
             oHomeModel.setProperty("/sapUsername", sUsername);
+            oHomeModel.setProperty("/sectorId", sSectorId);
             // Store on component for cross-controller access
             oComp._sPersId      = sPersId;
             oComp._sSapUsername = sUsername;
+            oComp._sSectorId    = sSectorId;
+            // Mirror into component-level `user` model
+            var oUserModel = oComp.getModel("user");
+            if (oUserModel) {
+              oUserModel.setProperty("/persId", sPersId);
+              oUserModel.setProperty("/sapUsername", sUsername);
+              oUserModel.setProperty("/sectorId", sSectorId);
+            }
           } else {
             console.warn("No Employee record found for SapUsername:", sUsername);
           }

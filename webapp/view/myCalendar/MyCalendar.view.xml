@@ -2,16 +2,22 @@
   controllerName="hrproject.controller.myCalendar.MyCalendar"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
+  xmlns:core="sap.ui.core"
   xmlns:unified="sap.ui.unified"
   displayBlock="true">
 
   <Page showNavButton="false" showHeader="false">
     <content>
 
+      <!-- TOOLBAR — back, title, View All, + New Appointment -->
       <Toolbar class="sapUiNoMargin">
         <Button icon="sap-icon://nav-back" type="Transparent" press="onNavBack"/>
         <Title text="My Calendar" level="H4"/>
         <ToolbarSpacer/>
+        <Button
+          text="All Appointments"
+          icon="sap-icon://list"
+          press="onViewAllAppointments"/>
         <Button
           text="+ New Appointment"
           type="Emphasized"
@@ -19,35 +25,140 @@
           press="onCreateAppointment"/>
       </Toolbar>
 
-      <SinglePlanningCalendar
-        id="myCalendar"
-        title=""
-        startDate="{calModel>/startDate}"
-        enableAppointmentsDragAndDrop="true"
-        enableAppointmentsResize="true"
-        enableAppointmentsCreate="false"
-        appointmentDrop="onAppointmentDrop"
-        appointmentResize="onAppointmentResize"
-        appointmentSelect="onAppointmentSelect"
-        appointments="{path: 'calModel>/appointments'}">
+      <!-- CALENDAR + SIDEBAR -->
+      <FlexBox direction="Row" width="100%" renderType="Bare" alignItems="Start">
 
-        <views>
-          <SinglePlanningCalendarDayView      key="DayView"      title="Day"/>
-          <SinglePlanningCalendarWorkWeekView key="WorkWeekView" title="Work Week"/>
-          <SinglePlanningCalendarWeekView     key="WeekView"     title="Week"/>
-          <SinglePlanningCalendarMonthView    key="MonthView"    title="Month"/>
-        </views>
+        <!-- ═══════════════ CALENDAR ═══════════════ -->
+        <SinglePlanningCalendar
+          id="myCalendar"
+          title=""
+          startDate="{calModel>/startDate}"
+          enableAppointmentsDragAndDrop="true"
+          enableAppointmentsResize="true"
+          enableAppointmentsCreate="true"
+          appointmentDrop="onAppointmentDrop"
+          appointmentResize="onAppointmentResize"
+          appointmentSelect="onAppointmentSelect"
+          appointmentCreate="onAppointmentCreateDrag"
+          cellPress="onCellPress"
+          startDateChange="onStartDateChange"
+          appointments="{path: 'calModel>/appointments'}">
 
-        <appointments>
-          <unified:CalendarAppointment
-            title="{calModel>title}"
-            text="{calModel>description}"
-            type="{calModel>type}"
-            startDate="{calModel>startDate}"
-            endDate="{calModel>endDate}"/>
-        </appointments>
+          <layoutData>
+            <FlexItemData growFactor="1" baseSize="0" minWidth="0"/>
+          </layoutData>
 
-      </SinglePlanningCalendar>
+          <views>
+            <SinglePlanningCalendarDayView      key="DayView"      title="Day"/>
+            <SinglePlanningCalendarWorkWeekView key="WorkWeekView" title="Work Week"/>
+            <SinglePlanningCalendarWeekView     key="WeekView"     title="Week"/>
+            <SinglePlanningCalendarMonthView    key="MonthView"    title="Month"/>
+          </views>
+
+          <appointments>
+            <unified:CalendarAppointment
+              title="{calModel>title}"
+              text="{calModel>description}"
+              type="{calModel>type}"
+              startDate="{calModel>startDate}"
+              endDate="{calModel>endDate}"/>
+          </appointments>
+
+        </SinglePlanningCalendar>
+
+        <!-- ═══════════════ SIDEBAR ═══════════════ -->
+        <VBox width="340px" class="sapUiSmallMargin hrCalSidebar">
+
+          <!-- Quick "+ New" inside the sidebar too — extra visibility -->
+          <Button
+            text="+ New Appointment"
+            type="Emphasized"
+            icon="sap-icon://add"
+            width="100%"
+            press="onCreateAppointment"
+            class="sapUiSmallMarginBottom"/>
+
+          <!-- TODAY -->
+          <Panel headerText="{= 'Today (' + ${calModel>/todayCount} + ')'}" expandable="false" class="sapUiSmallMarginBottom">
+            <List
+              items="{calModel>/today}"
+              noDataText="Nothing scheduled today"
+              showSeparators="Inner">
+              <ObjectListItem
+                title="{calModel>title}"
+                number="{path: 'calModel>startDate', formatter: '.fmtTime'}"
+                numberUnit="- {path: 'calModel>endDate', formatter: '.fmtTime'}"
+                type="Active"
+                press="onSidebarItemPress">
+                <attributes>
+                  <ObjectAttribute text="{calModel>description}" visible="{= !!${calModel>description}}"/>
+                </attributes>
+                <firstStatus>
+                  <ObjectStatus text="{calModel>typeLabel}" state="{calModel>typeState}"/>
+                </firstStatus>
+              </ObjectListItem>
+            </List>
+          </Panel>
+
+          <!-- NEXT 7 DAYS -->
+          <Panel headerText="{= 'Next 7 Days (' + ${calModel>/upcomingCount} + ')'}" expandable="false" class="sapUiSmallMarginBottom">
+            <List
+              items="{calModel>/upcoming}"
+              noDataText="Nothing coming up"
+              showSeparators="Inner">
+              <ObjectListItem
+                title="{calModel>title}"
+                intro="{path: 'calModel>startDate', formatter: '.fmtDayShort'}"
+                number="{path: 'calModel>startDate', formatter: '.fmtTime'}"
+                type="Active"
+                press="onSidebarItemPress">
+                <attributes>
+                  <ObjectAttribute text="{calModel>description}" visible="{= !!${calModel>description}}"/>
+                </attributes>
+                <firstStatus>
+                  <ObjectStatus text="{calModel>typeLabel}" state="{calModel>typeState}"/>
+                </firstStatus>
+              </ObjectListItem>
+            </List>
+          </Panel>
+
+          <!-- LEGEND -->
+          <Panel headerText="Legend" expandable="true" expanded="false">
+            <VBox class="sapUiTinyMargin">
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#3C5CB0"/>
+                <Text text="Work" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#30913C"/>
+                <Text text="Available" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#009DA8"/>
+                <Text text="Meeting" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#E8762B"/>
+                <Text text="Personal" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#D36FB4"/>
+                <Text text="Social" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                <core:Icon src="sap-icon://circle-task-2" color="#D20A0A"/>
+                <Text text="Urgent" class="sapUiSmallMarginBegin"/>
+              </HBox>
+              <HBox alignItems="Center">
+                <core:Icon src="sap-icon://circle-task-2" color="#8D5BC3"/>
+                <Text text="Reminder" class="sapUiSmallMarginBegin"/>
+              </HBox>
+            </VBox>
+          </Panel>
+
+        </VBox>
+
+      </FlexBox>
 
     </content>
   </Page>

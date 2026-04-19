@@ -1,0 +1,94 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+
+  <Dialog
+    id="assignTaskDialog"
+    title="{= ${assign>/step} === 1 ? 'Assign Task — Select Team' : 'Assign Task — Select Employee' }"
+    contentWidth="560px"
+    contentHeight="540px"
+    draggable="true"
+    resizable="true"
+    busy="{assign>/busy}">
+
+    <content>
+      <VBox class="sapUiSmallMargin">
+
+        <!-- Always-visible task context -->
+        <ObjectStatus
+          title="Task"
+          text="{assign>/taskTitle}"
+          class="sapUiSmallMarginBottom"/>
+
+        <!-- ───────── STEP 1 — Select Team (Sector) ───────── -->
+        <VBox visible="{= ${assign>/step} === 1 }">
+          <Text
+            text="Choose the team that should own this task:"
+            class="sapUiSmallMarginBottom sapUiContentLabelColor"/>
+          <List
+            id="assignSectorList"
+            items="{assign>/sectors}"
+            mode="SingleSelectMaster"
+            includeItemInSelection="true"
+            selectionChange="onSelectSector"
+            noDataText="No teams found">
+            <StandardListItem
+              title="{assign>SectorName}"
+              description="{= 'Sector Id: ' + ${assign>SectorId} }"
+              icon="sap-icon://group"
+              type="Active"/>
+          </List>
+        </VBox>
+
+        <!-- ───────── STEP 2 — Select Employee ───────── -->
+        <VBox visible="{= ${assign>/step} === 2 }">
+          <ObjectStatus
+            title="Team"
+            text="{assign>/selectedSectorName}"
+            state="Information"
+            class="sapUiSmallMarginBottom"/>
+          <SearchField
+            width="100%"
+            placeholder="Search by name, title or username"
+            liveChange="onAssignSearch"
+            class="sapUiSmallMarginBottom"/>
+          <List
+            id="assignEmployeeList"
+            items="{assign>/filteredEmployees}"
+            mode="SingleSelectMaster"
+            includeItemInSelection="true"
+            selectionChange="onSelectEmployee"
+            noDataText="No employees found in this team">
+            <StandardListItem
+              title="{assign>fullName}"
+              description="{= ${assign>PersonelTitle} || '—' }"
+              info="{= ${assign>PersId} === ${assign>/currentAssigneePersId} ? 'Current' : ${assign>SapUsername} }"
+              infoState="{= ${assign>PersId} === ${assign>/currentAssigneePersId} ? 'Success' : 'None' }"
+              icon="sap-icon://person-placeholder"
+              type="Active"/>
+          </List>
+        </VBox>
+
+      </VBox>
+    </content>
+
+    <buttons>
+      <Button
+        text="Back to Teams"
+        icon="sap-icon://nav-back"
+        visible="{= ${assign>/step} === 2 }"
+        press="onBackToTeams"/>
+      <Button
+        text="Assign"
+        type="Emphasized"
+        icon="sap-icon://accept"
+        visible="{= ${assign>/step} === 2 }"
+        enabled="{= !!${assign>/selectedPersId} }"
+        press="onConfirmAssign"/>
+      <Button
+        text="Cancel"
+        press="onCancelAssign"/>
+    </buttons>
+
+  </Dialog>
+</core:FragmentDefinition>

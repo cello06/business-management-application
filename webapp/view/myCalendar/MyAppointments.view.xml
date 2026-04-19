@@ -1,0 +1,125 @@
+<mvc:View
+  controllerName="hrproject.controller.myCalendar.MyAppointments"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  displayBlock="true">
+
+  <Page showNavButton="true" navButtonPress="onNavBack" title="My Appointments">
+
+    <content>
+
+      <!-- KPI BAR -->
+      <HBox class="sapUiSmallMargin" alignItems="Center" wrap="Wrap">
+        <ObjectStatus
+          title="Upcoming"
+          text="{appt>/kpi/upcomingCount}"
+          state="Information"
+          class="sapUiMediumMarginEnd"/>
+        <ObjectStatus
+          title="Next 7 Days"
+          text="{appt>/kpi/weekCount}"
+          state="Success"
+          class="sapUiMediumMarginEnd"/>
+        <ObjectStatus
+          title="Past"
+          text="{appt>/kpi/pastCount}"
+          state="None"/>
+      </HBox>
+
+      <Table
+        id="apptTable"
+        items="{
+          path: 'appt>/items',
+          sorter: { path: 'startDate' }
+        }"
+        growing="true"
+        growingThreshold="25"
+        noDataText="No appointments match the current filters.">
+
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="{= ${appt>/count} + ' appointment(s)'}" level="H4"/>
+            <ToolbarSpacer/>
+
+            <SegmentedButton
+              selectedKey="{appt>/scope}"
+              selectionChange="onScopeChange">
+              <items>
+                <SegmentedButtonItem key="upcoming" text="Upcoming" icon="sap-icon://future"/>
+                <SegmentedButtonItem key="past"     text="Past"     icon="sap-icon://history"/>
+                <SegmentedButtonItem key="all"      text="All"      icon="sap-icon://list"/>
+              </items>
+            </SegmentedButton>
+
+            <Select
+              selectedKey="{appt>/typeFilter}"
+              change="onTypeFilterChange"
+              width="160px">
+              <items>
+                <core:Item key=""       text="All types"/>
+                <core:Item key="TYPE01" text="Work"/>
+                <core:Item key="TYPE02" text="Available"/>
+                <core:Item key="TYPE03" text="Meeting"/>
+                <core:Item key="TYPE05" text="Personal"/>
+                <core:Item key="TYPE07" text="Social"/>
+                <core:Item key="TYPE08" text="Urgent"/>
+                <core:Item key="TYPE09" text="Reminder"/>
+              </items>
+            </Select>
+
+            <SearchField
+              width="220px"
+              placeholder="Search title / description"
+              liveChange="onSearch"/>
+
+            <Button
+              icon="sap-icon://refresh"
+              tooltip="Refresh"
+              press="onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+
+        <columns>
+          <Column width="28%"><header><Text text="Title"/></header></Column>
+          <Column width="12%"><header><Text text="Type"/></header></Column>
+          <Column width="18%"><header><Text text="Start"/></header></Column>
+          <Column width="18%"><header><Text text="End"/></header></Column>
+          <Column width="10%"><header><Text text="Duration"/></header></Column>
+          <Column width="14%" hAlign="End"><header><Text text=""/></header></Column>
+        </columns>
+
+        <items>
+          <ColumnListItem type="Active" press="onRowPress">
+            <cells>
+              <VBox>
+                <Text text="{appt>title}"/>
+                <Text
+                  text="{appt>description}"
+                  class="sapUiTinyMarginTop"
+                  visible="{= !!${appt>description}}"
+                  wrapping="true"/>
+              </VBox>
+              <HBox alignItems="Center">
+                <core:Icon
+                  src="sap-icon://circle-task-2"
+                  color="{appt>typeColor}"
+                  size="1rem"/>
+                <Text text="{appt>typeLabel}" class="sapUiTinyMarginBegin"/>
+              </HBox>
+              <Text text="{path: 'appt>startDate', formatter: '.fmtDateTime'}"/>
+              <Text text="{path: 'appt>endDate',   formatter: '.fmtDateTime'}"/>
+              <Text text="{parts: [{path:'appt>startDate'}, {path:'appt>endDate'}], formatter: '.fmtDuration'}"/>
+              <Button
+                text="Open"
+                icon="sap-icon://appointment-2"
+                type="Transparent"
+                press="onRowPress"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+
+    </content>
+  </Page>
+</mvc:View>
