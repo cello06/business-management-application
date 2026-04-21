@@ -203,6 +203,16 @@
           "name": "RouteAppointmentDetail",
           "pattern": "appointment/{persId}/{entryId}",
           "target": "TargetAppointmentDetail"
+        },
+        {
+          "name": "RouteFeedback",
+          "pattern": "feedback",
+          "target": "TargetFeedback"
+        },
+        {
+          "name": "RouteMyProfile",
+          "pattern": "myprofile/{persId}",
+          "target": "TargetMyProfile"
         }
       ],
       "targets": {
@@ -315,6 +325,18 @@
           "transition": "slide",
           "viewId": "AppointmentDetail",
           "viewName": "myCalendar.AppointmentDetail"
+        },
+        "TargetFeedback": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "Feedback",
+          "viewName": "feedback.Feedback"
+        },
+        "TargetMyProfile": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "MyProfile",
+          "viewName": "myProfile.MyProfile"
         }
       }
     },

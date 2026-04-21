@@ -27,20 +27,20 @@ sap.ui.define([
 
     _onRouteMatched: function (oEvent) {
       var oArgs = oEvent.getParameter("arguments");
-      this._sSectorId = oArgs.sectorId;
+      this._sTeamId = oArgs.sectorId;
 
       var oList = this.byId("employeeList");
       var oBinding = oList.getBinding("items");
 
       if (oBinding) {
-        var oFilter = new Filter("SectorId", FilterOperator.EQ, this._sSectorId);
+        var oFilter = new Filter("TeamId", FilterOperator.EQ, this._sTeamId);
         oBinding.filter([oFilter]);
       }
 
       var oModel = this.getView().getModel();
       var oText = this.byId("sectorInfoText");
 
-      oModel.read("/Sectors(" + this._sSectorId + ")", {
+      oModel.read("/Sectors(" + this._sTeamId + ")", {
         success: function (oData) {
           oText.setText(oData.SectorName);
         },
@@ -65,14 +65,14 @@ sap.ui.define([
       var oData = oCtx.getObject();
 
       UIComponent.getRouterFor(this).navTo("RouteEmployeeDetail", {
-        sectorId: this._sSectorId,
+        sectorId: this._sTeamId,
         persId: oData.PersId
       });
     },
 
     onCreateEmployee: function () {
       UIComponent.getRouterFor(this).navTo("RouteCreateEmployee", {
-        sectorId: this._sSectorId
+        sectorId: this._sTeamId
       });
     },
 

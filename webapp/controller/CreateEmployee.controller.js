@@ -16,8 +16,8 @@ sap.ui.define([
 
     _onRouteMatched: function (oEvent) {
       var oArgs = oEvent.getParameter("arguments");
-      this._sSectorId = oArgs.sectorId;
-      this.byId("inpSectorId").setValue(this._sSectorId);
+      this._sTeamId = oArgs.sectorId;
+      this.byId("inpTeamId").setValue(this._sTeamId);
 
       this._clearForm();
     },
@@ -27,6 +27,12 @@ sap.ui.define([
       this.byId("inpFirstName").setValue("");
       this.byId("inpLastName").setValue("");
       this.byId("inpTitle").setValue("");
+      this.byId("inpEmail").setValue("");
+      this.byId("inpPhone").setValue("");
+      this.byId("inpBirthDate").setValue("");
+      this.byId("selGender").setSelectedKey("");
+      this.byId("inpStartDate").setValue("");
+      this.byId("selStatus").setSelectedKey("ACTIVE");
       this.byId("inpPersId").setValueState("None");
       this.byId("inpPersId").setValueStateText("");
     },
@@ -60,20 +66,31 @@ sap.ui.define([
     onSave: function () {
       var oModel = this.getView().getModel();
       var oPersIdInput = this.byId("inpPersId");
-      var sSalary = this.byId("inpSalary").getValue();
-      var sSalary = this.byId("inpSalary").getValue().trim().replace(",", ".");
+
+      var oBirthJS = this.byId("inpBirthDate").getDateValue();
+      var oStartJS = this.byId("inpStartDate").getDateValue();
+      var toMidnightUTC = function (oJs) {
+        return oJs
+          ? new Date(Date.UTC(oJs.getFullYear(), oJs.getMonth(), oJs.getDate()))
+          : null;
+      };
 
       var oPayload = {
         PersId: oPersIdInput.getValue().trim(),
         FirstName: this.byId("inpFirstName").getValue().trim(),
         LastName: this.byId("inpLastName").getValue().trim(),
         Title: this.byId("inpTitle").getValue().trim(),
-        Salary: sSalary ? sSalary : "0.00",
-        SectorId: parseInt(this.byId("inpSectorId").getValue(), 10)
+        TeamId: parseInt(this.byId("inpTeamId").getValue(), 10),
+        Email: this.byId("inpEmail").getValue().trim(),
+        Phone: this.byId("inpPhone").getValue().trim(),
+        BirthDate: toMidnightUTC(oBirthJS),
+        Gender: this.byId("selGender").getSelectedKey(),
+        StartDate: toMidnightUTC(oStartJS),
+        Status: this.byId("selStatus").getSelectedKey() || "ACTIVE"
       };
 
-      if (!oPayload.PersId || !oPayload.FirstName || !oPayload.LastName || !oPayload.SectorId) {
-        MessageToast.show("TC ID, First Name, Last Name ve Sector ID zorunlu.");
+      if (!oPayload.PersId || !oPayload.FirstName || !oPayload.LastName || !oPayload.TeamId) {
+        MessageToast.show("TC ID, First Name, Last Name ve Team ID zorunlu.");
         return;
       }
 
@@ -109,7 +126,7 @@ sap.ui.define([
 
     onNavBack: function () {
       UIComponent.getRouterFor(this).navTo("RouteEmployee", {
-        sectorId: this._sSectorId
+        sectorId: this._sTeamId
       });
     }
   });

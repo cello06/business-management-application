@@ -49,7 +49,7 @@ sap.ui.define([
     _onRouteMatched: function (oEvent) {
       var oArgs = oEvent.getParameter("arguments");
 
-      this._sSectorId = oArgs.sectorId;
+      this._sTeamId = oArgs.sectorId;
       this._sPersId = oArgs.persId;
 
       this.getView().bindElement({
@@ -271,7 +271,7 @@ sap.ui.define([
       UIComponent.getRouterFor(this).navTo("RouteCourseDetail", {
         persId: String(this._sPersId),
         courseId: String(oCourseData.CourseId),
-        sectorId: String(this._sSectorId),
+        sectorId: String(this._sTeamId),
       });
     },
     onOpenProjectDetail: function (oProjectData) {
@@ -281,7 +281,7 @@ sap.ui.define([
       }
 
       UIComponent.getRouterFor(this).navTo("RouteProjectDetail", {
-        sectorId: String(this._sSectorId),
+        sectorId: String(this._sTeamId),
         persId: String(this._sPersId),
         projectId: String(oProjectData.ProjectId)
       });
@@ -289,7 +289,7 @@ sap.ui.define([
 
     onNavBack: function () {
       UIComponent.getRouterFor(this).navTo("RouteEmployee", {
-        sectorId: this._sSectorId
+        sectorId: this._sTeamId
       });
     },
 
@@ -298,12 +298,12 @@ sap.ui.define([
     },
     onAddCoursePress: function () {
       UIComponent.getRouterFor(this).navTo("RouteAssignCourse", {
-        sectorId: String(this._sSectorId),
+        sectorId: String(this._sTeamId),
         persId: String(this._sPersId)
       });
     }, onAssignProjectPress: function () {
       UIComponent.getRouterFor(this).navTo("RouteAssignProject", {
-        sectorId: String(this._sSectorId),
+        sectorId: String(this._sTeamId),
         persId: String(this._sPersId)
       });
     }

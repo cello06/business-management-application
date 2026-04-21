@@ -2,6 +2,7 @@
   controllerName="hrproject.controller.CreateEmployee"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
+  xmlns:core="sap.ui.core"
   xmlns:f="sap.ui.layout.form">
 
   <Page title="Create Employee" showNavButton="true" navButtonPress=".onNavBack">
@@ -25,11 +26,34 @@
           <Label text="Title" />
           <Input id="inpTitle" />
 
-          <Label text="Salary" />
-          <Input id="inpSalary" type="Number"/>
+          <Label text="Team ID" />
+          <Input id="inpTeamId" editable="false" />
 
-          <Label text="Sector ID" />
-          <Input id="inpSectorId" editable="false" />
+          <Label text="Email" />
+          <Input id="inpEmail" type="Email" />
+
+          <Label text="Phone" />
+          <Input id="inpPhone" type="Tel" />
+
+          <Label text="Birth Date" />
+          <DatePicker id="inpBirthDate" valueFormat="yyyy-MM-dd" displayFormat="long" />
+
+          <Label text="Gender" />
+          <Select id="selGender">
+            <core:Item key="" text="" />
+            <core:Item key="M" text="Male" />
+            <core:Item key="F" text="Female" />
+            <core:Item key="O" text="Other" />
+          </Select>
+
+          <Label text="Start Date" />
+          <DatePicker id="inpStartDate" valueFormat="yyyy-MM-dd" displayFormat="long" />
+
+          <Label text="Status" />
+          <Select id="selStatus">
+            <core:Item key="ACTIVE" text="Active" />
+            <core:Item key="INACTIVE" text="Inactive" />
+          </Select>
 
         </f:SimpleForm>
 

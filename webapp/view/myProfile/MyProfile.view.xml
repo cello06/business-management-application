@@ -1,0 +1,180 @@
+<mvc:View
+    controllerName="hrproject.controller.myProfile.MyProfile"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:f="sap.ui.layout.form">
+
+    <Page
+        id="myProfilePage"
+        title="My Profile"
+        showNavButton="true"
+        navButtonPress=".onNavBack"
+        busy="{profile>/busy}"
+        busyIndicatorDelay="0">
+
+        <content>
+            <l:VerticalLayout width="100%" class="sapUiMediumMargin">
+
+                <!-- ═══ Header: avatar + identity ═══════════════════════════ -->
+                <HBox alignItems="Center" class="sapUiMediumMarginBottom">
+                    <VBox alignItems="Center" class="sapUiMediumMarginEnd">
+                        <Avatar
+                            id="profileAvatar"
+                            src="{profile>/photoDataUrl}"
+                            initials="{profile>/initials}"
+                            displayShape="Circle"
+                            displaySize="XL"
+                            press=".onAvatarPress"
+                            tooltip="Click to change photo"
+                            class="hrProfileAvatar" />
+                        <u:FileUploader
+                            id="profilePhotoUploader"
+                            mimeType="image/png,image/jpeg,image/gif"
+                            sameFilenameAllowed="true"
+                            change=".onPhotoSelected"
+                            typeMissmatch=".onPhotoTypeMismatch"
+                            class="hrPhotoUploaderHidden" />
+                        <Button
+                            text="Change photo"
+                            icon="sap-icon://camera"
+                            type="Transparent"
+                            press=".onAvatarPress"
+                            class="sapUiTinyMarginTop" />
+                    </VBox>
+
+                    <VBox>
+                        <Title
+                            text="{profile>/firstName} {profile>/lastName}"
+                            level="H2" />
+                        <Text
+                            text="{profile>/title}"
+                            class="sapUiTinyMarginTop" />
+                        <Text
+                            text="{= ${profile>/teamName} || ('Team ' + (${profile>/teamId} || '')) }"
+                            class="sapUiTinyMarginTop" />
+                        <ObjectStatus
+                            text="{profile>/status}"
+                            state="{= ${profile>/status} === 'ACTIVE' ? 'Success' : 'Warning' }"
+                            class="sapUiTinyMarginTop" />
+                    </VBox>
+                </HBox>
+
+                <!-- ═══ Toolbar: Edit / Save / Cancel ════════════════════════ -->
+                <Toolbar class="sapUiSmallMarginBottom sapUiSmallMarginEnd">
+                    <Title text="Personal Information" level="H3" />
+                    <ToolbarSpacer />
+                    <Button
+                        text="Edit"
+                        icon="sap-icon://edit"
+                        type="Emphasized"
+                        visible="{= !${profile>/editMode} }"
+                        press=".onEdit"
+                        class="sapUiSmallMarginEnd" />
+                    <Button
+                        text="Save"
+                        icon="sap-icon://save"
+                        type="Emphasized"
+                        visible="{profile>/editMode}"
+                        press=".onSave"
+                        class="sapUiTinyMarginEnd" />
+                    <Button
+                        text="Cancel"
+                        icon="sap-icon://decline"
+                        visible="{profile>/editMode}"
+                        press=".onCancel"
+                        class="sapUiSmallMarginEnd" />
+                </Toolbar>
+
+                <!-- ═══ Form ═════════════════════════════════════════════════ -->
+                <f:SimpleForm
+                    editable="{profile>/editMode}"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+                    adjustLabelSpan="false"
+                    columnsXL="2" columnsL="2" columnsM="1"
+                    singleContainerFullSize="false"
+                    class="hrProfileForm">
+
+                    <!-- Person ID (read only, masked) -->
+                    <Label text="Person ID" />
+                    <Text text="{path: 'profile>/persId', formatter: '.formatter.maskTcId'}" />
+
+                    <!-- SAP Username (read only) -->
+                    <Label text="SAP Username" />
+                    <Text text="{profile>/sapUsername}" />
+
+                    <!-- First Name -->
+                    <Label text="First Name" />
+                    <Text text="{profile>/firstName}" visible="{= !${profile>/editMode} }" />
+                    <Input value="{profile>/firstName}" visible="{profile>/editMode}" />
+
+                    <!-- Last Name -->
+                    <Label text="Last Name" />
+                    <Text text="{profile>/lastName}" visible="{= !${profile>/editMode} }" />
+                    <Input value="{profile>/lastName}" visible="{profile>/editMode}" />
+
+                    <!-- Title -->
+                    <Label text="Title" />
+                    <Text text="{profile>/title}" visible="{= !${profile>/editMode} }" />
+                    <Input value="{profile>/title}" visible="{profile>/editMode}" />
+
+                    <!-- Email -->
+                    <Label text="Email" />
+                    <Text text="{profile>/email}" visible="{= !${profile>/editMode} }" />
+                    <Input value="{profile>/email}" type="Email" visible="{profile>/editMode}" />
+
+                    <!-- Phone -->
+                    <Label text="Phone" />
+                    <Text text="{profile>/phone}" visible="{= !${profile>/editMode} }" />
+                    <Input value="{profile>/phone}" type="Tel" visible="{profile>/editMode}" />
+
+                    <!-- Gender -->
+                    <Label text="Gender" />
+                    <Text
+                        text="{= ${profile>/gender} === 'M' ? 'Male' : (${profile>/gender} === 'F' ? 'Female' : '') }"
+                        visible="{= !${profile>/editMode} }" />
+                    <Select selectedKey="{profile>/gender}" visible="{profile>/editMode}">
+                        <core:Item key="" text="" />
+                        <core:Item key="M" text="Male" />
+                        <core:Item key="F" text="Female" />
+                    </Select>
+
+                    <!-- Birth Date -->
+                    <Label text="Birth Date" />
+                    <Text
+                        text="{path: 'profile>/birthDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}"
+                        visible="{= !${profile>/editMode} }" />
+                    <DatePicker
+                        dateValue="{profile>/birthDate}"
+                        displayFormat="long"
+                        visible="{profile>/editMode}" />
+
+                    <!-- Team (read only; always display) -->
+                    <Label text="Team" />
+                    <Text text="{= ${profile>/teamName} || ('Team ' + (${profile>/teamId} || '')) }" />
+
+                    <!-- Manager (read only) -->
+                    <Label text="Manager ID" />
+                    <Text text="{profile>/managerId}" />
+
+                    <!-- Start Date (read only) -->
+                    <Label text="Start Date" />
+                    <Text text="{path: 'profile>/startDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}" />
+
+                    <!-- End Date (read only) -->
+                    <Label text="End Date" />
+                    <Text text="{path: 'profile>/endDate', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium' }}" />
+
+                    <!-- Status (read only) -->
+                    <Label text="Status" />
+                    <Text text="{profile>/status}" />
+
+                </f:SimpleForm>
+
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>

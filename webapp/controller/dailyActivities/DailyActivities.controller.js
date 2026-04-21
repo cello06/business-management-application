@@ -103,8 +103,8 @@ sap.ui.define([
       this._sPersId = oEvent.getParameter("arguments").persId;
 
       this._sSapUsername = oComp._sSapUsername || "";
-      this._sMySectorId  = oComp._sSectorId || "";
-      if (!this._sSapUsername || !this._sMySectorId) { this._lookupSapUsername(); }
+      this._sMyTeamId    = oComp._sTeamId || "";
+      if (!this._sSapUsername || !this._sMyTeamId) { this._lookupSapUsername(); }
 
       // Pick up role cached by Home; default to employee
       var oKanbanModel = this.getView().getModel("kanban");
@@ -151,7 +151,7 @@ sap.ui.define([
       });
     },
 
-    // ── Fallback: lookup SapUsername + SectorId ────────────────────────────
+    // ── Fallback: lookup SapUsername + TeamId ──────────────────────────────
     _lookupSapUsername: function () {
       var oModel = this.getView().getModel();
       var oComp  = this.getOwnerComponent();
@@ -161,18 +161,18 @@ sap.ui.define([
       oModel.read("/Employees", {
         urlParameters: {
           "$filter": "PersId eq '" + sPersId + "'",
-          "$select": "SapUsername,SectorId",
+          "$select": "SapUsername,TeamId",
           "$top": "1"
         },
         success: function (oData) {
           if (oData.results && oData.results.length > 0) {
             that._sSapUsername = oData.results[0].SapUsername || "";
-            that._sMySectorId  = oData.results[0].SectorId
-              ? oData.results[0].SectorId.toString()
+            that._sMyTeamId    = oData.results[0].TeamId
+              ? oData.results[0].TeamId.toString()
               : "";
             // Backfill Component cache for other controllers
             oComp._sSapUsername = oComp._sSapUsername || that._sSapUsername;
-            oComp._sSectorId    = oComp._sSectorId    || that._sMySectorId;
+            oComp._sTeamId      = oComp._sTeamId      || that._sMyTeamId;
           }
         }
       });
@@ -273,21 +273,21 @@ sap.ui.define([
       var oComp  = this.getOwnerComponent();
       var that = this;
 
-      var step2 = function (sSectorId) {
-        if (!sSectorId) { that._aTeamPersIds = []; return fnDone([]); }
+      var step2 = function (sTeamId) {
+        if (!sTeamId) { that._aTeamPersIds = []; return fnDone([]); }
 
         var handleSuccess = function (oData) {
           that._aTeamPersIds = (oData.results || [])
             .map(function (e) { return e.PersId; })
             .filter(Boolean);
-          console.log("Team PersIds for sector", sSectorId, ":", that._aTeamPersIds);
+          console.log("Team PersIds for team", sTeamId, ":", that._aTeamPersIds);
           fnDone(that._aTeamPersIds);
         };
 
         // Try numeric filter first; fall back to quoted if backend is NUMC
         oModel.read("/Employees", {
           urlParameters: {
-            "$filter": "SectorId eq " + sSectorId,
+            "$filter": "TeamId eq " + sTeamId,
             "$select": "PersId"
           },
           success: handleSuccess,
@@ -296,7 +296,7 @@ sap.ui.define([
                          oErrNumeric && oErrNumeric.responseText);
             oModel.read("/Employees", {
               urlParameters: {
-                "$filter": "SectorId eq '" + sSectorId + "'",
+                "$filter": "TeamId eq '" + sTeamId + "'",
                 "$select": "PersId"
               },
               success: handleSuccess,
@@ -312,21 +312,21 @@ sap.ui.define([
       };
 
       // Prefer value resolved by Home → Component
-      var sSector = this._sMySectorId || oComp._sSectorId || "";
-      if (sSector) { return step2(sSector); }
+      var sTeam = this._sMyTeamId || oComp._sTeamId || "";
+      if (sTeam) { return step2(sTeam); }
 
       oModel.read("/Employees", {
         urlParameters: {
           "$filter": "PersId eq '" + this._sPersId + "'",
-          "$select": "SectorId",
+          "$select": "TeamId",
           "$top": "1"
         },
         success: function (oData) {
           var s = oData.results && oData.results.length
-            ? (oData.results[0].SectorId ? oData.results[0].SectorId.toString() : "")
+            ? (oData.results[0].TeamId ? oData.results[0].TeamId.toString() : "")
             : "";
-          that._sMySectorId = s;
-          if (s) { oComp._sSectorId = oComp._sSectorId || s; }
+          that._sMyTeamId = s;
+          if (s) { oComp._sTeamId = oComp._sTeamId || s; }
           step2(s);
         },
         error: function () { step2(""); }
@@ -871,9 +871,9 @@ sap.ui.define([
       if (oComboBox._loaded) { return fnDone(); }
 
       var oComp = this.getOwnerComponent();
-      var sSector = this._sMySectorId || oComp._sSectorId || "";
-      if (!sSector) {
-        console.warn("_ensureAssigneeList: no sector — combo will be empty");
+      var sTeam = this._sMyTeamId || oComp._sTeamId || "";
+      if (!sTeam) {
+        console.warn("_ensureAssigneeList: no team — combo will be empty");
         fnDone();
         return;
       }
@@ -883,7 +883,7 @@ sap.ui.define([
         var Item = sap.ui.core.Item;
         oComboBox.addItem(new Item({ key: "", text: "(unassigned)" }));
         aRows.forEach(function (e) {
-          // _readEmployeesBySector already normalised FirstName/LastName.
+          // _readEmployeesByTeam already normalised FirstName/LastName.
           // Prefer new names, fall back to old — matches the same policy.
           var sF = e.FirstName || e.Name    || "";
           var sL = e.LastName  || e.Surname || "";
@@ -897,7 +897,7 @@ sap.ui.define([
         fnDone();
       };
 
-      this._readEmployeesBySector(sSector, fill, function () { fnDone(); });
+      this._readEmployeesByTeam(sTeam, fill, function () { fnDone(); });
     },
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -1316,15 +1316,15 @@ sap.ui.define([
       if (oList && oList.removeSelections) { oList.removeSelections(true); }
     },
 
-    // ── STEP 2: load employees for the chosen sector ──────────────────────
+    // ── STEP 2: load employees for the chosen team ────────────────────────
     // Tries numeric filter first; falls back to quoted if backend field is
     // NUMC (Edm.String). That covers both schema choices without guessing.
-    _loadEmployeesForStep2: function (sSectorId) {
+    _loadEmployeesForStep2: function (sTeamId) {
       var oAssign = this.getView().getModel("assign");
       var that    = this;
       oAssign.setProperty("/busy", true);
 
-      this._readEmployeesBySector(sSectorId,
+      this._readEmployeesByTeam(sTeamId,
         function (aEmps) {
           oAssign.setProperty("/employees",         aEmps);
           oAssign.setProperty("/filteredEmployees", aEmps);
@@ -1349,13 +1349,13 @@ sap.ui.define([
       );
     },
 
-    // Shared helper: sector-scoped employee read.
-    // SectorId is Edm.Int32 in $metadata — send unquoted. Keep a quoted
+    // Shared helper: team-scoped employee read.
+    // TeamId is Edm.Int32 in $metadata — send unquoted. Keep a quoted
     // fallback in case a different mandant has it as NUMC.
     // Field names on Employees: FirstName / LastName / Title. We still
     // accept Name/Surname/PersonelTitle defensively so a future rename
     // doesn't silently break display.
-    _readEmployeesBySector: function (sSectorId, fnSuccess, fnError) {
+    _readEmployeesByTeam: function (sTeamId, fnSuccess, fnError) {
       var oModel = this.getView().getModel();
 
       var mapRow = function (e) {
@@ -1374,17 +1374,17 @@ sap.ui.define([
           Name          : sName,
           Surname       : sSur,
           PersonelTitle : sTitle,
-          SectorId      : e.SectorId,
+          TeamId        : e.TeamId,
           fullName      : sFull
         };
       };
 
-      var iNumericSector = parseInt(sSectorId, 10);
+      var iNumericTeam = parseInt(sTeamId, 10);
       var tryFilter = function (sFilter, fnOk, fnFail) {
         oModel.read("/Employees", {
           urlParameters: {
             "$filter": sFilter,
-            "$select": "PersId,SapUsername,FirstName,LastName,Title,SectorId"
+            "$select": "PersId,SapUsername,FirstName,LastName,Title,TeamId"
           },
           success: function (oData) { fnOk((oData.results || []).map(mapRow)); },
           error: fnFail
@@ -1392,16 +1392,16 @@ sap.ui.define([
       };
 
       tryFilter(
-        "SectorId eq " + iNumericSector,
+        "TeamId eq " + iNumericTeam,
         fnSuccess,
         function (oErrNumeric) {
-          console.warn("Numeric SectorId filter failed, retrying quoted:",
+          console.warn("Numeric TeamId filter failed, retrying quoted:",
                        oErrNumeric && oErrNumeric.responseText);
           tryFilter(
-            "SectorId eq '" + sSectorId + "'",
+            "TeamId eq '" + sTeamId + "'",
             fnSuccess,
             function (oErrQuoted) {
-              console.error("Quoted SectorId filter also failed:",
+              console.error("Quoted TeamId filter also failed:",
                             oErrQuoted && oErrQuoted.responseText);
               fnError(oErrQuoted);
             }

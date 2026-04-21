@@ -151,28 +151,36 @@ sap.ui.define([
       oModel.read("/Employees", {
         urlParameters: {
           "$filter": "SapUsername eq '" + sUsername + "'",
-          "$select": "PersId,SapUsername,SectorId",
+          "$select": "PersId,SapUsername,TeamId,Email,Phone,PhotoUrl,Status",
           "$top": "1"
         },
         success: function (oEmpData) {
           if (oEmpData.results && oEmpData.results.length > 0) {
             var oEmp = oEmpData.results[0];
-            var sPersId   = oEmp.PersId ? oEmp.PersId.toString() : "";
-            var sSectorId = oEmp.SectorId ? oEmp.SectorId.toString() : "";
-            console.log("PersId resolved:", sPersId, "SectorId:", sSectorId);
+            var sPersId = oEmp.PersId ? oEmp.PersId.toString() : "";
+            var sTeamId = oEmp.TeamId ? oEmp.TeamId.toString() : "";
+            console.log("PersId resolved:", sPersId, "TeamId:", sTeamId);
             oHomeModel.setProperty("/persId", sPersId);
             oHomeModel.setProperty("/sapUsername", sUsername);
-            oHomeModel.setProperty("/sectorId", sSectorId);
+            oHomeModel.setProperty("/teamId", sTeamId);
+            oHomeModel.setProperty("/email", oEmp.Email || "");
+            oHomeModel.setProperty("/phone", oEmp.Phone || "");
+            oHomeModel.setProperty("/photoUrl", oEmp.PhotoUrl || "");
+            oHomeModel.setProperty("/status", oEmp.Status || "");
             // Store on component for cross-controller access
             oComp._sPersId      = sPersId;
             oComp._sSapUsername = sUsername;
-            oComp._sSectorId    = sSectorId;
+            oComp._sTeamId      = sTeamId;
             // Mirror into component-level `user` model
             var oUserModel = oComp.getModel("user");
             if (oUserModel) {
               oUserModel.setProperty("/persId", sPersId);
               oUserModel.setProperty("/sapUsername", sUsername);
-              oUserModel.setProperty("/sectorId", sSectorId);
+              oUserModel.setProperty("/teamId", sTeamId);
+              oUserModel.setProperty("/email", oEmp.Email || "");
+              oUserModel.setProperty("/phone", oEmp.Phone || "");
+              oUserModel.setProperty("/photoUrl", oEmp.PhotoUrl || "");
+              oUserModel.setProperty("/status", oEmp.Status || "");
             }
           } else {
             console.warn("No Employee record found for SapUsername:", sUsername);
@@ -391,7 +399,15 @@ sap.ui.define([
     },
 
     onMyProfile: function () {
-      MessageToast.show("My Profile - coming soon.");
+      const sPersId = this.getView().getModel("home").getProperty("/persId")
+        || this.getOwnerComponent()._sPersId;
+      if (!sPersId) {
+        MessageToast.show("Please wait, loading your profile...");
+        return;
+      }
+      this.getOwnerComponent().getRouter().navTo("RouteMyProfile", {
+        persId: sPersId
+      });
     },
 
     onEmployeeRegistration: function () {
@@ -400,6 +416,11 @@ sap.ui.define([
 
     onCourseRegistration: function () {
       MessageToast.show("Course Registration - next step!");
+    },
+
+    // ── Feedback (all users) ────────────────────────────────────────
+    onOpenFeedback: function () {
+      this.getOwnerComponent().getRouter().navTo("RouteFeedback");
     },
 
     // ── Image helper ─────────────────────────────────────────────────

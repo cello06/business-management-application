@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls D:\\\\General\\\\Developments\\\\HR_Project\\\\business-management-application\\\\webapp\\\\localService\\\\mainService\\\\data\\\\ *)"
+    ]
+  }
+}

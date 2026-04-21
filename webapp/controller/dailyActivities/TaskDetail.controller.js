@@ -332,11 +332,11 @@ sap.ui.define([
       if (oComboBox._loaded) { return fnDone(); }
 
       var oComp = this.getOwnerComponent();
-      var sSector = oComp._sSectorId || "";
-      if (!sSector) { return fnDone(); }
+      var sTeam = oComp._sTeamId || "";
+      if (!sTeam) { return fnDone(); }
 
       var oModel = this.getView().getModel();
-      var iSector = parseInt(sSector, 10);
+      var iTeam = parseInt(sTeam, 10);
 
       var fill = function (oData) {
         oComboBox.removeAllItems();
@@ -358,15 +358,15 @@ sap.ui.define([
       // Numeric filter (Edm.Int32), fallback to quoted if rejected
       oModel.read("/Employees", {
         urlParameters: {
-          "$filter": "SectorId eq " + iSector,
-          "$select": "PersId,SapUsername,FirstName,LastName,Title,SectorId"
+          "$filter": "TeamId eq " + iTeam,
+          "$select": "PersId,SapUsername,FirstName,LastName,Title,TeamId"
         },
         success: fill,
         error: function () {
           oModel.read("/Employees", {
             urlParameters: {
-              "$filter": "SectorId eq '" + sSector + "'",
-              "$select": "PersId,SapUsername,FirstName,LastName,Title,SectorId"
+              "$filter": "TeamId eq '" + sTeam + "'",
+              "$select": "PersId,SapUsername,FirstName,LastName,Title,TeamId"
             },
             success: fill,
             error: function (oErr) {

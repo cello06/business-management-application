@@ -332,3 +332,57 @@ tr[data-assignedprojectstatus="overdue"] td {
   margin-top: 0.5rem !important;
   text-align: right !important;
 }
+
+/* ═══════════════════════════════════════
+   MY PROFILE — Hidden photo uploader
+═══════════════════════════════════════ */
+.hrPhotoUploaderHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+.hrProfileAvatar {
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.hrProfileAvatar:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+/* Give the Personal Information panel header room so the Edit / Save /
+   Cancel buttons don't get clipped against the right edge. */
+.hrProfilePanel > .sapMPanelHdr,
+.hrProfilePanel > header {
+  padding-right: 1rem !important;
+}
+
+.hrProfileHeaderToolbar {
+  padding-right: 1rem !important;
+}
+
+/* Profile card: subtle border + soft shadow, but no width cap so the
+   form can fill the page on all screen sizes. */
+.hrProfilePanel {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Right-align SimpleForm labels inside the MyProfile form so the label
+   text sits flush against the input/value column and doesn't leave a
+   visible gap between the label and the input. */
+.hrProfileForm .sapUiFormResGridLbl .sapMLabel,
+.hrProfileForm .sapUiRFLContainerLbl .sapMLabel {
+  text-align: right !important;
+  padding-right: 0.5rem !important;
+  width: 100%;
+}
+

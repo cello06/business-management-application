@@ -64,7 +64,17 @@
                 <Property Name="Title" Type="Edm.String" MaxLength="100" sap:display-format="UpperCase" sap:label="Personel Title" sap:quickinfo="Personel Title Data Element"/>
                 <Property Name="CompanyId" Type="Edm.Int32" sap:label="Company Id"/>
                 <Property Name="GraduatedSchool" Type="Edm.Int32" sap:label="School Id"/>
-                <Property Name="SectorId" Type="Edm.Int32" sap:label="Sector Id" sap:quickinfo="Section Id"/>
+                <Property Name="TeamId" Type="Edm.Int32" sap:label="Team Id" sap:quickinfo="Team Id"/>
+                <Property Name="SapUsername" Type="Edm.String" MaxLength="12" sap:label="SAP Username"/>
+                <Property Name="BirthDate" Type="Edm.DateTime" Precision="0" sap:label="Birth Date"/>
+                <Property Name="Gender" Type="Edm.String" MaxLength="1" sap:label="Gender"/>
+                <Property Name="Email" Type="Edm.String" MaxLength="100" sap:label="Email"/>
+                <Property Name="Phone" Type="Edm.String" MaxLength="30" sap:label="Phone"/>
+                <Property Name="ManagerId" Type="Edm.String" MaxLength="11" sap:display-format="UpperCase" sap:label="Manager Id"/>
+                <Property Name="StartDate" Type="Edm.DateTime" Precision="0" sap:label="Start Date"/>
+                <Property Name="EndDate" Type="Edm.DateTime" Precision="0" sap:label="End Date"/>
+                <Property Name="Status" Type="Edm.String" MaxLength="10" sap:label="Status"/>
+                <Property Name="PhotoUrl" Type="Edm.String" MaxLength="255" sap:label="Photo URL"/>
             </EntityType>
             <EntityType Name="SectorsType" sap:label="Sector(Projection)" sap:content-version="1">
                 <Key>

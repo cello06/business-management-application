@@ -212,6 +212,29 @@
 
             </l:BlockLayoutRow>
 
+            <!-- ═══ ROW — Feedback (visible to ALL users) ════ -->
+            <l:BlockLayoutRow visible="{home>/roleLoaded}">
+                <l:BlockLayoutCell backgroundColorSet="ColorSet8" backgroundColorShade="ShadeA" class="hrFeatureCell">
+                    <GenericTile
+                        class="hrBlockTile"
+                        header="Feedback"
+                        subheader="Report a bug or suggest a feature"
+                        frameType="TwoByOne"
+                        press=".onOpenFeedback">
+                        <tileContent>
+                            <TileContent>
+                                <content>
+                                    <l:VerticalLayout>
+                                        <core:Icon src="sap-icon://feedback" size="2rem" color="Accent6"/>
+                                        <Text text="Help us improve" class="sapUiSmallMarginTop"/>
+                                    </l:VerticalLayout>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </l:BlockLayoutCell>
+            </l:BlockLayoutRow>
+
             <!-- ═══ ROW 3 — Welcome message ══════════════════ -->
             <l:BlockLayoutRow visible="{home>/roleLoaded}">
                 <l:BlockLayoutCell

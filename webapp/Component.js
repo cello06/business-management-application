@@ -20,14 +20,18 @@ sap.ui.define([
 
                 // Central user model — Home.controller populates this after
                 // /UserRoles and /Employees resolve. Any controller can bind
-                // to `user>/isLeader`, `user>/persId`, `user>/sectorId` etc.
+                // to `user>/isLeader`, `user>/persId`, `user>/teamId` etc.
                 this.setModel(new JSONModel({
                     isLeader   : false,
                     isAdmin    : false,
                     roleLoaded : false,
                     persId     : "",
                     sapUsername: "",
-                    sectorId   : "",
+                    teamId     : "",
+                    email      : "",
+                    phone      : "",
+                    photoUrl   : "",
+                    status     : "",
                     role       : ""
                 }), "user");
             }
